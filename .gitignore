@@ -12,3 +12,4 @@ server/app/models/__pycache__
 server/app/api/v1/endpoints/__pycache__
 server/app/db/__pycache__
 server/alembic/versions/__pycache__
+server/app/core/__pycache__
