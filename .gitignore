@@ -1,0 +1,7 @@
+server/venv/
+server/app/schemas/__pycache__
+server/app/routes/__pycache__
+server/alembic/__pycache__
+server/app/__pycache__
+server/app/controllers/__pycache__
+server/app/middlewares/__pycache__
