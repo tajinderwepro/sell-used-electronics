@@ -5,3 +5,10 @@ server/alembic/__pycache__
 server/app/__pycache__
 server/app/controllers/__pycache__
 server/app/middlewares/__pycache__
+.env
+server/app/api/v1/__pycache__
+server/app/services/__pycache__
+server/app/models/__pycache__
+server/app/api/v1/endpoints/__pycache__
+server/app/db/__pycache__
+server/alembic/versions/__pycache__

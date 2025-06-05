@@ -6,14 +6,6 @@ class RoleEnum(str, enum.Enum):
     admin = 'admin'
     user = 'user'
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    password_hash = Column(String, nullable=False)
-    role = Column(Enum(RoleEnum), default=RoleEnum.user)
-
 # Pydantic schemas
 from pydantic import BaseModel
 
@@ -29,7 +21,7 @@ class UserOut(BaseModel):
     email: str
     role: RoleEnum
 
-class UserListResponse(BaseModel):
+class UserResponse(BaseModel):
     users: list[UserOut]
     message: str
     success: bool
