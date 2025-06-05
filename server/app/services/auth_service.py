@@ -1,7 +1,10 @@
+# app/services/auth_service.py
+
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from fastapi import HTTPException
 from app.models.user import User
 from app.schemas.auth import LoginRequest, TokenResponse
@@ -26,9 +29,11 @@ class AuthService:
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     @staticmethod
-    def login_user(data: LoginRequest, db: Session) -> TokenResponse:
-        user = db.query(User).filter(User.email == data.email).first()
-        if not user or not AuthService.verify_password(data.password, user.password_hash):
+    async def login_user(data: LoginRequest, db: AsyncSession) -> TokenResponse:
+        result = await db.execute(select(User).where(User.email == data.email))
+        user = result.scalars().first()
+
+        if not user or not AuthService.verify_password(data.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
         access_token = AuthService.create_access_token(data={"sub": str(user.id)})

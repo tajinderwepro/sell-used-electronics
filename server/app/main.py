@@ -15,4 +15,4 @@ app.add_middleware(
 
 # app.middleware("http")(authenticate_user)
 
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/v1", tags=["v1"])

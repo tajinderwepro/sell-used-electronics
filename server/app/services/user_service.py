@@ -1,3 +1,5 @@
+# app/services/user_service.py
+
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
 from app.db.session import async_session
@@ -24,7 +26,7 @@ class UserService:
 
     @staticmethod
     async def get_all_users():
-        async with async_session() as session:  # type: AsyncSession
+        async with async_session() as session:
             result = await session.execute(select(User))
             users = result.scalars().all()
             return {
@@ -35,7 +37,7 @@ class UserService:
 
     @staticmethod
     async def get_user_by_id(user_id: int):
-        async with async_session() as session:  # type: AsyncSession
+        async with async_session() as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalars().first()
             if user:
@@ -44,7 +46,7 @@ class UserService:
 
     @staticmethod
     async def delete_user(user_id: int):
-        async with async_session() as session:  # type: AsyncSession
+        async with async_session() as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalars().first()
             if user:
