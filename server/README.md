@@ -16,23 +16,23 @@ This backend project powers the "Sell Used Electronics" platform. Built with **F
 
 ### 2.  Project Structure
 
-server/
-├── alembic/ # Alembic migrations
-│ ├── versions/ # Auto-generated migration scripts
-│ └── env.py # Migration environment config
-├── alembic.ini # Alembic config file
-├── app/
-│ ├── database.py # DB connection & Base
-│ ├── main.py # FastAPI app entry point
-│ ├── models/ # SQLAlchemy models
-│ ├── schemas/ # Pydantic schemas
-│ ├── routes/ # FastAPI route definitions
-│ ├── controllers/ # Business logic for routes
-│ └── utils/ # Helper modules (optional)
-├── .env # Environment variables
-├── requirements.txt # Python dependencies
-└── README.md # Project docs
-
+├── server/
+│   ├── app/
+│   │   ├── api/               # API routers
+│   │   │   ├── v1/
+│   │   │   │   ├── endpoints/
+│   │   │   │   │   └── users.py
+│   │   │   │   └── api.py
+│   │   ├── core/              # Settings, config
+│   │   │   └── config.py
+│   │   ├── models/            # SQLAlchemy models
+│   │   ├── schemas/           # Pydantic schemas
+│   │   ├── services/          # Business logic
+│   │   ├── main.py            # FastAPI app entrypoint
+│   │   └── db/                # Database session and CRUD
+│   │       └── session.py
+│   ├── requirements.txt       # Python dependencies
+│   └── alembic/               # (Optional) Migrations
 
 
 ---
