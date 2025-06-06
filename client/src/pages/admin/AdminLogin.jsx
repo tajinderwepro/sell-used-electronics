@@ -1,12 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
-
+  const { login } = useAuth();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -14,13 +15,9 @@ export default function AdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/auth/login", form);
-      console.log("Login success", response.data);
-      
-      // Store token
-      localStorage.setItem("token", response.data.token);
-
-      navigate('/admin/users');
+       await login(form.email, form.password, form.role);
+        setError(" ")
+        navigate('/admin/users');
     } catch (error) {
       setError("Login failed. Please check your credentials.");
     }
