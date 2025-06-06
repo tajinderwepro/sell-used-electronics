@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import QouteForm from "./QouteForm";
+import Modal from "./modal/Modal";
 import Heading from "../components/ui/Heading";
 import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 export default function Home() {
+    const [showQuoteForm, setShowQuoteForm] = useState(false);
   return (
     <div
       className={`${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.textPrimary} ${FONT_FAMILIES.primary} min-h-screen flex flex-col`}
@@ -61,6 +65,13 @@ export default function Home() {
           >
             Register
           </Link>
+           <Link
+            onClick={() => setShowQuoteForm(true)}
+            className={`inline-flex items-center px-6 py-3 rounded-full text-lg ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.primaryBg} text-white ${COLOR_CLASSES.shadowMd} transition-all duration-200 ${COLOR_CLASSES.primaryBgHover}`}
+          >
+             Get a Quote
+            <ArrowRight className="ml-2" size={20} />
+          </Link>
         </div>
 
         {/* Features */}
@@ -98,6 +109,11 @@ export default function Home() {
       >
         © {new Date().getFullYear()} ElectroTrade. All rights reserved.
       </footer>
+       {showQuoteForm && (
+        <Modal onClose={() => setShowQuoteForm(false)}>
+          <QouteForm onClose={() => setShowQuoteForm(false)} />
+        </Modal>
+      )}
     </div>
   );
 }

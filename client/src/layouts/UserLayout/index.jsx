@@ -1,25 +1,21 @@
 // src/layouts/UserLayout.jsx
 import { LogOut, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
+import Header from './Header';
+import { useState } from 'react';
+import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from '../../constants/theme'
 const UserLayout = ({ children }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen text-gray-900">
       {/* Header */}
-      <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold text-blue-600">
+      <header className="bg-white  py-4 px-6 flex justify-between items-center">
+        <Link to="/"  className={`${FONT_SIZES['2xl']} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} `}>
           SellUsedElectronics
         </Link>
-        <div className="flex items-center gap-4">
-          <Link to="/user/profile" className="flex items-center gap-1 text-gray-700 hover:text-blue-600">
-            <User size={18} />
-            <span>Profile</span>
-          </Link>
-          <button className="flex items-center gap-1 text-red-600 hover:text-red-800">
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
+        <div className="flex-1 flex flex-col">
+        <Header setMobileMenuOpen={setMobileMenuOpen} />
+      </div>
       </header>
 
       {/* Main Content */}
