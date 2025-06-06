@@ -8,6 +8,7 @@ from sqlalchemy import select
 from fastapi import HTTPException
 from app.models.user import User
 from app.schemas.auth import LoginRequest, TokenResponse
+from app.schemas.user import UserCreate
 import os
 
 SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key")
@@ -33,8 +34,22 @@ class AuthService:
         result = await db.execute(select(User).where(User.email == data.email))
         user = result.scalars().first()
 
-        if not user or not AuthService.verify_password(data.password, user.hashed_password):
+        if not user or not AuthService.verify_password(data.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
         access_token = AuthService.create_access_token(data={"sub": str(user.id)})
         return TokenResponse(access_token=access_token, token_type="bearer")
+
+    @staticmethod
+    async def register_user(data: UserCreate, db: AsyncSession) -> User:
+        hashed_pw = pwd_context.hash(data.password_hash)
+        db_user = User(
+            email=data.email,
+            name=data.name,
+            password_hash=hashed_pw,
+            role='user'
+        )
+        db.add(db_user)
+        await db.commit()
+        await db.refresh(db_user)
+        return db_user

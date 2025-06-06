@@ -10,3 +10,4 @@ passlib[bcrypt]
 greenlet
 asyncpg
 pydantic-settings
+bcrypt==4.0.1

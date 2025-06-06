@@ -13,7 +13,7 @@ router = APIRouter()
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     return await AuthService.login_user(data, db)
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserCreate)
 async def register(data: UserCreate, db: AsyncSession = Depends(get_db)):
     return await AuthService.register_user(data, db)
 
