@@ -39,7 +39,7 @@ class AuthService:
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
         access_token = AuthService.create_access_token(data={"sub": str(user.id)})
-        return TokenResponse(access_token=access_token, token_type="bearer")
+        return TokenResponse(access_token=access_token, token_type="bearer",user=user)
 
     @staticmethod
     async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:
