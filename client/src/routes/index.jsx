@@ -2,14 +2,18 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminDashboard from "../pages/admin/Dashbaord";
 import UserList from "../pages/admin/UserList";
 import AdminRoute from "./AdminRoutes";
 import AdminLogin from "../pages/admin/AdminLogin";
 import UserRoute from "./UserRoute";
 import { useAuth } from "../context/AuthContext";
-import Dashboard from "../pages/admin/AdminDashboard";
 import NotFound from "../pages/NotFound";
+import Devices from "../pages/admin/Devices";
+import Users from "../pages/admin/Users";
+import Orders from "../pages/admin/Orders";
+import Quotes from "../pages/admin/Quotes";
+import Dashboard from "../pages/users/Dashboard";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
@@ -28,7 +32,10 @@ function AllRoutes() {
         {/* Admin Protected Routes */}
         <Route element={<AdminRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserList />} />
+          <Route path="/admin/users" element={<Users />} />
+          <Route path="/admin/devices" element={<Devices />} />
+          <Route path="/admin/orders" element={<Orders />} />
+          <Route path="/admin/quotes" element={<Quotes />} />
         </Route>
 
         {/* User Protected Routes */}

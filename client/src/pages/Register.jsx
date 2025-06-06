@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Register() {
-  const [form, setForm] = useState({name:"", email: "", password_hash: "", confirmPassword: "", role:'admin' });
+  const [form, setForm] = useState({name:"", email: "", password_hash: "", confirmPassword: "", role:'user' });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(""); // To display success/error message
 

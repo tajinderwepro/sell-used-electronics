@@ -30,13 +30,7 @@ async def create_users():
                 password_hash=pwd_context.hash("adminpass"),
                 role="admin"
             )
-            user2 = User(
-                name="Regular User",
-                email="user@example.com",
-                password_hash=pwd_context.hash("userpass"),
-                role="user"
-            )
-            session.add_all([user1, user2])
+            session.add_all([user1])
         await session.commit()
         print("Users seeded successfully.")
 
