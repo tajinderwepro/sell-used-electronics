@@ -24,7 +24,7 @@ def upgrade():
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('email', sa.String(), nullable=False),
         sa.Column('password_hash', sa.String(), nullable=False),
-        sa.Column('role', sa.Enum('admin', 'user', name='user_roles'), nullable=True, default='user'),
+        sa.Column('role', sa.String(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email')
     )
@@ -59,7 +59,7 @@ def upgrade():
         'orders',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('quote_id', sa.Integer(), nullable=False),
-        sa.Column('status', sa.Enum('pending', 'received', 'paid', name='order_statuses'), nullable=False),
+        sa.Column('status',  sa.String(), nullable=False, default='pending'),
         sa.Column('tracking_number', sa.String(), nullable=True),
         sa.Column('shipping_label_url', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(['quote_id'], ['quotes.id']),
