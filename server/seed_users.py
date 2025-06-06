@@ -26,8 +26,8 @@ async def create_users():
 
             user1 = User(
                 name="Admin User",
-                email="admin@example.com",
-                password_hash=pwd_context.hash("adminpass"),
+                email="admin@yopmail.com",
+                password_hash=pwd_context.hash("password"),
                 role="admin"
             )
             session.add_all([user1])
