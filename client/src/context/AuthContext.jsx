@@ -38,6 +38,7 @@ useEffect(() => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
         setIsAuthenticated(true);
         setUserRole(user.role);
+        setUser(user);
         localStorage.setItem('userRole', user.role);
         localStorage.setItem('user', user);
         return user.role;

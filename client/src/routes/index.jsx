@@ -9,11 +9,13 @@ import AdminLogin from "../pages/admin/AdminLogin";
 import UserRoute from "./UserRoute";
 import { useAuth } from "../context/AuthContext";
 import Dashboard from "../pages/admin/AdminDashboard";
-
+import NotFound from "../pages/NotFound";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
+
   if (loading) return <div className="text-center p-10">Loading...</div>;
+
   return (
     <Router>
       <Routes>
@@ -34,6 +36,9 @@ function AllRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user/orders" element={<UserList />} />
         </Route>
+
+        {/* Catch-All 404 Route (MUST be last) */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

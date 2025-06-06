@@ -51,7 +51,7 @@ export default function UserList() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen">
       <CommonTable columns={columns}  data={users} loading={loading}  pageSize={10} title={"Users List"}/>
     </div>
   );

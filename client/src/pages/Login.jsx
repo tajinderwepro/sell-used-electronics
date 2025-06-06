@@ -1,51 +1,72 @@
 import { useState } from "react";
-import axios from "axios";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+import Button from "../components/ui/Button";
+import InputField from "../components/ui/InputField";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import Heading from "../components/ui/Heading";
+
 export default function Login() {
-  const [form, setForm] = useState({ email: "", password: "",role:"user" });
-  const [error, setError] = useState(""); 
-  const navigate = useNavigate(); 
+  const [form, setForm] = useState({ email: "", password: "", role: "user" });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(form.email, form.password, form.role);
-      navigate('/dashboard')
-      setError(" ")
-    
+      setError("");
+      navigate("/dashboard");
     } catch (error) {
       setError("Login failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 shadow-lg rounded w-80">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
-        <input
-          className="w-full border p-2 mb-4 rounded"
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-500 p-6">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md"
+        autoComplete="off"
+      >
+        <Heading className="mb-6">User Login</Heading>
+
+        <InputField
+          label="Email Address"
+          id="email"
           type="email"
-          name="email"
-          placeholder="Email"
+          placeholder="you@example.com"
+          value={form.email}
           onChange={handleChange}
+          required
         />
-        <input
-          className="w-full border p-2 mb-4 rounded"
+
+        <InputField
+          label="Password"
+          id="password"
           type="password"
-          name="password"
-          placeholder="Password"
+          placeholder="Your password"
+          value={form.password}
           onChange={handleChange}
+          required
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
-          Login
-        </button>
+
+        <ErrorMessage message={error} />
+
+        <Button type="submit">Login</Button>
+
+        <p className="text-center text-gray-700 mt-6 text-sm">
+          Forgot your password?{" "}
+          <a href="#" className="underline hover:text-gray-900">
+            Reset here
+          </a>
+        </p>
       </form>
     </div>
   );

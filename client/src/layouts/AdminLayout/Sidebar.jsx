@@ -1,22 +1,52 @@
-import { Home, Users, Settings } from 'lucide-react';
+import React from "react";
+import {
+  LayoutDashboard,
+  Monitor,
+  Package,
+  FileText,
+  Users,
+} from "lucide-react";
+import Heading from "../../components/ui/Heading";
+import NavLinkItem from "../../components/ui/NavLinkItem";
 
-const Sidebar = () => {
+const menuItems = [
+  { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
+  { name: "Users", icon: Users, path: "/admin/users" },
+  { name: "Devices", icon: Monitor, path: "/admin/devices" },
+  { name: "Orders", icon: Package, path: "/admin/orders" },
+  { name: "Quotes", icon: FileText, path: "/admin/quotes" },
+];
+
+export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
   return (
-    <aside className="w-64 bg-white shadow-lg hidden md:block">
-      <div className="p-6 font-bold text-xl border-b">Admin Panel</div>
-      <nav className="p-4 space-y-3 text-gray-700">
-        <a href="/dashboard" className="flex items-center gap-2 hover:text-blue-500">
-          <Home size={18} /> Dashboard
-        </a>
-        <a href="/users" className="flex items-center gap-2 hover:text-blue-500">
-          <Users size={18} /> Users
-        </a>
-        <a href="/settings" className="flex items-center gap-2 hover:text-blue-500">
-          <Settings size={18} /> Settings
-        </a>
-      </nav>
-    </aside>
-  );
-};
+    <>
+      {/* Sidebar */}
+      <aside
+        className={`w-64 bg-white border-r shadow-sm fixed z-20 inset-y-0 left-0 transform md:translate-x-0 transition-transform duration-200 ease-in-out ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:block`}
+      >
+        <div className="h-16 flex items-center justify-center border-b px-4">
+          <Heading className="text-xl font-bold text-indigo-600">SellUsedElectronics</Heading>
+        </div>
+        <nav className="p-4 space-y-2">
+          {menuItems.map((item) => (
+            <NavLinkItem
+              key={item.name}
+              {...item}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+          ))}
+        </nav>
+      </aside>
 
-export default Sidebar;
+      {/* Mobile overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-30 z-10 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+    </>
+  );
+}
