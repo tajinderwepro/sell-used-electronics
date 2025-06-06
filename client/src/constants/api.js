@@ -11,11 +11,11 @@ const axiosInstance = axios.create({
 
 const axiosWrapper = (apiCall) =>
   apiCall.then(res => res.data).catch(err => Promise.reject(err));
-
 // Define all API calls here
 const api = {
   admin: {
     login: (data) => axiosWrapper(axiosInstance.post('http://localhost:8000/api/v1/auth/login', data)),
+    getUsers : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/users/list')),
     },
 
 };
