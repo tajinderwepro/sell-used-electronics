@@ -6,46 +6,32 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import UserList from "../pages/admin/UserList";
 import AdminRoute from "./AdminRoutes";
 import AdminLogin from "../pages/admin/AdminLogin";
+import UserRoute from "./UserRoute";
 
-const userRole = "admin"; 
+// Dummy role — replace with context or actual login logic
+const userRole = "admin";
 
 function AllRoutes() {
   return (
     <Router>
       <Routes>
-        {/* Common Routes */}
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Routes */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminRoute userRole={userRole}>
-              <AdminDashboard />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <AdminRoute userRole={userRole}>
-              <UserList />
-            </AdminRoute>
-          }
-        />
+        {/* Admin Protected Routes (Nested with AdminLayout) */}
+        <Route element={<AdminRoute userRole={userRole} />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserList />} />
+        </Route>
 
-        {/* User Routes */}
-        {/* <Route
-          path="/user/profile"
-          element={
-            <UserRoute userRole={userRole}>
-              <UserProfile />
-            </UserRoute>
-          }
-        /> */}
+        <Route element={<UserRoute userRole={userRole} />}>
+          <Route path="/user/profile" element={<AdminDashboard />} />
+          <Route path="/user/orders" element={<UserList />} />
+        </Route>
+
       </Routes>
     </Router>
   );

@@ -1,10 +1,13 @@
-import { Navigate } from 'react-router-dom';
+// src/routes/AdminRoute.jsx
+import { Navigate, Outlet } from 'react-router-dom';
+import AdminLayout from '../layouts/AdminLayout';
 
-const AdminRoute = ({ children, userRole }) => {
+// Use context or props for actual user role in production
+const AdminRoute = ({ userRole }) => {
   if (userRole !== 'admin') {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
-  return children;
+  return <AdminLayout><Outlet /></AdminLayout>;
 };
 
 export default AdminRoute;

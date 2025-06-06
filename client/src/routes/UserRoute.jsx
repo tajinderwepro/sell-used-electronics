@@ -1,10 +1,11 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import UserLayout from '../layouts/UserLayout';
 
-const UserRoute = ({ children, userRole }) => {
+const UserRoute = ({ userRole }) => {
   if (userRole !== 'user') {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
-  return children;
+  return <UserLayout><Outlet /></UserLayout>;
 };
 
 export default UserRoute;
