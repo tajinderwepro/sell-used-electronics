@@ -53,10 +53,10 @@ export default function Home() {
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-16">
           <Link
-            to="/login"
+            onClick={() => setShowQuoteForm(true)}
             className={`inline-flex items-center px-6 py-3 rounded-full text-lg ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.primaryBg} text-white ${COLOR_CLASSES.shadowMd} transition-all duration-200 ${COLOR_CLASSES.primaryBgHover}`}
           >
-            Login to Get Started
+            Get a Quote
             <ArrowRight className="ml-2" size={20} />
           </Link>
           <Link
@@ -64,13 +64,6 @@ export default function Home() {
             className={`inline-flex items-center px-6 py-3 border-2 rounded-full text-lg ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.borderPrimary} ${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primary}`}
           >
             Register
-          </Link>
-           <Link
-            onClick={() => setShowQuoteForm(true)}
-            className={`inline-flex items-center px-6 py-3 rounded-full text-lg ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.primaryBg} text-white ${COLOR_CLASSES.shadowMd} transition-all duration-200 ${COLOR_CLASSES.primaryBgHover}`}
-          >
-             Get a Quote
-            <ArrowRight className="ml-2" size={20} />
           </Link>
         </div>
 
