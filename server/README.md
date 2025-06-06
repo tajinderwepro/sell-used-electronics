@@ -47,7 +47,7 @@ This backend project powers the "Sell Used Electronics" platform. Built with **F
 
 ```bash
 # Create virtual environment
-python -m venv venv
+python -m venv venv | python3 -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 
 
