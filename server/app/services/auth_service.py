@@ -6,9 +6,10 @@ from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from app.models.user import User
 from app.schemas.auth import LoginRequest, TokenResponse
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate,RegisterUserResponse,UserResponse,UserOut
 import os
 
 SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key")
@@ -41,15 +42,31 @@ class AuthService:
         return TokenResponse(access_token=access_token, token_type="bearer")
 
     @staticmethod
-    async def register_user(data: UserCreate, db: AsyncSession) -> User:
-        hashed_pw = pwd_context.hash(data.password_hash)
-        db_user = User(
-            email=data.email,
-            name=data.name,
-            password_hash=hashed_pw,
-            role='user'
+    async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:
+        try:
+            hashed_pw = pwd_context.hash(data.password_hash)
+           
+            db_user = User(
+                email=data.email,
+                name=data.name,
+                password_hash=hashed_pw,
+                role=data.role
+            )
+            db.add(db_user)
+            await db.commit()
+            await db.refresh(db_user)
+
+            return RegisterUserResponse(
+            user=UserOut.from_orm(db_user),
+            message="User registered successfully",
+            success=True
         )
-        db.add(db_user)
-        await db.commit()
-        await db.refresh(db_user)
-        return db_user
+
+        except SQLAlchemyError as e:
+            await db.rollback()
+            return RegisterUserResponse(
+                user=None,
+                message="Failed to register user",
+                success=False,
+                error=str(e)
+            )
