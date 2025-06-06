@@ -112,4 +112,24 @@ Start your FastAPI development server:
 uvicorn app.main:app --reload
 ```
 
+### 6. 🚀 Running the Seeder
+
+Check python 
+like :- 
+```bash
+python --version 
+```
+(or)
+```bash
+python3 --version
+```
+for if python 
+```bash
+python seed_users.py
+```
+for python3 
+```bash
+python3 seed_users.py
+```
+
 
