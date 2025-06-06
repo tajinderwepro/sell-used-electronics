@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(form.email, form.password, form.role);
-      navigate('/')
+      navigate('/dashboard')
       setError(" ")
     
     } catch (error) {

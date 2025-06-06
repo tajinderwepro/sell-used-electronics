@@ -4,6 +4,8 @@ import AdminLayout from '../layouts/AdminLayout';
 
 // Use context or props for actual user role in production
 const AdminRoute = ({ userRole,isAuthenticated }) => {
+  console.log("loadingloadingloadingloadingloadingloading",isAuthenticated,userRole);
+
   if (userRole !== 'admin' || !isAuthenticated) {
     return <Navigate to="/" replace />;
   }

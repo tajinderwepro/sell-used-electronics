@@ -8,11 +8,12 @@ import AdminRoute from "./AdminRoutes";
 import AdminLogin from "../pages/admin/AdminLogin";
 import UserRoute from "./UserRoute";
 import { useAuth } from "../context/AuthContext";
-
-// Dummy role — replace with context or actual login logic
+import Dashboard from "../pages/admin/AdminDashboard";
 
 function AllRoutes() {
-  const {logout,userRole, isAuthenticated} = useAuth();
+  const auth = useAuth();
+  const { logout, userRole, isAuthenticated, loading } = auth;
+  if (loading) return <div className="text-center p-10">Loading...</div>;
   return (
     <Router>
       <Routes>
@@ -22,17 +23,17 @@ function AllRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* Admin Protected Routes (Nested with AdminLayout) */}
+        {/* Admin Protected Routes */}
         <Route element={<AdminRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserList />} />
         </Route>
 
-        <Route element={<UserRoute userRole={userRole} isAuthenticated={isAuthenticated}/>}>
-          <Route path="/user/profile" element={<AdminDashboard />} />
+        {/* User Protected Routes */}
+        <Route element={<UserRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user/orders" element={<UserList />} />
         </Route>
-
       </Routes>
     </Router>
   );
