@@ -1,9 +1,10 @@
+import { COLOR_CLASSES, FONT_SIZES, FONT_WEIGHTS } from "../../constants/theme";
+
 // components/ui/Button.jsx
 export default function Button({ children, className = '', ...props }) {
   return (
     <button
-      className={`w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:bg-indigo-700
-                  active:scale-95 transform transition duration-150 ${className}`}
+      className={`${COLOR_CLASSES.primaryBg} ${COLOR_CLASSES.primaryBgHover} text-white w-full py-2 rounded ${FONT_WEIGHTS.semibold} ${FONT_SIZES.lg}`}
       {...props}
     >
       {children}

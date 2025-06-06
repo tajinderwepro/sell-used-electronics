@@ -7,6 +7,8 @@ import InputField from "../components/ui/InputField";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import Heading from "../components/ui/Heading";
 
+import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", role: "user" });
   const [error, setError] = useState("");
@@ -29,13 +31,19 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-100 to-slate-100 p-6">
+    <div
+      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}
+    >
       <form
         onSubmit={handleLogin}
-        className="bg-white bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md"
+        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md`}
         autoComplete="off"
       >
-        <Heading className="mb-6">User Login</Heading>
+        <Heading
+          className={`mb-6 ${FONT_SIZES["3xl"]} ${FONT_WEIGHTS.extrabold} ${COLOR_CLASSES.primaryDark} ${FONT_FAMILIES.heading}`}
+        >
+          User Login
+        </Heading>
 
         <InputField
           label="Email Address"
@@ -59,11 +67,20 @@ export default function Login() {
 
         <ErrorMessage message={error} />
 
-        <Button type="submit">Login</Button>
+        <Button
+          type="submit"
+        >
+          Login
+        </Button>
 
-        <p className="text-center text-gray-700 mt-6 text-sm">
+        <p
+          className={`text-center mt-6 ${COLOR_CLASSES.textSecondary} ${FONT_SIZES.sm}`}
+        >
           Forgot your password?{" "}
-          <a href="#" className="underline hover:text-gray-900">
+          <a
+            href="#"
+            className={`underline ${COLOR_CLASSES.textHoverPrimary}`}
+          >
             Reset here
           </a>
         </p>

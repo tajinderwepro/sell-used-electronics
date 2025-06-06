@@ -1,6 +1,6 @@
 # app/models/device.py
 from sqlalchemy import Column, Integer, String, Float
-from app.database import Base
+from app.db.session import Base
 
 class Device(Base):
     __tablename__ = 'devices'

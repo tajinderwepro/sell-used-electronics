@@ -1,13 +1,29 @@
 import { useState } from "react";
 import axios from "axios";
+import Heading from "../components/ui/Heading";
+import InputField from "../components/ui/InputField";
+import Button from "../components/ui/Button";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import { useNavigate } from "react-router-dom";
+
+import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 
 export default function Register() {
-  const [form, setForm] = useState({name:"", email: "", password_hash: "", confirmPassword: "", role:'user' });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password_hash: "",
+    confirmPassword: "",
+    role: "user",
+  });
+
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState(""); // To display success/error message
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const validate = () => {
-    let newErrors = {};
+    const newErrors = {};
+    if (!form.name) newErrors.name = "Name is required";
     if (!form.email) newErrors.email = "Email is required";
     if (!form.password_hash) newErrors.password_hash = "Password is required";
     if (form.password_hash !== form.confirmPassword)
@@ -17,75 +33,108 @@ export default function Register() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" }); // Clear error on change
+    setMessage(""); // Clear success/error messages on change
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     const newErrors = validate();
+
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await axios.post("http://localhost:8000/api/v1/auth/register", form);
-        console.log("Register success", response.data);
+        await axios.post("http://localhost:8000/api/v1/auth/register", form);
         setMessage("Registration successful! Please login.");
-        setForm({ email: "", password_hash: "", confirmPassword: "" }); // Reset form
+        setForm({ name: "", email: "", password_hash: "", confirmPassword: "", role: "user" });
+        setErrors({});
+        navigate("/login");
       } catch (error) {
         setMessage("Registration failed. Please try again.");
       }
     } else {
       setErrors(newErrors);
+      setMessage("");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleRegister} className="bg-white p-8 shadow-lg rounded w-80">
-        <h2 className="text-2xl font-semibold mb-4">Register</h2>
+    <div
+      className={`${COLOR_CLASSES.bgGradient} min-h-screen flex items-center justify-center p-6 ${FONT_FAMILIES.primary}`}
+    >
+      <form
+        onSubmit={handleRegister}
+        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md`}
+        autoComplete="off"
+      >
+        <Heading
+          className={`mb-6 ${FONT_SIZES["3xl"]} ${FONT_WEIGHTS.extrabold} ${COLOR_CLASSES.primaryDark} ${FONT_FAMILIES.heading}`}
+        >
+          Create an Account
+        </Heading>
 
-        <input
-          className="w-full border p-2 mb-4 rounded"
+        <InputField
+          label="Name"
+          id="name"
           type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
+          placeholder="Your full name"
           value={form.name}
+          onChange={handleChange}
+          required
+          error={errors.name}
         />
-        {errors.email && <p className="text-red-500 text-sm">{errors.name}</p>}
+        <ErrorMessage message={errors.name} />
 
-        <input
-          className="w-full border p-2 mb-4 rounded"
+        <InputField
+          label="Email Address"
+          id="email"
           type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
+          placeholder="you@example.com"
           value={form.email}
-        />
-        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-
-        <input
-          className="w-full border p-2 mb-4 rounded"
-          type="password_hash"
-          name="password_hash"
-          placeholder="Password"
           onChange={handleChange}
-          value={form.password}
+          required
+          error={errors.email}
         />
-        {errors.password_hash && <p className="text-red-500 text-sm">{errors.password_hash}</p>}
+        <ErrorMessage message={errors.email} />
 
-        <input
-          className="w-full border p-2 mb-4 rounded"
+        <InputField
+          label="Password"
+          id="password_hash"
           type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
+          placeholder="Enter password"
+          value={form.password_hash}
           onChange={handleChange}
-          value={form.confirmPassword}
+          required
+          error={errors.password_hash}
         />
-        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+        <ErrorMessage message={errors.password_hash} />
 
-        {message && <p className="text-green-500 text-sm">{message}</p>}
+        <InputField
+          label="Confirm Password"
+          id="confirmPassword"
+          type="password"
+          placeholder="Confirm password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          required
+          error={errors.confirmPassword}
+        />
+        <ErrorMessage message={errors.confirmPassword} />
 
-        <button className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
+        {message && (
+          <p
+            className={`text-center mb-4 ${
+              message.includes("successful") ? COLOR_CLASSES.primaryDark : "text-red-600"
+            } ${FONT_SIZES.base} ${FONT_WEIGHTS.medium}`}
+          >
+            {message}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+        >
           Register
-        </button>
+        </Button>
       </form>
     </div>
   );

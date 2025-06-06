@@ -8,7 +8,7 @@ export default function Devices() {
   const fetchUsers = async ( ) => {
     try {
       setLoading(true);
-      const response=await api.admin.getUsers();
+      const response=await api.admin.getDevices();
       console.log(response.users,'response')
       setUsers(response.users)
       // toast.success("Lead deleted successfully!");

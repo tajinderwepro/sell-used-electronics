@@ -7,6 +7,13 @@ import InputField from "../../components/ui/InputField";
 import ErrorMessage from "../../components/ui/ErrorMessage";
 import Heading from "../../components/ui/Heading";
 
+import {
+  COLOR_CLASSES,
+  FONT_FAMILIES,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+} from "../../constants/theme";
+
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
   const [error, setError] = useState("");
@@ -22,20 +29,26 @@ export default function AdminLogin() {
     try {
       await login(form.email, form.password, form.role);
       setError("");
-      navigate('/admin/dashboard');
+      navigate("/admin/dashboard");
     } catch (error) {
       setError("Login failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-100 to-slate-100 p-6">
-      <form 
-        onSubmit={handleLogin} 
-        className="bg-white bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md"
+    <div
+      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}
+    >
+      <form
+        onSubmit={handleLogin}
+        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md`}
         autoComplete="off"
       >
-        <Heading className="mb-6">Admin Login</Heading>
+        <Heading
+          className={`mb-6 ${FONT_SIZES["3xl"]} ${FONT_WEIGHTS.extrabold} ${COLOR_CLASSES.primaryDark} ${FONT_FAMILIES.heading}`}
+        >
+          Admin Login
+        </Heading>
 
         <InputField
           label="Email Address"
@@ -59,10 +72,19 @@ export default function AdminLogin() {
 
         <ErrorMessage message={error} />
 
-        <Button type="submit">Sign In</Button>
+        <Button
+          type="submit"
+        >
+          Sign In
+        </Button>
 
-        <p className="text-center text-indigo-700 mt-6 text-sm">
-          Forgot your password? <a href="#" className="underline hover:text-indigo-900">Reset here</a>
+        <p
+          className={`text-center mt-6 ${COLOR_CLASSES.primaryDark} ${FONT_SIZES.sm}`}
+        >
+          Forgot your password?{" "}
+          <a href="#" className={`underline ${COLOR_CLASSES.textHoverPrimary}`}>
+            Reset here
+          </a>
         </p>
       </form>
     </div>

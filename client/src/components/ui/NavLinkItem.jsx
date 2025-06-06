@@ -1,5 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import {
+  COLOR_CLASSES,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+} from "../../constants/theme";
 
 export default function NavLinkItem({ name, icon: Icon, path }) {
   const { pathname } = useLocation();
@@ -8,11 +13,13 @@ export default function NavLinkItem({ name, icon: Icon, path }) {
   return (
     <Link
       to={path}
-      className={`flex items-center gap-4 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-        isActive
-          ? "bg-indigo-100 text-indigo-700"
-          : "text-gray-600 hover:bg-gray-100 hover:text-indigo-600"
-      }`}
+      className={`flex items-center gap-4 px-4 py-2 rounded-lg transition-all duration-200
+        ${FONT_SIZES.sm} ${FONT_WEIGHTS.medium}
+        ${
+          isActive
+            ? `${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primaryDark}`
+            : `text-gray-600 hover:bg-gray-100 hover:${COLOR_CLASSES.primary}`
+        }`}
     >
       <Icon className="h-5 w-5" />
       {name}
