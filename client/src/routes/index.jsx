@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import UserList from "../pages/admin/UserList";
 import AdminRoute from "./AdminRoutes";
+import AdminLogin from "../pages/admin/AdminLogin";
 
 const userRole = "admin"; 
 
@@ -14,8 +15,9 @@ function AllRoutes() {
       <Routes>
         {/* Common Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin/register" element={<Register />} />
 
         {/* Admin Routes */}
         <Route

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
-export default function Login() {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState(""); 
+export default function AdminLogin() {
+  const [form, setForm] = useState({ email: "", password: "", role: "admin" });
+  const [error, setError] = useState("");
   const navigate = useNavigate(); 
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -15,12 +16,11 @@ export default function Login() {
     try {
       const response = await axios.post("http://localhost:8000/api/v1/auth/login", form);
       console.log("Login success", response.data);
-      if(response.data){
-        navigate('/admin/users')
-      }
-      setError(" ")
-      // You can store the JWT token here, e.g., in localStorage
+      
+      // Store token
       localStorage.setItem("token", response.data.token);
+
+      navigate('/admin/users');
     } catch (error) {
       setError("Login failed. Please check your credentials.");
     }
@@ -29,7 +29,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form onSubmit={handleLogin} className="bg-white p-8 shadow-lg rounded w-80">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">Admin Login</h2>
         <input
           className="w-full border p-2 mb-4 rounded"
           type="email"
