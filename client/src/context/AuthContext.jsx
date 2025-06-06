@@ -22,11 +22,10 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password, role) => {
         try {
-            // const response = await axios.post("http://localhost:8000/api/v1/auth/login", {email:email,password: password, role:role});
             const response =await api.admin.login({email:email,password: password, role:role});
             console.log(response,'dd')
-            if (response && response.data) {
-                const { access_token,user } = response.data;
+            if (response) {
+                const { access_token,user } = response;
                 setToken(access_token);
                 localStorage.setItem('token', access_token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
