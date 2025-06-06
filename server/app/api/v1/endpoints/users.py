@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from typing import List
-from app.schemas.user import UserCreate, UserOut, UserResponse
+from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse
 from app.services.user_service import UserService
 
 router = APIRouter()
@@ -9,7 +9,7 @@ router = APIRouter()
 async def create_user(user: UserCreate):
     return await UserService.create_user(user)
 
-@router.get("/", response_model=UserResponse)
+@router.get("/list", response_model=UserListResponse)
 async def list_users():
     return await UserService.get_all_users()
 

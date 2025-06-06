@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum
 from app.db.session import Base
+from typing import Optional ,List
 import enum
 
 class RoleEnum(str, enum.Enum):
@@ -9,24 +10,52 @@ class RoleEnum(str, enum.Enum):
 # Pydantic schemas
 from pydantic import BaseModel
 
+
+# ------------------ SCHEMAS ------------------
+
 class UserCreate(BaseModel):
     name: str
     email: str
     password_hash: str
-    role: RoleEnum
+    role: str
+
 
 class UserOut(BaseModel):
     id: int
     name: str
     email: str
-    role: RoleEnum
+    role: str
+
+    class Config:
+        from_attributes = True  
+
 
 class UserResponse(BaseModel):
-    users: list[UserOut]
+    user: UserOut
+    message: str
+    success: bool
+    error: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class RegisterUserResponse(BaseModel):
+    user: Optional[UserOut] = None
+    message: str
+    success: bool
+    error: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class UserListResponse(BaseModel):
+    users: List[UserOut]
     message: str
     success: bool
 
-class Config:
-    orm_mode = True
+    class Config:
+        from_attributes = True
 
 

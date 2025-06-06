@@ -6,9 +6,15 @@ from .middlewares.authmiddleware import authenticate_user
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
+origins = [
+    "http://localhost:3000", 
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    # allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
