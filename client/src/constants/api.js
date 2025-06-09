@@ -42,6 +42,15 @@ const api = {
     deleteUser : (id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/users/${id}`)),
 
     updateUser : (id,data) => axiosWrapper(axiosInstance.put(`http://localhost:8000/api/v1/users/${id}`,data)),
+    // categor,brand,model
+    addCategory: (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-category`, data)),
+    addModel : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-model`),data),
+    addBrand : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-brand`),data),
+
+    getCategory: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/category`)),
+    getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/model`)),
+    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/brand`)),
+
 
     getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),

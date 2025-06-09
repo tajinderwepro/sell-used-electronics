@@ -38,3 +38,5 @@ async def update_user(
     print(user_id)
     print(user.model_dump(exclude_unset=True))  
     return await UserService.update_user(user_id, user, db)
+
+

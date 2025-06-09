@@ -12,3 +12,6 @@ class Device(Base):
     condition = Column(String, nullable=False)
     base_price = Column(Float, nullable=False)
     ebay_avg_price = Column(Float, nullable=False)
+
+
+
