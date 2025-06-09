@@ -1,10 +1,13 @@
 import { AuthProvider } from "./context/AuthContext";
+import { ModeProvider } from "./context/ModeContext";
 import AllRoutes from "./routes";
 
 function App() {
   return (
     <AuthProvider>
-        <AllRoutes/>
+      <ModeProvider>
+         <AllRoutes/>
+      </ModeProvider>
     </AuthProvider>
   );
 }

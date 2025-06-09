@@ -3,8 +3,7 @@ import ThemeButton from '../../components/ui/Button';
 import { X } from 'lucide-react';
 import LoadingIndicator from '../LoadingIndicator';
 import Button from '../../components/ui/Button';
-import { COLOR_CLASSES } from '../../constants/theme';
-
+import { useColorClasses } from '../../theme/useColorClasses';
 
 const Popup = ({
   open,
@@ -24,7 +23,7 @@ const Popup = ({
 }) => {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(200); // Default height
-
+  const COLOR_CLASSES = useColorClasses();
   useEffect(() => {
     if (contentRef.current) {
       setContentHeight(contentRef.current.offsetHeight);

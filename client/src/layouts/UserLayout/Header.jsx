@@ -9,46 +9,49 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import ModeToggleButton from "../../components/common/ModeToggleButton";
+import { useColorClasses } from "../../theme/useColorClasses";
+import { FONT_SIZES, FONT_WEIGHTS } from "../../constants/theme";
 
 export default function Header({ setMobileMenuOpen }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
-
+  const COLOR_CLASSES = useColorClasses();
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
   return (
-    <header className="h-16 flex items-center justify-between bg-white px-4">
-      <div>
-        <button
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="md:hidden text-gray-600 hover:text-indigo-600"
-        >
-            <Menu className="h-6 w-6" />
-        </button>
-      </div>
-
+    <header className={`h-16 flex items-center justify-between bg-white py-4 px-4 gap-2 ${COLOR_CLASSES.bgWhite} `}>
+      <button
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          className="md:hidden text-gray-600 hover:text-indigo-600"
+      >
+          <Menu className="h-5 w-5" />
+      </button>
+      <Link to="/"  className={`${FONT_SIZES['xl']} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} `}>
+        SellUsedElectronics
+      </Link>
       {/* Right Side */}
       <div className="flex justify-end items-center gap-4 relative">
         <button className="relative text-gray-600 hover:text-indigo-600">
-          <Bell className="h-6 w-6" />
+          <Bell className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
         </button>
-
+          <ModeToggleButton/>
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center gap-2 text-gray-600 hover:text-indigo-700"
           >
-            <UserCircle className="h-8 w-8" />
+            <UserCircle className="h-6 w-6" />
           </button>
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow z-10">
               <Link
-                to="/admin/dashboard"
+                to="/dashboard"
                 className="flex items-center px-4 py-2 text-sm hover:bg-gray-100"
                 onClick={() => setDropdownOpen(false)}
               >

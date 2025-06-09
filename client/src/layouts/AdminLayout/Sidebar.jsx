@@ -10,11 +10,11 @@ import Heading from "../../components/ui/Heading";
 import NavLinkItem from "../../components/ui/NavLinkItem";
 
 import {
-  COLOR_CLASSES,
   FONT_FAMILIES,
   FONT_SIZES,
   FONT_WEIGHTS,
 } from "../../constants/theme"; // adjust path if needed
+import { useColorClasses } from "../../theme/useColorClasses";
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
@@ -25,6 +25,8 @@ const menuItems = [
 ];
 
 export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
+  const COLOR_CLASSES = useColorClasses();
+
   return (
     <>
       {/* Sidebar */}

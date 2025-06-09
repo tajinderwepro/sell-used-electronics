@@ -1,4 +1,5 @@
-import { COLOR_CLASSES, FONT_SIZES, FONT_WEIGHTS } from "../../constants/theme";
+import { FONT_SIZES, FONT_WEIGHTS } from "../../constants/theme";
+import { useColorClasses } from "../../theme/useColorClasses";
 
 // components/ui/Button.jsx
 export default function Button({
@@ -10,7 +11,7 @@ export default function Button({
   icon,
   ...props
 }) {
-  // Button variants and their styles
+  const COLOR_CLASSES = useColorClasses();
   const buttonStyles = {
     primary: `${COLOR_CLASSES.primaryBg} ${COLOR_CLASSES.primaryBgHover} text-white`,
     secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800',
@@ -22,7 +23,7 @@ export default function Button({
 
   return (
     <button
-      className={`${buttonClass} ${FONT_WEIGHTS.semibold} ${FONT_SIZES.lg} flex items-center gap-1 justify-center w-full py-2 rounded-xl ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      className={`${buttonClass} ${FONT_WEIGHTS.semibold} ${FONT_SIZES.lg} flex items-center gap-1 justify-center py-2 rounded-md ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
       disabled={disabled}
       {...props}
       onClick={onClick}

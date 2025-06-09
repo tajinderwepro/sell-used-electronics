@@ -1,6 +1,9 @@
-import { COLOR_CLASSES, FONT_SIZES, FONT_WEIGHTS } from '../../constants/theme';
+import {  FONT_SIZES, FONT_WEIGHTS } from '../../constants/theme';
+import { useColorClasses } from '../../theme/useColorClasses';
 
 export default function Modal({ title, children, onClose }) {
+    const COLOR_CLASSES = useColorClasses();
+  
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"

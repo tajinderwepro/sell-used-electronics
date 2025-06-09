@@ -7,9 +7,12 @@ import InputField from "../components/ui/InputField";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import Heading from "../components/ui/Heading";
 
-import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+import { FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+import { useColorClasses } from "../theme/useColorClasses";
 
 export default function Login() {
+  const COLOR_CLASSES = useColorClasses();
+
   const [form, setForm] = useState({ email: "", password: "", role: "user" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -69,6 +72,7 @@ export default function Login() {
 
         <Button
           type="submit"
+          className="w-full"
         >
           Login
         </Button>

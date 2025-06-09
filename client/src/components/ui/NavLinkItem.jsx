@@ -1,15 +1,16 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  COLOR_CLASSES,
   FONT_SIZES,
   FONT_WEIGHTS,
 } from "../../constants/theme";
+import { useColorClasses } from "../../theme/useColorClasses";
 
 export default function NavLinkItem({ name, icon: Icon, path }) {
   const { pathname } = useLocation();
   const isActive = pathname.startsWith(path);
-
+  const COLOR_CLASSES = useColorClasses();
+  
   return (
     <Link
       to={path}

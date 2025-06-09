@@ -3,7 +3,8 @@ import LoadingIndicator from '../LoadingIndicator';
 import SearchInput from '../../components/ui/SearchInput';
 import Button from '../../components/ui/Button';
 import { Plus } from 'lucide-react';
-import ThemeButton from '../../components/ui/Button';
+import { useColorClasses } from '../../theme/useColorClasses';
+import { FONT_FAMILIES } from '../../constants/theme';
 
 const CommonTable = ({
   columns,
@@ -12,11 +13,11 @@ const CommonTable = ({
   searchable = true,
   pageSize = 10,
   title = '',
-  onClick=()=>{},
-
+  onClick = () => {},
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
+  const COLOR_CLASSES = useColorClasses();
 
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
@@ -39,62 +40,56 @@ const CommonTable = ({
 
   const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
-  console.log(pageSize,columns,'handleOpen')
-  return (
-    <div className="w-full font-sans">
-        
-      {/* Title & Search Bar */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-        
-        {/* <ThemeButton label={"Create"} icon={<Plus size={18}/>} onClick={onClick} ></ThemeButton> */}
-        <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18}/>}>Create</Button>
 
+  return (
+    <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}>
+      {/* Title & Button */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+        <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
+        <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18} />}>Create</Button>
       </div>
 
-      {/* Table Container */}
-      <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-md">
+      {/* Table & Search */}
+      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border rounded-lg ${COLOR_CLASSES.shadowMd}`}>
         <LoadingIndicator isLoading={loading} />
-        <div className="flex flex-col md:flex-row justify-end items-center items-center gap-2 m-3">
-        
-            {searchable && (
+        <div className="flex flex-col md:flex-row justify-end items-center gap-2 m-3">
+          {searchable && (
             <SearchInput
-                value={searchTerm}
-                onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setPage(1);
-                }}
-            />      
-            )}
-       
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+            />
+          )}
         </div>
-        
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50 sticky top-0 z-10">
+
+        <table className="min-w-full divide-y text-sm">
+          <thead className={`${COLOR_CLASSES.primaryLightBg} sticky top-0 z-10`}>
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                  className={`px-6 py-5 text-left text-xs font-semibold uppercase tracking-wider ${COLOR_CLASSES.textSecondary}`}
                 >
                   {col.label}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
                   className={`${
-                    rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                  } hover:bg-indigo-50 transition-colors`}
+                    rowIndex % 2 === 0 ? COLOR_CLASSES.bgWhite : COLOR_CLASSES.bgWhite
+                  } hover:${COLOR_CLASSES.primaryLightBg} transition-colors`}
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="px-6 py-4 whitespace-nowrap text-gray-900 truncate max-w-xs"
+                      className={`px-6 py-4 whitespace-nowrap truncate max-w-xs ${COLOR_CLASSES.textPrimary}`}
                     >
                       {col.render ? col.render(row) : row[col.key]}
                     </td>
@@ -105,7 +100,7 @@ const CommonTable = ({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="text-center py-4 text-gray-500"
+                  className={`text-center py-4 ${COLOR_CLASSES.textSecondary}`}
                 >
                   No data available.
                 </td>
@@ -115,23 +110,23 @@ const CommonTable = ({
         </table>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-4 text-sm mr-3">
           <button
             onClick={handlePrev}
             disabled={page === 1}
-            className="px-4 py-2 bg-gray-200 text-gray-700 mr-3 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={`px-4 py-2 mr-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
           >
             Previous
           </button>
-          <span className="text-gray-600 mr-3">
+          <span className={`${COLOR_CLASSES.textSecondary} mr-3`}>
             Page {page} of {totalPages}
           </span>
           <button
             onClick={handleNext}
             disabled={page === totalPages}
-            className="px-4 py-2 bg-gray-200 text-gray-700  rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={`px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
           >
             Next
           </button>

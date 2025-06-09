@@ -87,7 +87,7 @@ export default function Devices() {
   ];
 
   return (
-    <div className="min-h-screen p-6 bg-white rounded shadow">
+    <div className="min-h-screen p-6">
       <CommonTable
         columns={columns}
         data={devices}

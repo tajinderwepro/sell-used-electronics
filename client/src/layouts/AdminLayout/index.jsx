@@ -4,15 +4,16 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 import {
-  COLOR_CLASSES,
   FONT_FAMILIES,
   FONT_SIZES,
   FONT_WEIGHTS,
   // You can import more if needed
 } from "../../constants/theme"; // adjust path if needed
+import { useColorClasses } from "../../theme/useColorClasses";
 
 export default function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const COLOR_CLASSES = useColorClasses();
 
   return (
     <div className={`flex min-h-screen ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}>

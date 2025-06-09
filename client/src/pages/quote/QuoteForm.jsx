@@ -4,7 +4,8 @@ import StepModel from './steps/StepModel';
 import StepCondition from './steps/StepCondition';
 import StepPrice from './steps/StepPrice';
 import Button from '../../components/ui/Button';
-import { COLOR_CLASSES, FONT_WEIGHTS } from '../../constants/theme';
+import { FONT_WEIGHTS } from '../../constants/theme';
+import { useColorClasses } from '../../theme/useColorClasses';
 
 const data = {
   Mobiles: {
@@ -22,6 +23,7 @@ const data = {
 };
 
 export default function QuoteForm({ onClose }) {
+  const COLOR_CLASSES = useColorClasses();
   const [step, setStep] = useState(0);
   const [category, setCategory] = useState('');
   const [model, setModel] = useState('');

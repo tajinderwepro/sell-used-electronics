@@ -6,9 +6,11 @@ import Button from "../components/ui/Button";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import { useNavigate } from "react-router-dom";
 
-import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+import {FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+import { useColorClasses } from "../theme/useColorClasses";
 
 export default function Register() {
+  const COLOR_CLASSES = useColorClasses();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -132,6 +134,8 @@ export default function Register() {
 
         <Button
           type="submit"
+          className="w-full"
+
         >
           Register
         </Button>

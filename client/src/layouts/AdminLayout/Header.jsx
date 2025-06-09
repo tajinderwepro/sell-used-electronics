@@ -11,15 +11,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 import {
-  COLOR_CLASSES,
   FONT_SIZES,
   FONT_WEIGHTS,
 } from "../../constants/theme";
-
+import { useColorClasses } from "../../theme/useColorClasses";
+import ModeToggleButton from "../../components/common/ModeToggleButton";
 export default function Header({ setMobileMenuOpen }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const COLOR_CLASSES = useColorClasses();
 
   const handleLogout = async () => {
     await logout();
@@ -44,39 +45,40 @@ export default function Header({ setMobileMenuOpen }) {
         <button
           className={`relative text-gray-600 hover:${COLOR_CLASSES.primary}`}
         >
-          <Bell className="h-6 w-6" />
+          <Bell className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
         </button>
+        <ModeToggleButton />
 
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className={`flex items-center gap-2 text-gray-600 hover:${COLOR_CLASSES.primaryDark}`}
           >
-            <UserCircle className="h-8 w-8" />
+            <UserCircle className="h-6 w-6" />
           </button>
 
           {dropdownOpen && (
             <div
-              className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border rounded shadow z-10`}
+              className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.primary} border rounded shadow z-10`}
             >
               <Link
                 to="/admin/dashboard"
-                className={`flex items-center px-4 py-2 text-sm hover:bg-gray-100 ${FONT_SIZES.sm}`}
+                className={`flex items-center px-4 py-2 text-sm hover:bg-gray-100 ${COLOR_CLASSES.textHoverPrimary} ${FONT_SIZES.sm}`}
                 onClick={() => setDropdownOpen(false)}
               >
                 <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
               </Link>
               <Link
                 to="/admin/settings"
-                className={`flex items-center px-4 py-2 text-sm hover:bg-gray-100 ${FONT_SIZES.sm}`}
+                className={`flex items-center px-4 py-2 text-sm hover:bg-gray-100 ${COLOR_CLASSES.textHoverPrimary} ${FONT_SIZES.sm}`}
                 onClick={() => setDropdownOpen(false)}
               >
                 <Settings className="h-4 w-4 mr-2" /> Settings
               </Link>
               <button
                 onClick={handleLogout}
-                className={`flex items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-100 ${FONT_SIZES.sm}`}
+                className={`flex items-center w-full px-4 py-2 text-sm text-left hover:bg-gray-100 ${COLOR_CLASSES.textHoverPrimary} ${FONT_SIZES.sm}`}
               >
                 <LogOut className="h-4 w-4 mr-2" /> Logout
               </button>

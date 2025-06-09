@@ -8,17 +8,18 @@ import ErrorMessage from "../../components/ui/ErrorMessage";
 import Heading from "../../components/ui/Heading";
 
 import {
-  COLOR_CLASSES,
   FONT_FAMILIES,
   FONT_SIZES,
   FONT_WEIGHTS,
 } from "../../constants/theme";
+import { useColorClasses } from "../../theme/useColorClasses";
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
   const { login } = useAuth();
+  const COLOR_CLASSES = useColorClasses();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -74,6 +75,7 @@ export default function AdminLogin() {
 
         <Button
           type="submit"
+          className="w-full"
         >
           Sign In
         </Button>
