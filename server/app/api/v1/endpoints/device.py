@@ -1,13 +1,47 @@
 # app/routes/auth_routes.py
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.device import DeviceListResponse
+from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate
 from app.services.device_service import DeviceService
 
 router = APIRouter()
 
-@router.get("/", response_model=DeviceListResponse)
-async def get_list(data : DeviceListResponse, db: AsyncSession = Depends(get_db)):
-    return await DeviceService.get_devices(data, db)
+@router.get("/list", response_model=DeviceListResponse)
+async def get_list(db: AsyncSession = Depends(get_db)):
+    devices = await DeviceService.get_all_devices(db)
+    return DeviceListResponse(
+        data=devices,
+        message="All devices fetched successfully",
+        success=True
+    )
+
+@router.post("/", response_model=DeviceOut)
+async def create_device(device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
+    return await DeviceService.create_device(device_in, db)
+
+@router.delete("/{device_id}", status_code=status.HTTP_200_OK)
+async def delete_device(device_id: int, db: AsyncSession = Depends(get_db)):
+    success = await DeviceService.delete_device(device_id, db)
+    if not success:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return {"message": "Device deleted successfully", "success": True}
+
+@router.get("/{device_id}", response_model=DeviceOut)
+async def get_device(device_id: int, db: AsyncSession = Depends(get_db)):
+    device = await DeviceService.get_device_by_id(device_id, db)
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return device
+
+@router.put("/{device_id}", response_model=DeviceOut)
+async def update_device(
+    device_id: int,
+    device_in: DeviceUpdate,
+    db: AsyncSession = Depends(get_db),
+):
+    updated_device = await DeviceService.update_device(device_id, device_in, db)
+    if not updated_device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return updated_device

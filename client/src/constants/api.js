@@ -16,7 +16,9 @@ const api = {
   admin: {
     login: (data) => axiosWrapper(axiosInstance.post('http://localhost:8000/api/v1/auth/login', data)),
     getUsers : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/users/list')),
-    getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices')),
+    getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
+    deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),
+    // getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     },
 
 };
