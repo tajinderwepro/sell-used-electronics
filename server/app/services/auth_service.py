@@ -11,8 +11,9 @@ from app.models.user import User
 from app.schemas.auth import LoginRequest, TokenResponse
 from app.schemas.user import UserCreate,RegisterUserResponse,UserResponse,UserOut
 import os
+from app.core.config import settings  
 
-SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key")
+SECRET_KEY = settings.JWT_SECRET
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -27,8 +28,9 @@ class AuthService:
     def create_access_token(data: dict) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        to_encode.update({"exp": expire})
+        to_encode.update({"exp": expire})  # Keep 'sub' from input data
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
     @staticmethod
     async def login_user(data: LoginRequest, db: AsyncSession) -> TokenResponse:
@@ -69,3 +71,16 @@ class AuthService:
                 success=False,
                 error=str(e)
             )
+
+    @staticmethod
+    async def get_me(user_id: int, db: AsyncSession) -> UserOut:
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        return UserOut.from_orm(user)

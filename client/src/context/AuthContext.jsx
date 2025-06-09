@@ -40,7 +40,7 @@ useEffect(() => {
         setUserRole(user.role);
         setUser(user);
         localStorage.setItem('userRole', user.role);
-        localStorage.setItem('user', user);
+        localStorage.setItem('user', JSON.stringify(user));
         return user.role;
       }
     } catch (error) {

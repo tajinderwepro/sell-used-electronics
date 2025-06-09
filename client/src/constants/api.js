@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Create an Axios instance with common headers
 const axiosInstance = axios.create({
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
@@ -8,6 +7,28 @@ const axiosInstance = axios.create({
     'Accept': 'application/json',
   },
 });
+
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => Promise.reject(error));
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && [403].includes(error.response.status)) {
+      console.warn('Unauthorized or expired token. Logging out...');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      window.location.href = '/login';  
+    }
+    return Promise.reject(error);
+  }
+);
 
 const axiosWrapper = (apiCall) =>
   apiCall.then(res => res.data).catch(err => Promise.reject(err));
@@ -27,7 +48,9 @@ const api = {
     // getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     getOrders : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/orders/list')),
     },
-
+  auth :{
+    me : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/auth/me`)),
+  }
 };
 
 export { api, axiosInstance };
