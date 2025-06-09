@@ -1,7 +1,5 @@
-# app/services/user_service.py
-
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse,UserOut
+from app.schemas.user import UserCreate, UserResponse, UserOut, UserUpdate
 from app.db.session import async_session
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,8 +25,13 @@ class UserService:
         async with async_session() as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalars().first()
-            return user  # FastAPI will automatically convert to UserOut, excluding password_hash
-
+            if user:
+                return {
+                    "user": UserOut.from_orm(user),
+                    "message": "User fetched successfully",
+                    "success": True
+                }
+            return {"message": "User not found", "success": False}
 
     @staticmethod
     async def delete_user(user_id: int):
@@ -38,8 +41,28 @@ class UserService:
             if user:
                 await session.delete(user)
                 await session.commit()
-                return {"message": "User deleted", "success": True}
+                return {"message": "User deleted successfully", "success": True}
             return {"message": "User not found", "success": False}
 
+    @staticmethod
+    async def update_user(user_id: int, user_in: UserUpdate, db: AsyncSession):
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
 
-            
+        if not user:
+            return {"message": "User not found", "success": False}
+
+        update_data = user_in.model_dump(exclude_unset=True)
+
+        for field, value in update_data.items():
+            setattr(user, field, value)
+
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+
+        return {
+            "user": UserOut.from_orm(user),
+            "message": "User updated successfully",
+            "success": True
+        }

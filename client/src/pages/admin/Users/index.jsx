@@ -114,28 +114,34 @@ export default function Users() {
   };
 
   const handleCreateUser = async () => {
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+  const newErrors = validate();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  try {
+    setLoading(true);
+    let payload = { ...form };
+
+    // Exclude passwords on update
+    if (popupState.isEdit) {
+      delete payload.password_hash;
+      delete payload.confirmPassword;
+      await api.admin.updateUser(popupState.id, payload);
+    } else {
+      await api.admin.createUser(payload);
     }
 
-    try {
-      setLoading(true);
-      if (popupState.isEdit && popupState.id) {
-        await api.admin.updateUser(popupState.id, form);
-      } else {
-        await api.admin.createUser(form);
-      }
-      await fetchUsers();
-      handleClose();
-    } catch (err) {
-      console.error(err);
-      setMessage("Failed to submit form.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    await fetchUsers();
+    handleClose();
+  } catch (err) {
+    console.error(err);
+    setMessage("Failed to submit form.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const columns = [
     { key: "id", label: "ID" },
@@ -200,7 +206,9 @@ export default function Users() {
           />
           {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-          <InputField
+          {!popupState.isEdit && 
+
+            <InputField
             id="password_hash"
             name="password_hash"
             type="password"
@@ -208,18 +216,18 @@ export default function Users() {
             value={form.password_hash}
             onChange={handleChange}
           />
-          {errors.password_hash && <p className="text-red-500 text-sm">{errors.password_hash}</p>}
+          }
+          {!popupState.isEdit ? errors.password_hash && <p className="text-red-500 text-sm">{errors.password_hash}</p>:''}
 
-          <InputField
+          {!popupState.isEdit && <InputField
             id="confirmPassword"
             name="confirmPassword"
             type="password"
             placeholder="Confirm password"
             value={form.confirmPassword}
             onChange={handleChange}
-          />
-          {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-
+          />}
+          {!popupState.isEdit ? errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>:''}
           <SelectField
             id="role"
             value={form.role}
