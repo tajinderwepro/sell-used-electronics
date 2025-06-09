@@ -8,9 +8,9 @@ export default function Orders() {
   const fetchUsers = async ( ) => {
     try {
       setLoading(true);
-      const response=await api.admin.getUsers();
-      console.log(response.users,'response')
-      setUsers(response.users)
+      const response=await api.admin.getOrders();
+      console.log(response,'response')
+      setUsers(response.data)
       // toast.success("Lead deleted successfully!");
     
     } catch (err) {
@@ -50,7 +50,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen">
-      <CommonTable columns={columns}  data={[]} loading={loading}  pageSize={10} title={"Orders List"}/>
+      <CommonTable columns={columns}  data={users} loading={loading}  pageSize={10} title={"Orders List"}/>
     </div>
   );
 }

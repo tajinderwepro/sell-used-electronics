@@ -45,3 +45,4 @@ async def update_device(
     if not updated_device:
         raise HTTPException(status_code=404, detail="Device not found")
     return updated_device
+
