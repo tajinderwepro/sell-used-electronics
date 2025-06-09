@@ -12,6 +12,7 @@ from app.schemas.auth import LoginRequest, TokenResponse
 from app.schemas.user import UserCreate,RegisterUserResponse,UserResponse,UserOut
 import os
 from app.core.config import settings  
+from sqlalchemy import and_
 
 SECRET_KEY = settings.JWT_SECRET
 ALGORITHM = "HS256"
@@ -31,18 +32,28 @@ class AuthService:
         to_encode.update({"exp": expire})  # Keep 'sub' from input data
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-
     @staticmethod
     async def login_user(data: LoginRequest, db: AsyncSession) -> TokenResponse:
-        result = await db.execute(select(User).where(User.email == data.email))
+        result = await db.execute(
+            select(User).where(
+                and_(
+                    User.email == data.email,
+                    User.role == data.role
+                )
+            )
+        )
         user = result.scalars().first()
 
         if not user or not AuthService.verify_password(data.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
         access_token = AuthService.create_access_token(data={"sub": str(user.id)})
-        return TokenResponse(access_token=access_token, token_type="bearer",user=user)
 
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user=user  # Ensure response schema hides password
+        )
     @staticmethod
     async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:
         try:
