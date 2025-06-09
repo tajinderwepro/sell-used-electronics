@@ -27,9 +27,8 @@ class UserService:
         async with async_session() as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalars().first()
-            if user:
-                return UserResponse.from_orm(user)
-            return None
+            return user  # FastAPI will automatically convert to UserOut, excluding password_hash
+
 
     @staticmethod
     async def delete_user(user_id: int):

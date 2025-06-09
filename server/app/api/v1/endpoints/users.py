@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter,Depends, HTTPException, status
 from typing import List
+from app.db.session import get_db
 from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse
 from app.services.user_service import UserService
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
@@ -13,16 +15,16 @@ async def create_user(user: UserCreate):
 async def list_users():
     return await UserService.get_all_users()
 
-@router.get("/{user_id}", response_model=UserOut)
-async def get_user(user_id: int):
+@router.get("/{user_id}")
+async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
     user = await UserService.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.delete("/users/{user_id}", response_model=UserOut)
-def delete(user_id: int):
-    user = UserService.delete_user(db, user_id)
+@router.delete("/{user_id}")
+async def delete(user_id: int, db: AsyncSession = Depends(get_db)):
+    user = await UserService.delete_user(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user

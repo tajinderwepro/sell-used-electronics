@@ -1,13 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import LoadingIndicator from '../LoadingIndicator';
+import SearchInput from '../../components/ui/SearchInput';
+import Button from '../../components/ui/Button';
+import { Plus } from 'lucide-react';
+import ThemeButton from '../../components/ui/Button';
 
 const CommonTable = ({
-  columns = [],
+  columns,
   data = [],
   loading = false,
   searchable = true,
   pageSize = 10,
-  title = ''
+  title = '',
+  onClick=()=>{},
+
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -33,29 +39,36 @@ const CommonTable = ({
 
   const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
-
+  console.log(pageSize,columns,'handleOpen')
   return (
     <div className="w-full font-sans">
+        
       {/* Title & Search Bar */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
         <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-        {searchable && (
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setPage(1);
-            }}
-          />
-        )}
+        
+        {/* <ThemeButton label={"Create"} icon={<Plus size={18}/>} onClick={onClick} ></ThemeButton> */}
+        <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18}/>}>Create</Button>
+
       </div>
 
       {/* Table Container */}
       <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-md">
         <LoadingIndicator isLoading={loading} />
+        <div className="flex flex-col md:flex-row justify-end items-center items-center gap-2 m-3">
+        
+            {searchable && (
+            <SearchInput
+                value={searchTerm}
+                onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                }}
+            />      
+            )}
+       
+        </div>
+        
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>

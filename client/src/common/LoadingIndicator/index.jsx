@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './style.css';
-
 const LoadingIndicator = ({ isLoading, fullScreen }) => (
   <div
-    className={'loading-indicator' + (fullScreen ? ' fullscreen' : '')}
-    style={{
-      display: isLoading ? 'flex' : 'none',
-      backgroundColor: "#a0a0a04a"
-    }}
+    className={`flex items-center justify-center bg-white bg-opacity-50 absolute inset-0 z-[10000] ${
+      fullScreen ? 'fixed' : ''
+    }`}
+    style={{ display: isLoading ? 'flex' : 'none' }}
   >
-    <i className="fas fa-circle-notch fa-spin fa-3x" />
+    {/* Spinner */}
+    <div className="w-12 h-12 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
   </div>
 );
 

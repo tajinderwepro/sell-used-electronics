@@ -6,6 +6,8 @@ export default function Button({
   className = '',
   disabled = false,
   variant = 'primary',
+  onClick,
+  icon,
   ...props
 }) {
   // Button variants and their styles
@@ -20,11 +22,17 @@ export default function Button({
 
   return (
     <button
-      className={`${buttonClass} ${FONT_WEIGHTS.semibold} ${FONT_SIZES.lg} w-full py-2 rounded-xl ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      className={`${buttonClass} ${FONT_WEIGHTS.semibold} ${FONT_SIZES.lg} flex items-center gap-1 justify-center w-full py-2 rounded-xl ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
       disabled={disabled}
       {...props}
+      onClick={onClick}
     >
-      {children}
+      <span
+        className="flex items-center space-x-2 
+          'opacity-100"
+      >
+      {icon  && <span>{icon}</span>}</span>
+      <span>{children}</span>
     </button>
   );
 }
