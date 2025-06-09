@@ -3,6 +3,7 @@ export const COLOR_CLASSES = {
   primaryDark: "text-indigo-700",
   primaryLightBg: "bg-indigo-50",
   primaryBg: "bg-indigo-600",
+  primaryRing: "ring-indigo-300",
   primaryBgHover: "hover:bg-indigo-700",
 
   secondary: "text-cyan-500",
@@ -19,7 +20,7 @@ export const COLOR_CLASSES = {
   borderGray100: "border-gray-100",
   borderGray200: "border-gray-200",
 
-  bgWhite: "bg-white",
+  bgWhite: "bg-white-300",
   bgGradient: "bg-gradient-to-br from-white via-gray-100 to-slate-100",
 
   shadowMd: "shadow-md",

@@ -1,44 +1,16 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import QouteForm from "./QouteForm";
-import Modal from "./modal/Modal";
 import Heading from "../components/ui/Heading";
 import { COLOR_CLASSES, FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
+import QuoteForm from "./quote/QuoteForm";
+import HomeLayout from "../layouts/HomeLayout";
+import Modal from "../components/common/Modal";
 export default function Home() {
     const [showQuoteForm, setShowQuoteForm] = useState(false);
   return (
-    <div
-      className={`${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.textPrimary} ${FONT_FAMILIES.primary} min-h-screen flex flex-col`}
-    >
-      {/* Header */}
-      <header
-        className={`w-full border-b ${COLOR_CLASSES.borderGray200} shadow-sm ${COLOR_CLASSES.bgWhite} backdrop-blur-md`}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1
-            className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} `}
-          >
-            SellUsedElectronics
-          </h1>
-          <nav className="space-x-6">
-            <Link
-              to="/login"
-              className={`${FONT_SIZES.sm} ${FONT_WEIGHTS.medium} ${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.textHoverPrimary} transition-colors duration-200`}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className={`${FONT_SIZES.sm} ${FONT_WEIGHTS.medium} ${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.textHoverPrimary} transition-colors duration-200`}
-            >
-              Register
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      {/* Hero Section */}
+    <>
+    <HomeLayout>
       <main className="flex-grow flex flex-col items-center justify-center text-center px-4 py-20">
         <Heading
           className={`${FONT_SIZES["5xl"]} md:${FONT_SIZES["6xl"]} ${FONT_WEIGHTS.extrabold} mb-6 ${COLOR_CLASSES.primary}`}
@@ -95,18 +67,12 @@ export default function Home() {
           ))}
         </section>
       </main>
-
-      {/* Footer */}
-      <footer
-        className={`w-full text-center text-sm py-6 border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.textSecondary}`}
-      >
-        © {new Date().getFullYear()} ElectroTrade. All rights reserved.
-      </footer>
-       {showQuoteForm && (
-        <Modal onClose={() => setShowQuoteForm(false)}>
-          <QouteForm onClose={() => setShowQuoteForm(false)} />
-        </Modal>
+      {showQuoteForm && (
+       <Modal onClose={() => setShowQuoteForm(false)} title={"Get a Quote"}>
+         <QuoteForm onClose={() => setShowQuoteForm(false)} />
+       </Modal>
       )}
-    </div>
+    </HomeLayout>
+    </>
   );
 }

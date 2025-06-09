@@ -14,6 +14,7 @@ import Users from "../pages/admin/Users";
 import Orders from "../pages/admin/Orders";
 import Quotes from "../pages/admin/Quotes";
 import Dashboard from "../pages/users/Dashboard";
+import HomeLayout from "../layouts/HomeLayout";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
@@ -24,11 +25,11 @@ function AllRoutes() {
     <Router>
       <Routes>
         {/* Public Routes */}
+      
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-
+        <Route path="/login" element={<HomeLayout><Login /></HomeLayout>} />
+        <Route path="/register" element={<HomeLayout><Register /></HomeLayout>} />
+        <Route path="/admin/login" element={<HomeLayout><AdminLogin /></HomeLayout>} />
         {/* Admin Protected Routes */}
         <Route element={<AdminRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
