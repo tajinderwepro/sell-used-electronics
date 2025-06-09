@@ -83,12 +83,12 @@ export default function QuoteForm({ onClose }) {
               </div>
             </div>
           ))}
-          <div className="absolute top-4 left-0 w-full h-1 bg-gray-200 rounded">
-            <div
-              className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
-              style={{ width: `${(step / 3) * 100}%` }}
-            />
-          </div>
+         <div className="absolute top-4 left-[12.5%] w-[75%] h-1 bg-gray-200 rounded">
+          <div
+            className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
+            style={{ width: `${(step / 3) * 100}%` }} 
+          />
+        </div>
         </div>
       </div>
 
