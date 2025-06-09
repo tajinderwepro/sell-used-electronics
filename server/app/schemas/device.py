@@ -43,4 +43,14 @@ class DeviceUpdate(BaseModel):
     class Config:
         orm_mode = True
 
+class CategoryCreate(BaseModel):
+    category: str
 
+class BrandCreate(BaseModel):
+    category: str
+    brand: str
+
+class ModelCreate(BaseModel):
+    category: str
+    brand: str
+    model: str
