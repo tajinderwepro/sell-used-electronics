@@ -45,7 +45,6 @@ class AuthService:
     async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:
         try:
             hashed_pw = pwd_context.hash(data.password_hash)
-           
             db_user = User(
                 email=data.email,
                 name=data.name,

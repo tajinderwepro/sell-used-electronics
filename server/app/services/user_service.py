@@ -40,3 +40,6 @@ class UserService:
                 await session.commit()
                 return {"message": "User deleted", "success": True}
             return {"message": "User not found", "success": False}
+
+
+            

@@ -121,6 +121,7 @@ console.log(popupState,'pop')
         columns={columns}
         data={users}
         loading={loading}
+        searchable={true}
         pageSize={10}
         title={"Users List"}
         handleOpen={handleOpen}
