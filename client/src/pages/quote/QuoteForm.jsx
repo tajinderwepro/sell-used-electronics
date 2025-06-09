@@ -6,6 +6,7 @@ import StepPrice from './steps/StepPrice';
 import Button from '../../components/ui/Button';
 import { FONT_WEIGHTS } from '../../constants/theme';
 import { useColorClasses } from '../../theme/useColorClasses';
+import Stepper from '../../components/common/Stepper';
 
 const data = {
   Mobiles: {
@@ -32,6 +33,7 @@ export default function QuoteForm({ onClose }) {
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
+  const stepConstant = ['Category', 'Model', 'Condition', 'Price'];
 
   const handleSubmit = () => {
     alert(`Submitted: ${category} > ${model} > ${condition} > $${price}`);
@@ -69,22 +71,12 @@ export default function QuoteForm({ onClose }) {
 
   return (
     <div className={`mx-auto ${COLOR_CLASSES.bgWhite} p-10 rounded-2xl w-full max-w-3xl`}>
-      {/* Stepper */}
       <div className="mb-10">
         <div className={`flex justify-between items-center text-sm ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary} relative`}>
-          {['Category', 'Model', 'Condition', 'Price'].map((label, index) => (
-            <div key={label} className="flex-1 text-center z-10">
-              <div
-                className={`w-9 h-9 mx-auto rounded-full flex items-center justify-center ${COLOR_CLASSES.shadowMd} font-bold text-sm transition-all duration-300
-                ${step >= index ? `${COLOR_CLASSES.primaryBg} text-white` : `bg-gray-300 text-gray-800`}`}
-              >
-                {index + 1}
-              </div>
-              <div className={`mt-2 ${step === index ? `${COLOR_CLASSES.primaryDark} ${FONT_WEIGHTS.semibold}` : ''}`}>
-                {label}
-              </div>
-            </div>
-          ))}
+          <Stepper
+            steps={stepConstant}
+            currentStep={step}
+          />
          <div className="absolute top-4 left-[12.5%] w-[75%] h-1 bg-gray-200 rounded">
           <div
             className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
@@ -98,7 +90,7 @@ export default function QuoteForm({ onClose }) {
       <div className="min-h-[140px]">{steps[step]}</div>
 
       {/* Controls */}
-      <div className="pt-10 flex justify-between items-center gap-4">
+      <div className="pt-10 flex justify-center items-center gap-4">
         {step === 0 ? (
           <Button
             type="button"

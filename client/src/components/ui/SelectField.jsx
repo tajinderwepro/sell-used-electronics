@@ -26,7 +26,7 @@ export default function SelectField({
         value={value}
         onChange={onChange}
         required={required}
-        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 ${COLOR_CLASSES.textHoverPrimary} ${COLOR_CLASSES.bgPrimary} placeholder-${COLOR_CLASSES.primaryBgHover}
+        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 ${COLOR_CLASSES.textHoverPrimary} ${COLOR_CLASSES.primaryLightBg} placeholder-${COLOR_CLASSES.primaryBgHover}
                     focus:outline-none focus:ring-2 ${COLOR_CLASSES.primaryRing} focus:ring-${COLOR_CLASSES.primary} focus:border-${COLOR_CLASSES.primary} transition ${className}`}
       >
         <option selected>Select {id}</option>

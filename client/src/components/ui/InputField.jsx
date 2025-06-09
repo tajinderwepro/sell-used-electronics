@@ -17,7 +17,7 @@ export default function InputField({ label, id, type = "text", value, onChange, 
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 ${COLOR_CLASSES.primary} text-${COLOR_CLASSES.primaryBgHover}  placeholder-${COLOR_CLASSES.primaryBgHover}
+        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 ${COLOR_CLASSES.primary} text-${COLOR_CLASSES.primaryBgHover} ${COLOR_CLASSES.bgWhite} placeholder-${COLOR_CLASSES.primaryBgHover}
                   focus:outline-none focus:ring-2 ${COLOR_CLASSES.primaryRing} focus:ring-${COLOR_CLASSES.primaryBg} focus:border-${COLOR_CLASSES.primary}`}
       />
     </div>

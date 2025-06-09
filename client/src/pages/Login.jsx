@@ -35,11 +35,11 @@ export default function Login() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}
+      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}
     >
       <form
         onSubmit={handleLogin}
-        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md`}
+        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-xl p-10 rounded-xl shadow-2xl w-full max-w-md`}
         autoComplete="off"
       >
         <Heading

@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from 'react';
-import ThemeButton from '../../components/ui/Button';
 import { X } from 'lucide-react';
 import LoadingIndicator from '../LoadingIndicator';
 import Button from '../../components/ui/Button';
@@ -22,8 +21,9 @@ const Popup = ({
   width = '600px',
 }) => {
   const contentRef = useRef(null);
-  const [contentHeight, setContentHeight] = useState(200); // Default height
+  const [contentHeight, setContentHeight] = useState(200);
   const COLOR_CLASSES = useColorClasses();
+
   useEffect(() => {
     if (contentRef.current) {
       setContentHeight(contentRef.current.offsetHeight);
@@ -33,30 +33,28 @@ const Popup = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center rounded-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-20"
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent backdrop click from closing (per original logic)
-        }}
+        className="fixed inset-0 bg-black bg-opacity-40"
+        onClick={(e) => e.stopPropagation()}
       />
 
-      {/* Modal Content */}
+      {/* Modal */}
       <div
-        className="bg-gray-100 relative z-50 flex flex-col  rounded-lg"
-        style={{ width: width, maxWidth: '80%' }}
+        className={`relative z-50 flex flex-col rounded-xl ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.shadowMd}`}
+        style={{ width, maxWidth: '90%' }}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 relative">
-          <h6 className={`text-lg font-medium ${COLOR_CLASSES.primary} text-center mx-auto`}>
+        <div className={`px-6 py-4 border-b ${COLOR_CLASSES.borderGray200}`}>
+          <h6 className={`text-lg font-medium text-center ${COLOR_CLASSES.primary}`}>
             {title}
           </h6>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+            className={`absolute top-4 right-4 ${COLOR_CLASSES.textLight} hover:${COLOR_CLASSES.textHoverPrimary}`}
           >
-            <X />
+            <X size={20} />
           </button>
         </div>
 
@@ -76,21 +74,27 @@ const Popup = ({
         {/* Content */}
         <div
           ref={contentRef}
-          className="px-6 py-4 border-y border-gray-200 text-center text-sm text-gray-700 relative"
+          className={`px-6 py-4 border-y text-sm text-center ${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.borderGray100}`}
         >
           {children}
         </div>
 
         {/* Actions */}
-        <div className="flex justify-center gap-2 px-6 py-4">
+        <div className="flex justify-center gap-3 px-6 py-4">
           {isbtnCancel && (
-            <Button className='w-24 text-sm' onClick={onClose} variant="danger">{btnCancel}</Button>  
+            <Button className="w-24 text-sm" onClick={onClose} variant="secondary">
+              {btnCancel}
+            </Button>
           )}
           {isbtnDelete && (
-            <Button className='w-24 text-sm' onClick={onDelete} variant="warning">{btnDelete}</Button> 
+            <Button className="w-24 text-sm" onClick={onDelete} variant="warning">
+              {btnDelete}
+            </Button>
           )}
           {isbtnSubmit && (
-            <Button className='w-24 text-sm' onClick={onSubmit} variant="primary">{btnSubmit}</Button> 
+            <Button className="w-24 text-sm" onClick={onSubmit} variant="primary">
+              {btnSubmit}
+            </Button>
           )}
         </div>
       </div>
@@ -99,7 +103,3 @@ const Popup = ({
 };
 
 export default Popup;
-
-
-
-

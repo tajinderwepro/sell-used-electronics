@@ -14,7 +14,9 @@ export default function Button({
   const COLOR_CLASSES = useColorClasses();
   const buttonStyles = {
     primary: `${COLOR_CLASSES.primaryBg} ${COLOR_CLASSES.primaryBgHover} text-white`,
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800',
+
+    // primary: `${COLOR_CLASSES.primaryDark} ${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primary}`,
+    secondary: `${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.secondaryBgHover} ${COLOR_CLASSES.secondary}`,
     danger: 'bg-red-600 hover:bg-red-700 text-white',
     outline: 'bg-transparent border border-gray-300 text-gray-800 hover:bg-gray-100',
   };

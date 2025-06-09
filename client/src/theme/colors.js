@@ -29,33 +29,32 @@ export const COLOR_CLASSES_LIGHT = {
   shadowMd: "shadow-md",
   shadowLg: "hover:shadow-lg transition-shadow duration-300 ease-in-out",
 };
-
-// 🌙 DARK THEME
 export const COLOR_CLASSES_DARK = {
-  primary: "text-[#93c5fd]",
-  primaryDark: "text-[#dbeafe]",
-  primaryLightBg: "bg-[#1e293b]",
-  primaryBg: "bg-[#1e293b]",
-  primaryBgHover: "hover:bg-[#334155]",
-  primaryRing: "ring-[#1e40af]",
+  primary: "text-[#b6d4fe]",               // Faded pastel blue
+  primaryDark: "text-[#e2ecf9]",           // Almost off-white blue
+  primaryLightBg: "bg-[#202734]",          // Muted dark slate
+  primaryBg: "bg-[#252f3f]",               // Soft dark base
+  primaryBgHover: "hover:bg-[#303a4c]",    // Very mild hover shift
+  primaryRing: "ring-[#5b8cd8]",           // Washed-out blue ring
 
-  secondary: "text-[#cbd5e1]",
-  secondaryDark: "text-[#94a3b8]",
-  secondaryBg: "bg-[#334155]",
-  secondaryBgHover: "hover:bg-[#475569]",
+  secondary: "text-[#bfc9d6]",             // Muted grayish-blue
+  secondaryDark: "text-[#aab4c3]",         // Slightly lighter gray-blue
+  secondaryBg: "bg-[#313b4b]",             // Gentle dark background
+  secondaryBgHover: "hover:bg-[#3e495a]",  // Soft hover
 
-  textPrimary: "text-[#f9fafb]",
-  textSecondary: "text-[#cbd5e1]",
-  textLight: "text-[#94a3b8]",
-  textHoverPrimary: "hover:text-[#93c5fd]",
+  textPrimary: "text-[#d9e1ec]",           // Soft off-white
+  textSecondary: "text-[#a9b4c2]",         // Desaturated blue-grey
+  textLight: "text-[#7c8a99]",             // Light muted text
+  textHoverPrimary: "hover:text-[#c2dcfa]",// Gentle hover blue
 
-  borderPrimary: "border-[#64748b]",
-  borderGray100: "border-[#334155]",
-  borderGray200: "border-[#1e293b]",
+  borderPrimary: "border-[#4c5865]",       // Soft slate border
+  borderGray100: "border-[#3b4654]",       // Light border
+  borderGray200: "border-[#2e3845]",
 
-  bgWhite: "bg-[#0f172a]",
-  bgGradient: "bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#1e293b]",
+  bgWhite: "bg-[#151d27]",                 // Slightly lifted black
+  bgGradient: "bg-gradient-to-br from-[#151d27] via-[#1f2733] to-[#232b38]",
 
-  shadowMd: "shadow shadow-slate-800",
-  shadowLg: "hover:shadow-xl transition-shadow duration-300 ease-in-out",
+  shadowMd: "shadow shadow-slate-900/30",  // Subtle shadow
+  shadowLg: "hover:shadow-xl shadow-slate-800/20 transition-shadow duration-300 ease-in-out",
 };
+

@@ -10,7 +10,7 @@ export default function Modal({ title, children, onClose }) {
       onClick={onClose}
     >
       <div
-        className={`bg-white rounded-lg ${COLOR_CLASSES.shadowMd} p-6 w-full max-w-3xl min-h-[400px] relative`}
+        className={`bg-white rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgWhite} p-6 w-full max-w-3xl min-h-[400px] relative`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
