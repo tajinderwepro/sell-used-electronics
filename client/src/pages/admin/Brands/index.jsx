@@ -55,7 +55,7 @@ export default function Brands() {
     // Replace with actual API call
     const res = await api.admin.getBrand(categoryId);
     console.log(res,"resssssssss")
-    // setBrands(res.brands || []);
+    setBrands(res || []);
     // setBrands(MOBILE_BRANDS);
   };
 
@@ -108,7 +108,7 @@ export default function Brands() {
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("image", form.image);
+    formData.append("file", form.image);
     formData.append("category_id", categoryId);
     setLoading(true);
     try {
