@@ -143,7 +143,7 @@ export default function Categories() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {filteredCategories.map((cat) => (
           <Link
-            to={`/admin/categories/brand/${cat.id}`}
+            to={`/admin/categories/${cat.id}/brand`}
             key={cat.id}
             className="border p-4 rounded shadow bg-white hover:shadow-lg transition"
           >

@@ -45,12 +45,21 @@ const api = {
     // categor,brand,model
     addCategory: (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-category`, data)),
     addModel : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-model`),data),
-    addBrand : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-brand`),data),
+    // addBrand : (data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/brand/add-brand`),data),
+      addBrand: (data) =>
+      axiosWrapper(
+        axiosInstance.post(
+          `http://localhost:8000/api/v1/brand/add-brand`,
+          data,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        )
+      ),
 
-    getCategory: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/category`)),
-    getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/model`)),
-    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/brand`)),
-
+    getCategory: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),
+    getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/model/list`)),
+    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/brand/list`)),
 
     getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),

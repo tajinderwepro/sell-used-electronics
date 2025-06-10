@@ -18,6 +18,7 @@ import GeneralLayout from "../layouts/GeneralLayout";
 import Categories from "../pages/admin/Categories";
 import Brands from "../pages/admin/Brands";
 import Products from "../pages/users/Products";
+import Models from "../pages/admin/Models";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
@@ -41,7 +42,8 @@ function AllRoutes() {
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/quotes" element={<Quotes />} />
           <Route path="/admin/categories" element={<Categories/>} />
-          <Route path="/admin/categories/brand/:categoryId" element={<Brands />} />
+          <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
+          <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />
         </Route>
 
         {/* User Protected Routes */}

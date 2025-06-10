@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.brand import Brand
 from app.schemas.brand import BrandCreate
+from sqlalchemy.orm import selectinload
 from typing import List
 
 class BrandService:
@@ -25,6 +26,36 @@ class BrandService:
         return {"success": True, "message": "Brand added", "brand_id": new_brand.id}
 
     @staticmethod
-    async def get_all_brands(db: AsyncSession) -> List[Brand]:
-        result = await db.execute(select(Brand))
-        return result.scalars().all()
+    async def get_all_brands(db: AsyncSession):
+     result = await db.execute(
+        select(Brand)
+        .options(
+            selectinload(Brand.category),
+            selectinload(Brand.models),
+            selectinload(Brand.media)
+        )
+    )
+    brands = result.scalars().all()
+    
+    # Convert to dict and exclude problematic fields
+    return [
+        {
+            "id": brand.id,
+            "name": brand.name,
+            "media_id": brand.media_id,
+            "category_id": brand.category_id,
+            "category": brand.category,
+            "models": brand.models,
+            "media": [
+                {
+                    "id": media.id,
+                    # Include only non-binary fields from Media
+                    "url": media.url,  # assuming you have a url field
+                    "mediable_type": media.mediable_type,
+                    # Exclude any binary data fields
+                }
+                for media in brand.media
+            ] if brand.media else []
+        }
+        for brand in brands
+    ]

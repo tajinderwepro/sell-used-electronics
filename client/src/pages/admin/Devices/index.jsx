@@ -6,8 +6,11 @@ import InputField from "../../../components/ui/InputField";
 import SelectField from "../../../components/ui/SelectField";
 import api from "../../../constants/api";
 import CustomSelectField from "../../../components/ui/CustomSelectField";
+import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 
-
+const breadcrumbItems = [
+  { label: 'Categories', path: '/admin/categories' },
+];
 
 export default function Devices() {
   const [devices, setDevices] = useState([]);
@@ -21,7 +24,7 @@ export default function Devices() {
     { label: "Apple", value: "apple" },
     { label: "Vivo", value: "vivo" }
   ]);
-   const [models, setModels] = useState([
+  const [models, setModels] = useState([
     { label: "I phon 15", value: "i_phone_15" },
     { label: "Vivo 80X", value: "vivo_80x" }
   ]);
@@ -132,17 +135,17 @@ export default function Devices() {
   // };
 
   const handleChange = (e) => {
-  const { name, value } = e.target;
-  setForm(prev => ({
-    ...prev,
-    [name]: value
-  }));
-  // Clear any existing errors for this field
-  setErrors(prev => ({
-    ...prev,
-    [name]: ''
-  }));
-};
+    const { name, value } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear any existing errors for this field
+    setErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+  };
 
   const handleCreateOrUpdate = async () => {
     const validationErrors = validate();
@@ -191,9 +194,10 @@ export default function Devices() {
       ),
     },
   ];
-  console.log(form,'form')
+  console.log(form, 'form')
   return (
     <div className="min-h-screen">
+      <CustomBreadcrumbs items={breadcrumbItems} separator=">" />
       <CommonTable
         columns={columns}
         data={devices}
@@ -215,7 +219,7 @@ export default function Devices() {
         loading={loading}
       >
         <form className="space-y-4">
-         <CustomSelectField
+          <CustomSelectField
             label="Category"
             id="category"
             value={form.category}
@@ -226,7 +230,7 @@ export default function Devices() {
           />
           {/* <InputField id="category" name="category" placeholder="Category" value={form.category} onChange={handleChange} /> */}
           {errors.category && <p className="text-red-500 text-sm text-left">{errors.category}</p>}
-           <CustomSelectField
+          <CustomSelectField
             label="Brand"
             id="brand"
             value={form.brand}
@@ -237,7 +241,7 @@ export default function Devices() {
           />
           {/* <InputField id="brand" name="brand" placeholder="Brand" value={form.brand} onChange={handleChange} /> */}
           {errors.brand && <p className="text-red-500 text-sm  text-left">{errors.brand}</p>}
-          
+
           <CustomSelectField
             label="Model"
             id="model"

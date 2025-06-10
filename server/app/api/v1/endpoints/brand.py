@@ -11,6 +11,6 @@ router = APIRouter()
 async def add_brand(payload: BrandCreate, db: AsyncSession = Depends(get_db)):
     return await BrandService.add_brand(payload, db)
 
-@router.get("/brands", response_model=List[BrandOut])
+@router.get("/list", response_model=List[BrandOut])
 async def get_brands(db: AsyncSession = Depends(get_db)):
     return await BrandService.get_all_brands(db)

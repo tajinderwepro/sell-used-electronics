@@ -11,6 +11,6 @@ router = APIRouter()
 async def add_model(payload: ModelCreate, db: AsyncSession = Depends(get_db)):
     return await ModelService.add_model(payload, db)
 
-@router.get("/models", response_model=List[ModelOut])
+@router.get("/list", response_model=List[ModelOut])
 async def get_models(db: AsyncSession = Depends(get_db)):
     return await ModelService.get_all_models(db)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowRight, ChevronRight, Plus } from "lucide-react";
 import SearchInput from "../../../components/ui/SearchInput";
 import Heading from "../../../components/ui/Heading";
 import InputField from "../../../components/ui/InputField";
@@ -9,6 +9,7 @@ import api from "../../../constants/api";
 import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import { COLOR_CLASSES_DARK } from "../../../theme/colors";
 import Button from "../../../components/ui/Button";
+import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 
 export default function Brands() {
   const { categoryId } = useParams();
@@ -20,6 +21,12 @@ export default function Brands() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const {navigate} = useNavigate();
+
+   const breadcrumbItems = [
+    { label: 'Device', path: '/admin/categories' },
+    { label: 'Brands', path: `/admin/categories/${categoryId}/brand` }, 
+  ];
 
   const MOBILE_BRANDS = [
     { id: 1, name: "Apple", image_url: "/apple.png" },
@@ -46,9 +53,14 @@ export default function Brands() {
 
   const fetchBrands = async () => {
     // Replace with actual API call
-    // const res = await api.admin.getBrands(categoryId);
+    const res = await api.admin.getBrand();
+    console.log(res,"resssssssss")
     // setBrands(res.brands || []);
-    setBrands(MOBILE_BRANDS);
+    // setBrands(MOBILE_BRANDS);
+  };
+
+    const handleBrandClick = (brand) => {
+    navigate(`/admin/categories/${categoryId}/${brand.name}/${brand.id}`);
   };
 
   useEffect(() => {
@@ -98,10 +110,9 @@ export default function Brands() {
     formData.append("name", form.name);
     formData.append("image", form.image);
     formData.append("category_id", categoryId);
-
     setLoading(true);
     try {
-      await api.admin.createBrand(formData);
+      await api.admin.addBrand(form);
       await fetchBrands();
       handleClose();
     } catch (err) {
@@ -117,11 +128,11 @@ export default function Brands() {
 
   return (
     <div className="min-h-screen">
+      <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
       <div className="flex justify-between items-center mb-[4.5rem]">
         <Heading className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold}`}>
           SELL OLD MOBILE PHONES
         </Heading>
-        
       </div>
 
       <div className="flex justify-between items-center mb-3">
@@ -129,7 +140,6 @@ export default function Brands() {
           SELECT BRAND
         </Heading>
         <div className="flex gap-3">
-          
           <SearchInput
             placeholder="Search brand..."
             value={searchTerm}
@@ -147,10 +157,11 @@ export default function Brands() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
+      {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredBrands.map((brand) => (
           <div
             key={brand.id}
+              onClick={() => handleBrandClick(brand)}
             className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col items-center p-4"
           >
             <div className="w-20 h-20 mb-4 flex items-center justify-center overflow-hidden">
@@ -168,7 +179,7 @@ export default function Brands() {
             </h3>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <Popup
         open={popupOpen}
