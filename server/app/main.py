@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
 from app.core.config import settings  
 from .middlewares.authmiddleware import authenticate_user 
+import os
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -18,4 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    
 app.include_router(api_router, prefix="/api/v1", tags=["v1"])

@@ -74,7 +74,7 @@ const Popup = ({
         {/* Content */}
         <div
           ref={contentRef}
-          className={`px-6 py-4 border-y text-sm text-center ${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.borderGray100}`}
+          className={`px-6 py-4 border-y  ${COLOR_CLASSES.borderGray200} text-sm text-center ${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.borderGray100}`}
         >
           {children}
         </div>

@@ -50,7 +50,7 @@ const CommonTable = ({
       </div>
 
       {/* Table & Search */}
-      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border rounded-lg ${COLOR_CLASSES.shadowMd}`}>
+      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
         <LoadingIndicator isLoading={loading} />
         <div className="flex flex-col md:flex-row justify-end items-center gap-2 m-3">
           {searchable && (
@@ -77,7 +77,7 @@ const CommonTable = ({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className={`divide-y ${COLOR_CLASSES.borderGray200}`}>
             {paginatedData.length > 0 ? (
               paginatedData.map((row, rowIndex) => (
                 <tr
@@ -89,7 +89,7 @@ const CommonTable = ({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className={`px-6 py-4 whitespace-nowrap truncate max-w-xs ${COLOR_CLASSES.textPrimary}`}
+                      className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     >
                       {col.render ? col.render(row) : row[col.key]}
                     </td>

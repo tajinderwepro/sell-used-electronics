@@ -230,7 +230,7 @@ export default function Brands() {
             onChange={handleChange}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm text-left">{errors.name}</p>
+            <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.name}</p>
           )}
         </div>
       </Popup>

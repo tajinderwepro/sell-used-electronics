@@ -75,7 +75,7 @@ export default function Header({ setMobileMenuOpen }) {
             <UserCircle className="h-6 w-6" />
           </button>
           {dropdownOpen && (
-            <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border rounded shadow z-10`}>
+            <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border rounded shadow z-40`}>
               {DROPDOWN_MENU.map((item) => (
                 <Link
                   key={item.name}
@@ -92,7 +92,7 @@ export default function Header({ setMobileMenuOpen }) {
               >
                 <LogOut className="h-4 w-4 mr-2" /> Logout
               </button>
-              <div className="border-t">
+              <div className={`border-t ${COLOR_CLASSES.borderGray200}`}>
                 <ModeToggleButton />
               </div>
             </div>

@@ -10,12 +10,12 @@ export default function Modal({ title, children, onClose }) {
       onClick={onClose}
     >
       <div
-        className={`bg-white rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgWhite} p-6 w-full max-w-3xl min-h-[400px] relative`}
+        className={` border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgGradient} p-6 w-full max-w-3xl min-h-[400px] relative`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className={`absolute top-2 right-3 text-gray-500 hover:text-gray-800 ${FONT_SIZES['3xl']} ${FONT_WEIGHTS.bold}`}
+          className={`absolute top-2 right-3 ${FONT_SIZES['3xl']} ${FONT_WEIGHTS.bold}`}
           aria-label="Close modal"
         >
           &times;

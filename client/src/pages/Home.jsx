@@ -92,7 +92,7 @@ export default function Home() {
             <Heading className={`${FONT_SIZES["4xl"]} ${FONT_WEIGHTS.bold} mb-10`}>Popular Categories</Heading>
             <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {categories.map(({ icon, label }, i) => (
-                <div key={i} className={`p-6 border rounded-lg ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.shadowMd} flex flex-col items-center`}>
+                <div key={i} className={`p-6 border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.shadowMd} flex flex-col items-center`}>
                   <div className={`mb-2 ${COLOR_CLASSES.primary}`}>{icon}</div>
                   <p className={`${FONT_WEIGHTS.medium}`}>{label}</p>
                 </div>
