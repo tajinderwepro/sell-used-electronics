@@ -33,7 +33,15 @@ class ModelOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class MediaOut(BaseModel):
+    id: int
+    path: str
+    mediable_type: str
+    mediable_id: int
 
+    class Config:
+        orm_mode = True
 
 class CategoryOut(BaseModel):
     id: int
