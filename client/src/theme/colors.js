@@ -47,7 +47,7 @@ export const COLOR_CLASSES_DARK = {
   textLight: "text-[#7c8a99]",             // Light muted text
   textHoverPrimary: "hover:text-[#c2dcfa]",// Gentle hover blue
 
-  borderPrimary: "border-[#4c5865]",       // Soft slate border
+  borderPrimary: "border-[#e5e7eb29]",       // Soft slate border
   borderGray100: "border-[#3b4654]",       // Light border
   borderGray200: "border-[#2e3845]",
 

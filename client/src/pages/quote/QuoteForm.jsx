@@ -70,7 +70,7 @@ export default function QuoteForm({ onClose }) {
   };
 
   return (
-    <div className={`mx-auto ${COLOR_CLASSES.bgWhite} p-10 rounded-2xl w-full max-w-3xl`}>
+    <div className={`mx-auto p-10 rounded-2xl w-full max-w-3xl`}>
       <div className="mb-10">
         <div className={`flex justify-between items-center text-sm ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary} relative`}>
           <Stepper

@@ -33,11 +33,11 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
     <>
       {/* Sidebar */}
       <aside
-        className={`w-64 ${COLOR_CLASSES.bgWhite} border-r ${COLOR_CLASSES.shadowMd} fixed z-20 inset-y-0 left-0 transform md:translate-x-0 transition-transform duration-200 ease-in-out ${
+        className={`w-64 ${COLOR_CLASSES.bgWhite} border-r ${COLOR_CLASSES.borderGray200} fixed z-20 inset-y-0 left-0 transform md:translate-x-0 transition-transform duration-200 ease-in-out ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         } md:relative md:block`}
       >
-        <div className={`h-16 flex items-center justify-center border-b px-4`}>
+        <div className={`h-16 flex items-center justify-center border-b ${COLOR_CLASSES.borderGray200} px-4`}>
           <Heading
             className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary}`}
           >

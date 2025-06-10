@@ -19,7 +19,7 @@ export default function UserNavbar() {
   const COLOR_CLASSES = useColorClasses();
 
   return (
-    <nav className={`border-b ${COLOR_CLASSES.borderPrimary} py-5 flex gap-6`}>
+    <nav className={`border-b ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.borderPrimary} py-5 flex gap-6`}>
       {navLinks.map((link) => (
         <NavLink
           key={link.name}

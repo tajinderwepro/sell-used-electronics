@@ -8,7 +8,7 @@ export default function Dashboard() {
   return (
     <div className="py-6">
         <Heading className='text-start'>Welcome {user?.name}</Heading>
-        <p className="text-gray-600">Here's an overview of your selling activity.</p>
+        <p>Here's an overview of your selling activity.</p>
         {/* Add dashboard content like cards, tables, stats here */}
     </div>
   );

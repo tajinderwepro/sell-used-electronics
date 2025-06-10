@@ -60,7 +60,7 @@ function Header() {
 
 
   return (
-    <header className={`w-full border-b ${COLOR_CLASSES.borderGray200} shadow-sm backdrop-blur-md`}>
+    <header className={`fixed top-0 left-0 w-full border-b  ${COLOR_CLASSES.borderGray200} shadow-sm backdrop-blur-md`}>
       <div className="max-w-7xl mx-auto py-4 flex justify-between items-center">
         <a
           href="/"
@@ -91,16 +91,16 @@ function Header() {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 text-gray-600 hover:text-indigo-700"
+                className="flex items-center gap-2  hover:text-indigo-700"
               >
                 <UserCircle className="h-6 w-6" />
               </button>
               {dropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border rounded shadow z-10`}>
+                <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded shadow z-40`}>
                   {DROPDOWN_MENU.map((item) => (
                     <Link
                       key={item.name}
-                      to={item.href}
+                      to={user.role === "admin" ? '/admin'+item.href : item.href}
                       className={`flex items-center w-full px-4 py-2 text-sm ${COLOR_CLASSES.secondaryBgHover}`}
                       onClick={() => setDropdownOpen(false)}
                     >
@@ -113,7 +113,7 @@ function Header() {
                   >
                     <LogOut className="h-4 w-4 mr-2" /> Logout
                   </button>
-                  <div className="border-t">
+                  <div className={`border-t ${COLOR_CLASSES.borderGray200}`}>
                     <ModeToggleButton />
                   </div>
                 </div>

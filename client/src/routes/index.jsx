@@ -18,11 +18,12 @@ import GeneralLayout from "../layouts/GeneralLayout";
 import Categories from "../pages/admin/Categories";
 import Brands from "../pages/admin/Brands";
 import Products from "../pages/users/Products";
+import LoadingIndicator from "../common/LoadingIndicator";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
 
-  if (loading) return <div className="text-center p-10">Loading...</div>;
+  if (loading) return <div className="text-center p-10"><LoadingIndicator isLoading={loading} /></div>;
 
   return (
     <Router>

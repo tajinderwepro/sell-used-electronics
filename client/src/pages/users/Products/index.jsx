@@ -6,7 +6,7 @@ function Products() {
     <div className="py-6">
         <Heading className='text-start'>Products List</Heading>
         <div>
-            <p className="text-gray-600">List your Products.</p>
+            <p className="">List your Products.</p>
         </div>
         {/* Add dashboard content like cards, tables, stats here */}
     </div>
