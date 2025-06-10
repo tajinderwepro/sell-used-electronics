@@ -4,7 +4,7 @@ import { useState } from "react";
 import Heading from "../components/ui/Heading";
 import {  FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 import QuoteForm from "./quote/QuoteForm";
-import HomeLayout from "../layouts/HomeLayout";
+import GeneralLayout from "../layouts/GeneralLayout";
 import Modal from "../components/common/Modal";
 import { useColorClasses } from "../theme/useColorClasses";
 
@@ -53,7 +53,7 @@ export default function Home() {
 
   return (
     <>
-      <HomeLayout>
+      <GeneralLayout>
         <main className="flex-grow text-center px-4 py-20">
           {/* Hero Section */}
           <div className="max-w-5xl mx-auto">
@@ -132,7 +132,7 @@ export default function Home() {
             <QuoteForm onClose={() => setShowQuoteForm(false)} />
           </Modal>
         )}
-      </HomeLayout>
+      </GeneralLayout>
     </>
   );
 }

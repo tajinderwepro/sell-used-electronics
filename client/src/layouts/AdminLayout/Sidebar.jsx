@@ -15,6 +15,7 @@ import {
   FONT_WEIGHTS,
 } from "../../constants/theme"; // adjust path if needed
 import { useColorClasses } from "../../theme/useColorClasses";
+import { PROJECT_NAME } from "../../constants";
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
@@ -40,7 +41,7 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           <Heading
             className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary}`}
           >
-            SellUsedElectronics
+            {PROJECT_NAME}
           </Heading>
         </div>
         <nav className="p-4 space-y-2">
@@ -54,7 +55,6 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
         </nav>
       </aside>
 
-      {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black opacity-30 z-10 md:hidden"

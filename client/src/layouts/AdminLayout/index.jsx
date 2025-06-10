@@ -16,7 +16,7 @@ export default function AdminLayout() {
   const COLOR_CLASSES = useColorClasses();
 
   return (
-    <div className={`flex min-h-screen ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}>
+    <div className={`flex min-h-screen ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.textPrimary} ${FONT_FAMILIES.primary}`}>
       <Sidebar
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}

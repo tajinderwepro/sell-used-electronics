@@ -23,7 +23,9 @@ useEffect(() => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
     setIsAuthenticated(true);
     setUserRole(storedRole);
-    setUser(storedUser);
+    if(storedUser){
+      setUser(JSON.parse(storedUser));
+    }
   }
 
   setLoading(false);
@@ -55,6 +57,10 @@ useEffect(() => {
       setIsAuthenticated(false);
       localStorage.removeItem('token');
       localStorage.removeItem('userRole');
+      localStorage.removeItem('user');
+      setUser(null);
+      setUserRole(null);
+      setIsAuthenticated(false);
       delete axios.defaults.headers.common['Authorization'];
       return { ok: true };
     } catch (error) {

@@ -12,7 +12,7 @@ export const COLOR_CLASSES_LIGHT = {
   secondary: "text-[#4b5563]",
   secondaryDark: "text-[#374151]",
   secondaryBg: "bg-[#9ca3af]",
-  secondaryBgHover: "hover:bg-[#6b7280]",
+  secondaryBgHover: "hover:bg-[#c5cad3]",
 
   textPrimary: "text-[#111827]",
   textSecondary: "text-[#6b7280]",

@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import UserLayout from '../layouts/UserLayout';
+import GeneralLayout from '../layouts/GeneralLayout';
 
 const UserRoute = ({ userRole,isAuthenticated}) => {
   if (userRole !== 'user' || !isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  return <UserLayout><Outlet /></UserLayout>;
+  return <GeneralLayout><Outlet /></GeneralLayout>;
 };
 
 export default UserRoute;

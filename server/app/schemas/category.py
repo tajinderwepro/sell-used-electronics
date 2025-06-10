@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
-
+from app.schemas.media import MediaOut
 # Base schema for input
 class CategoryBase(BaseModel):
     name: str

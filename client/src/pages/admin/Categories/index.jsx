@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Heading from "../../../components/ui/Heading";
 import { COLOR_CLASSES_DARK } from "../../../theme/colors";
 import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
+import { PROJECT_NAME } from "../../../constants";
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -124,7 +125,7 @@ export default function Categories() {
             <Heading
                     className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES_DARK.primary}`}
                 >
-                    SellUsedElectronics
+                  {PROJECT_NAME}
             </Heading>
             <button
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded"
