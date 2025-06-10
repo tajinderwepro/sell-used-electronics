@@ -1,16 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional, List
 
+# Base schema for input
 class CategoryBase(BaseModel):
     name: str
-    media_id: Optional[int]
+    media_id: Optional[int] = None
 
+# Create schema
 class CategoryCreate(CategoryBase):
     pass
 
+# Update schema (not used now, but kept for later)
 class CategoryUpdate(CategoryBase):
     pass
 
+# Output schemas for nested Brand and Model
 class BrandOut(BaseModel):
     id: int
     name: str
@@ -30,10 +34,14 @@ class ModelOut(BaseModel):
     class Config:
         orm_mode = True
 
-class CategoryOut(CategoryBase):
+
+class CategoryOut(BaseModel):
     id: int
-    brands: Optional[List[BrandOut]] = []
-    models: Optional[List[ModelOut]] = []
+    name: str
+    media_id: Optional[int]
+    brands: List[BrandOut] = []
+    models: List[ModelOut] = []
+    media: List[MediaOut] = []  # ← include media here
 
     class Config:
         orm_mode = True

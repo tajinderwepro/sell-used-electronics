@@ -3,7 +3,7 @@ from typing import Optional
 
 class ModelBase(BaseModel):
     name: str
-    media_id: Optional[int]
+    media_id: Optional[int] = None
     brand_id: int
     category_id: int
 

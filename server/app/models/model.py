@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.db.session import Base
+from app.models.media import Media 
 
 class Model(Base):
     __tablename__ = "models"
@@ -14,3 +15,10 @@ class Model(Base):
     # Relationships
     brand = relationship("Brand", back_populates="models")
     category = relationship("Category", back_populates="models")
+
+    media = relationship(
+        "Media",
+        primaryjoin="and_(foreign(Media.mediable_id)==Model.id, Media.mediable_type=='model')",
+        viewonly=True,
+        uselist=True
+    )
