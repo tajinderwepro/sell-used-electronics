@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 from app.models.category import Category
 from app.models.media import Media
+from sqlalchemy.orm import selectinload
 
 class CategoryService:
     @staticmethod

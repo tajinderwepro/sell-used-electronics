@@ -48,10 +48,17 @@ export default function Categories() {
 ];
 
   const fetchCategories = async () => {
-    const res = await api.admin.getCategories();
-    setCategories(res || []);
-    // setCategories(CATEGORIES)
+    setLoading(true); 
+    try {
+      const res = await api.admin.getCategories();
+      setCategories(res || []);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    } finally {
+      setLoading(false); 
+    }
   };
+
 
   useEffect(() => {
     fetchCategories();
@@ -152,9 +159,6 @@ export default function Categories() {
                 src={`/storage/${cat.image_url}`}
                 alt={cat.name}
                 className="object-contain w-full h-full bg-transparent"
-                onError={(e) => {
-                  e.target.src = "/default-image.png";
-                }}
               />
             </div>
             <h3 className="text-lg font-semibold text-center">{cat.name}</h3>
@@ -209,11 +213,10 @@ export default function Categories() {
             name="name"
             placeholder="Category name"
             value={form.name}
-            
             onChange={handleChange}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm text-left">{errors.name}</p>
+            <p className="text-red-500 text-sm text-left " style={{marginTop:"5px"}}>{errors.name}</p>
           )}
         </div>
       </Popup>

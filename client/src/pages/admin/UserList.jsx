@@ -147,7 +147,7 @@ export default function UserList() {
             value={form.name}
             onChange={handleChange}
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+          {errors.name && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.name}</p>}
 
           <InputField
             // label="Email"
@@ -158,7 +158,7 @@ export default function UserList() {
             value={form.email}
             onChange={handleChange}
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {errors.email && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.email}</p>}
 
           <InputField
             // label="Password"
@@ -169,7 +169,7 @@ export default function UserList() {
             value={form.password_hash}
             onChange={handleChange}
           />
-          {errors.password_hash && <p className="text-red-500 text-sm">{errors.password_hash}</p>}
+          {errors.password_hash && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.password_hash}</p>}
 
           <InputField
             // label="Confirm Password"
@@ -180,7 +180,7 @@ export default function UserList() {
             value={form.confirmPassword}
             onChange={handleChange}
           />
-          {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.confirmPassword}</p>}
 {/* 
           <div>
             <SelectField
@@ -194,10 +194,10 @@ export default function UserList() {
               { label: "User", value: "user" },
             ]}
            />
-            {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
+            {errors.role && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.role}</p>}
           </div> */}
 
-          {message && <p className="text-red-500 text-sm">{message}</p>}
+          {message && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{message}</p>}
         </form>
       </Popup>
     </div>

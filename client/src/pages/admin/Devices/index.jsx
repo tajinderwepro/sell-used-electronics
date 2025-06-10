@@ -225,7 +225,7 @@ export default function Devices() {
             apiUrl="/api/categories"
           />
           {/* <InputField id="category" name="category" placeholder="Category" value={form.category} onChange={handleChange} /> */}
-          {errors.category && <p className="text-red-500 text-sm text-left">{errors.category}</p>}
+          {errors.category && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.category}</p>}
            <CustomSelectField
             label="Brand"
             id="brand"
@@ -236,7 +236,7 @@ export default function Devices() {
             apiUrl="/api/brands"
           />
           {/* <InputField id="brand" name="brand" placeholder="Brand" value={form.brand} onChange={handleChange} /> */}
-          {errors.brand && <p className="text-red-500 text-sm  text-left">{errors.brand}</p>}
+          {errors.brand && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.brand}</p>}
           
           <CustomSelectField
             label="Model"
@@ -248,7 +248,7 @@ export default function Devices() {
             apiUrl="/api/brands"
           />
           {/* <InputField id="model" name="model" placeholder="Model" value={form.model} onChange={handleChange} /> */}
-          {errors.model && <p className="text-red-500 text-sm  text-left">{errors.model}</p>}
+          {errors.model && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.model}</p>}
 
           <SelectField
             name="condition"
@@ -261,13 +261,13 @@ export default function Devices() {
             ]}
           />
 
-          {errors.condition && <p className="text-red-500 text-sm  text-left">{errors.condition}</p>}
+          {errors.condition && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.condition}</p>}
 
           <InputField type="number" id="base_price" name="base_price" placeholder="Base Price" value={form.base_price} onChange={handleChange} />
-          {errors.base_price && <p className="text-red-500 text-sm  text-left">{errors.base_price}</p>}
+          {errors.base_price && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.base_price}</p>}
 
           <InputField type="number" id="ebay_avg_price" name="ebay_avg_price" placeholder="eBay Avg Price" value={form.ebay_avg_price} onChange={handleChange} />
-          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left mt-2">{errors.ebay_avg_price}</p>}
+          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.ebay_avg_price}</p>}
 
           {message && <p className="text-red-500 text-sm">{message}</p>}
         </form>

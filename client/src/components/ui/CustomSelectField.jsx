@@ -69,7 +69,7 @@ export default function CustomSelectField({
   };
 
   return (
-    <div className="mb-6 relative">
+    <div className=" relative">
       <label
         htmlFor={id}
         className={`block mb-2 ${COLOR_CLASSES.primary} font-semibold text-left`}
