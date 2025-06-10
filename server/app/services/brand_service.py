@@ -27,35 +27,33 @@ class BrandService:
 
     @staticmethod
     async def get_all_brands(db: AsyncSession):
-     result = await db.execute(
-        select(Brand)
-        .options(
-            selectinload(Brand.category),
-            selectinload(Brand.models),
-            selectinload(Brand.media)
+        result = await db.execute(
+            select(Brand)
+            .options(
+                selectinload(Brand.category),
+                selectinload(Brand.models),
+                selectinload(Brand.media)
+            )
         )
-    )
-    brands = result.scalars().all()
-    
-    # Convert to dict and exclude problematic fields
-    return [
-        {
-            "id": brand.id,
-            "name": brand.name,
-            "media_id": brand.media_id,
-            "category_id": brand.category_id,
-            "category": brand.category,
-            "models": brand.models,
-            "media": [
-                {
-                    "id": media.id,
-                    # Include only non-binary fields from Media
-                    "url": media.url,  # assuming you have a url field
-                    "mediable_type": media.mediable_type,
-                    # Exclude any binary data fields
-                }
-                for media in brand.media
-            ] if brand.media else []
-        }
-        for brand in brands
-    ]
+        brands = result.scalars().all()
+        return [
+            {
+                "id": brand.id,
+                "name": brand.name,
+                "media_id": brand.media_id,
+                "category_id": brand.category_id,
+                "category": brand.category,
+                "models": brand.models,
+                "media": [
+                    {
+                        "id": media.id,
+                        # Include only non-binary fields from Media
+                        "url": media.url,  # assuming you have a url field
+                        "mediable_type": media.mediable_type,
+                        # Exclude any binary data fields
+                    }
+                    for media in brand.media
+                ] if brand.media else []
+            }
+            for brand in brands
+        ]
