@@ -8,6 +8,7 @@ from typing import List
 class BrandService:
     @staticmethod
     async def add_brand(category_id, name: str, path: str, db: AsyncSession):
+        print(category_id,"brandsss")
         result = await db.execute(select(Brand).where(Brand.name == name))
         existing = result.scalar_one_or_none()
 
