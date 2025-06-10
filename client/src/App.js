@@ -13,9 +13,9 @@ function App() {
     },[user])
 
   const getMe = async () => {
-      try {
-          const res = await api.auth.me();
-      } catch (error) {
+    try {
+       const res = await api.auth.me();
+    } catch (error) {
     }
   }
   return (
