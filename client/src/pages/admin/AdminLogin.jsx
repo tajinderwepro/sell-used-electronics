@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { Navigate, useNavigate } from "react-router-dom"; 
 import { useAuth } from "../../context/AuthContext";
 
 import Button from "../../components/ui/Button";
@@ -18,7 +18,7 @@ export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
-  const { login } = useAuth();
+  const { login,userRole ,isAuthenticated} = useAuth();
   const COLOR_CLASSES = useColorClasses();
 
   const handleChange = (e) => {
@@ -35,6 +35,9 @@ export default function AdminLogin() {
       setError("Login failed. Please check your credentials.");
     }
   };
+  if (userRole=="admin" && isAuthenticated) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   return (
     <div

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 import Button from "../components/ui/Button";
@@ -16,7 +16,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "", role: "user" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login,userRole,isAuthenticated } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,6 +32,10 @@ export default function Login() {
       setError("Login failed. Please check your credentials.");
     }
   };
+
+  if (userRole=="user" && isAuthenticated ) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div

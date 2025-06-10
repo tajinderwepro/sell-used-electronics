@@ -21,7 +21,7 @@ export default function Brands() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const {navigate} = useNavigate();
+  const navigate= useNavigate();
 
    const breadcrumbItems = [
     { label: 'Device', path: '/admin/categories' },
@@ -52,7 +52,7 @@ export default function Brands() {
   ];
 
   const fetchBrands = async () => {
-    // Replace with actual API call
+    
     const res = await api.admin.getBrand(categoryId);
     console.log(res,"resssssssss")
     setBrands(res || []);
@@ -129,13 +129,13 @@ export default function Brands() {
   return (
     <div className="min-h-screen">
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
-      <div className="flex justify-between items-center mb-[4.5rem]">
+      {/* <div className="flex justify-between items-center mb-[4.5rem]">
         <Heading className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold}`}>
           SELL OLD MOBILE PHONES
         </Heading>
-      </div>
+      </div> */}
 
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-5">
         <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
           SELECT BRAND
         </Heading>
@@ -157,21 +157,19 @@ export default function Brands() {
         </div>
       </div>
 
-      {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredBrands.map((brand) => (
           <div
             key={brand.id}
               onClick={() => handleBrandClick(brand)}
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col items-center p-4"
+            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col items-center p-4 cursor-pointer"
           >
             <div className="w-20 h-20 mb-4 flex items-center justify-center overflow-hidden">
               <img
-                src={brand.image_url}
+                src={brand.media[0]?.path}
                 alt={brand.name}
                 className="object-contain w-full h-full"
-                onError={(e) => {
-                  e.target.src = "/brands/default.png";
-                }}
+              
               />
             </div>
             <h3 className="text-sm font-semibold text-gray-800 text-center">
@@ -179,7 +177,7 @@ export default function Brands() {
             </h3>
           </div>
         ))}
-      </div> */}
+      </div>
 
       <Popup
         open={popupOpen}

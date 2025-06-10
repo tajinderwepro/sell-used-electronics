@@ -20,46 +20,18 @@ export default function Categories() {
   const [errors, setErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
 
-  const CATEGORIES = [
-  {
-    id: 1,
-    name: "Mobile Phones",
-    image_url: "/iphone.jpg", 
-  },
-  {
-    id: 2,
-    name: "Laptops",
-    image_url: "/iphone.jpg",
-  },
-  {
-    id: 3,
-    name: "Tablets",
-    image_url: "/apple.png",
-  },
-  {
-    id: 4,
-    name: "Accessories",
-    image_url: "/iphone.jpg",
-  },
-  {
-    id: 5,
-    name: "Cameras",
-    image_url: "/iphone.jpg",
-  },
-];
-
   const fetchCategories = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const res = await api.admin.getCategories();
       setCategories(res || []);
     } catch (err) {
       console.error("Failed to fetch categories:", err);
+      toast.error(err.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchCategories();
@@ -104,18 +76,18 @@ export default function Categories() {
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
-     if (form.image instanceof File) {
+    if (form.image instanceof File) {
       formData.append("file", form.image);
     }
     setLoading(true);
     try {
-      const res=await api.admin.createCategory(formData);
+      const res = await api.admin.createCategory(formData);
       await fetchCategories();
       handleClose();
       toast.success(res.message);
     } catch (err) {
       console.error(err);
-      toast.error('Category created successfully!');
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -127,12 +99,10 @@ export default function Categories() {
   return (
     <div className="p-6 min-h-screen">
       <div className="flex justify-between mb-6">
-        
-          <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
-            SELECT CATEGORY
-          </Heading>
-          <div className="flex gap-3">
-          
+        <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
+          SELECT CATEGORY
+        </Heading>
+        <div className="flex gap-3">
           <SearchInput
             placeholder="Search categories..."
             value={searchTerm}
@@ -148,23 +118,22 @@ export default function Categories() {
         </div>
       </div>
 
-
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredCategories.map((cat) => (
           <Link
             to={`/admin/categories/${cat.id}/brand`}
             key={cat.id}
-            className="border p-4 rounded shadow bg-white hover:shadow-lg transition"
+            className="rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all border border-grey-200 flex flex-col items-center justify-center text-center space-y-3"
           >
-            <div className="w-full h-40 flex items-center justify-center overflow-hidden  mb-2 ">
+            <div className="w-28 h-28 flex items-center justify-center ">
               <img
-                src={cat.media[0]?.path}
+                src={cat.media[0]?.path || "/brands/default.png"}
                 alt={cat.name}
-                className="object-contain w-full h-full bg-transparent"
+                className="object-contain w-20 h-20"
               />
             </div>
-            <h3 className="text-lg font-semibold text-center">{cat.name}</h3>
+            <h3 className="text-base font-medium text-gray-800">{cat.name}</h3>
           </Link>
         ))}
       </div>
@@ -219,7 +188,12 @@ export default function Categories() {
             onChange={handleChange}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm text-left " style={{marginTop:"5px"}}>{errors.name}</p>
+            <p
+              className="text-red-500 text-sm text-left "
+              style={{ marginTop: "5px" }}
+            >
+              {errors.name}
+            </p>
           )}
         </div>
       </Popup>
