@@ -5,6 +5,13 @@ from sqlalchemy import pool
 from app.db.session import Base
 from alembic import context
 
+
+# ⬇️ Add model imports here
+from app.models.category import Category
+from app.models.brand import Brand
+from app.models.model import Model
+from app.models.media import Media
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
