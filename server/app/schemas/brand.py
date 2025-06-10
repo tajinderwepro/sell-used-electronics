@@ -1,19 +1,19 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from app.schemas.media import MediaOut  # Import your existing MediaOut
 
-class BrandBase(BaseModel):
-    name: str
-    media_id: Optional[int] = None
-    category_id: int
+# Assuming you have these schemas defined elsewhere
+# from app.schemas.media import MediaOut
+# from app.schemas.model import ModelOut
 
-class BrandCreate(BrandBase):
-    pass
+class MediaOut(BaseModel):
+    id: int
+    path: str
+    mediable_type: str
+    mediable_id: int
 
-class BrandUpdate(BrandBase):
-    pass
+    class Config:
+        orm_mode = True
 
-# Add these if you need to show models in the brand response
 class ModelOut(BaseModel):
     id: int
     name: str
@@ -24,12 +24,21 @@ class ModelOut(BaseModel):
     class Config:
         orm_mode = True
 
-# Enhanced BrandOut with media support
+class BrandBase(BaseModel):
+    name: str
+    category_id: int
+
+class BrandCreate(BrandBase):
+    pass
+
+class BrandUpdate(BrandBase):
+    name: Optional[str] = None  # Allow updating name
+    category_id: Optional[int] = None # Allow updating category_id
+
 class BrandOut(BrandBase):
     id: int
-    brands: List = []  # If you need nested brands
-    models: List[ModelOut] = []  # If you need models
-    media: List[MediaOut] = []  # This is the key addition
+    media: List[MediaOut] = []  # List of associated media
+    models: List[ModelOut] = []  # List of associated models
 
     class Config:
         orm_mode = True

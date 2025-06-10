@@ -117,8 +117,9 @@ class BrandService:
             select(Brand)
             .where(Brand.category_id == category_id)
             .options(
+                selectinload(Brand.category),
+                selectinload(Brand.models),  # If you need models
                 selectinload(Brand.media),
-                selectinload(Brand.models)  # If you need models
             )
         )
         brands = result.scalars().all()
