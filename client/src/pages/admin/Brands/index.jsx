@@ -24,7 +24,7 @@ export default function Brands() {
   const navigate= useNavigate();
 
    const breadcrumbItems = [
-    { label: 'Device', path: '/admin/categories' },
+    { label: 'Category', path: '/admin/categories' },
     { label: 'Brands', path: `/admin/categories/${categoryId}/brand` }, 
   ];
 
@@ -128,17 +128,8 @@ export default function Brands() {
 
   return (
     <div className="min-h-screen">
+      <div className="flex justify-between items-center mb-6">
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
-      {/* <div className="flex justify-between items-center mb-[4.5rem]">
-        <Heading className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold}`}>
-          SELL OLD MOBILE PHONES
-        </Heading>
-      </div> */}
-
-      <div className="flex justify-between items-center mb-5">
-        <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
-          SELECT BRAND
-        </Heading>
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search brand..."

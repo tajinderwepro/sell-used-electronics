@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { ChevronRight, Plus } from "lucide-react";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import api from "../../../constants/api";
@@ -10,7 +10,10 @@ import { PROJECT_NAME } from "../../../constants";
 import Button from "../../../components/ui/Button";
 import SearchInput from "../../../components/ui/SearchInput";
 import { toast } from "react-toastify";
-
+import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
+  const breadcrumbItems = [
+    { label: 'Category', path: '/admin/categories' },
+  ];
 export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [popupOpen, setPopupOpen] = useState(false);
@@ -97,11 +100,9 @@ export default function Categories() {
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
-    <div className="p-6 min-h-screen">
-      <div className="flex justify-between mb-6">
-        <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
-          SELECT CATEGORY
-        </Heading>
+    <div className="min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search categories..."
