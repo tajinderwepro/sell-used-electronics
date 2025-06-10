@@ -17,7 +17,7 @@ export default function Button({
     primary: `${COLOR_CLASSES.primaryBg} ${COLOR_CLASSES.primaryBgHover} text-white`,
 
     // primary: `${COLOR_CLASSES.primaryDark} ${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primary}`,
-    secondary: `${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.secondaryBgHover} ${COLOR_CLASSES.secondary}`,
+    secondary: `${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.secondaryBgHover} text-white`,
     danger: 'bg-red-600 hover:bg-red-700 text-white',
     outline: 'bg-transparent border border-gray-300 text-gray-800 hover:bg-gray-100',
   };
@@ -36,7 +36,7 @@ export default function Button({
           'opacity-100"
       >
       {icon  && <span>{icon}</span>}</span>
-      <span>{children}</span>
+      <span >{children}</span>
     </button>
   );
 }

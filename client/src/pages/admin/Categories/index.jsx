@@ -5,9 +5,10 @@ import InputField from "../../../components/ui/InputField";
 import api from "../../../constants/api";
 import { Link } from "react-router-dom";
 import Heading from "../../../components/ui/Heading";
-import { COLOR_CLASSES_DARK } from "../../../theme/colors";
 import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import { PROJECT_NAME } from "../../../constants";
+import Button from "../../../components/ui/Button";
+import SearchInput from "../../../components/ui/SearchInput";
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -16,79 +17,7 @@ export default function Categories() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  
-
-  const fetchCategories = async () => {
-    const res = await api.admin.getCategories(); 
-    setCategories(res.categories || []);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const handleOpen = () => {
-    setForm({ name: "", image: null });
-    setPreview(null);
-    setPopupOpen(true);
-  };
-
-  const handleClose = () => {
-    setPopupOpen(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error for name on change
-    if (name === "name" && value.trim()) {
-        setErrors((prev) => ({ ...prev, name: null }));
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setForm((prev) => ({ ...prev, image: file }));
-    setPreview(URL.createObjectURL(file));
-
-    // Clear image error on file select
-    setErrors((prev) => ({ ...prev, image: null }));
-  };
-
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!form.name.trim()) newErrors.name = "Category name is required";
-    if (!form.image) newErrors.image = "Image is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    const formData = new FormData();
-    formData.append("name", form.name);
-    if (form.image) formData.append("image", form.image);
-
-    setLoading(true);
-    try {
-      await api.admin.createCategory(formData);
-      await fetchCategories();
-      handleClose();
-      setErrors({});
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [searchTerm, setSearchTerm] = useState("");
 
   const CATEGORIES = [
   {
@@ -104,7 +33,7 @@ export default function Categories() {
   {
     id: 3,
     name: "Tablets",
-    image_url: "/iphone.jpg",
+    image_url: "/apple.png",
   },
   {
     id: 4,
@@ -118,43 +47,122 @@ export default function Categories() {
   },
 ];
 
-  return (
-    <div className="p-6">
+  const fetchCategories = async () => {
+    // const res = await api.admin.getCategories();
+    // setCategories(res.categories || []);
+    setCategories(CATEGORIES)
+  };
 
-        <div>
-            <Heading
-                    className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES_DARK.primary}`}
-                >
-                  {PROJECT_NAME}
-            </Heading>
-            <button
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded"
-                onClick={handleOpen}
-            >
-                <Plus size={16} /> Create Category
-            </button>
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleOpen = () => {
+    setForm({ name: "", image: null });
+    setPreview(null);
+    setPopupOpen(true);
+  };
+
+  const handleClose = () => {
+    setPopupOpen(false);
+    setErrors({});
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "name" && value.trim()) {
+      setErrors((prev) => ({ ...prev, name: null }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setForm((prev) => ({ ...prev, image: file }));
+    setPreview(URL.createObjectURL(file));
+    setErrors((prev) => ({ ...prev, image: null }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.name.trim()) newErrors.name = "Category name is required";
+    if (!form.image) newErrors.image = "Image is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    const formData = new FormData();
+    formData.append("name", form.name);
+    if (form.image) formData.append("image", form.image);
+
+    setLoading(true);
+    try {
+      await api.admin.createCategory(formData);
+      await fetchCategories();
+      handleClose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredCategories = categories.filter((cat) =>
+    cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+ 
+  return (
+    <div className="p-6 min-h-screen">
+      <div className="flex justify-between mb-6">
+        
+          <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
+            SELECT CATEGORY
+          </Heading>
+          <div className="flex gap-3">
+          
+          <SearchInput
+            placeholder="Search categories..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button
+            className="px-4 py-2 text-white text-sm"
+            onClick={handleOpen}
+            icon={<Plus size={16} />}
+          >
+            Create Category
+          </Button>
         </div>
+      </div>
+
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-        {CATEGORIES.map((cat) => (
-        <Link
-            // to={`/admin/categories/brands?category=${cat.id}`}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {filteredCategories.map((cat) => (
+          <Link
             to={`/admin/categories/brand/${cat.id}`}
             key={cat.id}
             className="border p-4 rounded shadow bg-white hover:shadow-lg transition"
-        >
-            <img
-            src={cat.image_url}
-            alt={cat.name}
-            className="w-full h-40 object-cover rounded mb-2"
-            />
+          >
+            <div className="w-full h-40 flex items-center justify-center overflow-hidden  mb-2 ">
+              <img
+                src={cat.image_url}
+                alt={cat.name}
+                className="object-contain w-full h-full bg-transparent"
+                onError={(e) => {
+                  e.target.src = "/default-image.png";
+                }}
+              />
+            </div>
             <h3 className="text-lg font-semibold text-center">{cat.name}</h3>
-        </Link>
+          </Link>
         ))}
-
       </div>
 
+      {/* Popup */}
       <Popup
         open={popupOpen}
         onClose={handleClose}
@@ -167,7 +175,6 @@ export default function Categories() {
         loading={loading}
       >
         <div className="space-y-4">
-          {/* Custom Image Upload */}
           <div className="flex flex-col items-center mb-4">
             <label
               htmlFor="category-image"
