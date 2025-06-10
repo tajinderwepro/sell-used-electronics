@@ -56,36 +56,18 @@ const api = {
     getCategories: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),  
     
     addModel : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-model`),data),
-    // addBrand : (data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/brand/add-brand`),data),
-      addBrand: (data) =>
-      axiosWrapper(
-        axiosInstance.post(
-          `http://localhost:8000/api/v1/brand/add-brand`,
-          data,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        )
-      ),
+    addBrand : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-brand`),data),
 
-    getCategory: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),
-    getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/model/list`)),
-    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/brand/list`)),
+   
+    getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/model`)),
+    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/brand`)),
+
 
     getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),
     // getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     getOrders : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/orders/list')),
-    createCategory: (formData) =>
-      axiosWrapper(
-        axiosInstance.post('http://localhost:8000/api/v1/category/add-category', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-      )
-  },
-  
+    },
   auth :{
     me : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/auth/me`)),
   }

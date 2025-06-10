@@ -9,6 +9,7 @@ import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import { PROJECT_NAME } from "../../../constants";
 import Button from "../../../components/ui/Button";
 import SearchInput from "../../../components/ui/SearchInput";
+import { toast } from "react-toastify";
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -108,11 +109,13 @@ export default function Categories() {
     }
     setLoading(true);
     try {
-      await api.admin.createCategory(formData);
+      const res=await api.admin.createCategory(formData);
       await fetchCategories();
       handleClose();
+      toast.success(res.message);
     } catch (err) {
       console.error(err);
+      toast.error('Category created successfully!');
     } finally {
       setLoading(false);
     }
@@ -156,7 +159,7 @@ export default function Categories() {
           >
             <div className="w-full h-40 flex items-center justify-center overflow-hidden  mb-2 ">
               <img
-                src={`/storage/${cat.image_url}`}
+                src={cat.media[0]?.path}
                 alt={cat.name}
                 className="object-contain w-full h-full bg-transparent"
               />
