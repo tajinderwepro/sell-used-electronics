@@ -9,7 +9,7 @@ const CustomBreadcrumbs = ({ items, separator = '/' }) => {
   return (
     <nav
       aria-label="breadcrumb"
-      className="px-4 rounded-md"
+      className="py-3 rounded-md"
     >
       <ol className="flex flex-wrap text-sm font-medium text-gray-700">
         {items.map((item, index) => {
