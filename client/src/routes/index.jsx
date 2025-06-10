@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -22,21 +22,42 @@ import Models from "../pages/admin/Models";
 import LoadingIndicator from "../common/LoadingIndicator";
 function AllRoutes() {
   const auth = useAuth();
-  const { logout, userRole, isAuthenticated, loading } = auth;
+  const {user, isAuthenticated, loading } = auth;
 
-  if (loading) return <div className="text-center p-10"><LoadingIndicator isLoading={loading} /></div>;
+  if (loading ) return <div className="text-center p-10"><LoadingIndicator isLoading={loading} /></div>;
 
+    const commonRoutes = () => {
+        return (
+            <>
+                <Route
+                    element={
+                        user && user.role == 'admin' ? <Navigate to="/admin/dashboard" /> : user && user.role == 'user' ? <Navigate to="/dashboard" /> : <Outlet />
+                    }
+                >
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                </Route>
+                <Route
+                    element={
+                        user && user.role == 'user' ? <Navigate to="/dashboard" /> : user && user.role == 'admin' ? <Navigate to="/admin/dashboard" /> : <Outlet />
+                    }
+                >
+                    <Route path="/login" element={<Login />} />
+                </Route>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/register" element={<GeneralLayout><Register /></GeneralLayout>} />
+                  <Route path="*" element={<NotFound />} />
+            </>
+        )
+    }
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
       
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<GeneralLayout><Login /></GeneralLayout>} />
-        <Route path="/register" element={<GeneralLayout><Register /></GeneralLayout>} />
-        <Route path="/admin/login" element={<GeneralLayout><AdminLogin /></GeneralLayout>} />
+
+        {commonRoutes()}
         {/* Admin Protected Routes */}
-        <Route element={<AdminRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
+        <Route element={<AdminRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/devices" element={<Devices />} />
@@ -48,13 +69,12 @@ function AllRoutes() {
         </Route>
 
         {/* User Protected Routes */}
-        <Route element={<UserRoute userRole={userRole} isAuthenticated={isAuthenticated} />}>
+        <Route element={<UserRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
         </Route>
 
         {/* Catch-All 404 Route (MUST be last) */}
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
