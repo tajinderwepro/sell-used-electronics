@@ -1,8 +1,7 @@
-// import { useColorClasses } from "../../theme/useColorClasses";
-
 import { useColorClasses } from "../../theme/useColorClasses";
 
-export default function InputField({
+
+export default function CustomInputField({
   label,
   id,
   type = "text",
@@ -32,8 +31,12 @@ export default function InputField({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 ${COLOR_CLASSES.primary} text-${COLOR_CLASSES.primaryBgHover} ${COLOR_CLASSES.bgWhite} placeholder-${COLOR_CLASSES.primaryBgHover}
-                  focus:outline-none focus:ring-2 ${COLOR_CLASSES.primaryRing} focus:ring-${COLOR_CLASSES.primaryBg} focus:border-${COLOR_CLASSES.primary}`}
+        className={`w-full border ${COLOR_CLASSES.borderPrimary} rounded-lg p-3 
+                    ${COLOR_CLASSES.textHoverPrimary} ${COLOR_CLASSES.bgPrimary} 
+                    placeholder-${COLOR_CLASSES.primaryBgHover}
+                    focus:outline-none focus:ring-2 ${COLOR_CLASSES.primaryRing} 
+                    focus:ring-${COLOR_CLASSES.primary} focus:border-${COLOR_CLASSES.primary} 
+                    transition ${className}`}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import api from "../../constants/api";
 import { Trash2 } from "lucide-react";
 import Popup from "../../common/Popup";
 import InputField from "../../components/ui/InputField";
-import SelectField from "../../components/ui/SelectBox";
+// import SelectField from "../../components/ui/SelectBox";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -114,7 +114,7 @@ export default function UserList() {
       ),
     },
   ];
-console.log(popupState,'pop')
+
   return (
     <div className="min-h-screen">
       <CommonTable
@@ -181,7 +181,7 @@ console.log(popupState,'pop')
             onChange={handleChange}
           />
           {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
-
+{/* 
           <div>
             <SelectField
             // label="Role"
@@ -195,7 +195,7 @@ console.log(popupState,'pop')
             ]}
            />
             {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
-          </div>
+          </div> */}
 
           {message && <p className="text-red-500 text-sm">{message}</p>}
         </form>

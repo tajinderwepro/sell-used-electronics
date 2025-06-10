@@ -15,6 +15,8 @@ import Orders from "../pages/admin/Orders";
 import Quotes from "../pages/admin/Quotes";
 import Dashboard from "../pages/users/Dashboard";
 import HomeLayout from "../layouts/HomeLayout";
+import Categories from "../pages/admin/Categories";
+import Brands from "../pages/admin/Brands";
 function AllRoutes() {
   const auth = useAuth();
   const { logout, userRole, isAuthenticated, loading } = auth;
@@ -37,6 +39,8 @@ function AllRoutes() {
           <Route path="/admin/devices" element={<Devices />} />
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/quotes" element={<Quotes />} />
+          <Route path="/admin/categories" element={<Categories/>} />
+          <Route path="/admin/categories/brand/:categoryId" element={<Brands />} />
         </Route>
 
         {/* User Protected Routes */}

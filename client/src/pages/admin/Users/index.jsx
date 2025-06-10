@@ -4,7 +4,9 @@ import CommonTable from "../../../common/CommonTable";
 import api from "../../../constants/api";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
-import SelectField from "../../../components/ui/SelectBox";
+import SelectField from "../../../components/ui/SelectField";
+// import SelectField from "../../../components/ui/SelectBox";
+
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -194,7 +196,7 @@ export default function Users() {
             value={form.name}
             onChange={handleChange}
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+          {errors.name && <p className="text-red-500 text-sm text-left">{errors.name}</p>}
 
           <InputField
             id="email"
@@ -204,7 +206,7 @@ export default function Users() {
             value={form.email}
             onChange={handleChange}
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {errors.email && <p className="text-red-500 text-sm text-left">{errors.email}</p>}
 
           {!popupState.isEdit && 
 
@@ -217,7 +219,7 @@ export default function Users() {
             onChange={handleChange}
           />
           }
-          {!popupState.isEdit ? errors.password_hash && <p className="text-red-500 text-sm">{errors.password_hash}</p>:''}
+          {!popupState.isEdit ? errors.password_hash && <p className="text-red-500 text-sm text-left">{errors.password_hash}</p>:''}
 
           {!popupState.isEdit && <InputField
             id="confirmPassword"
@@ -227,7 +229,7 @@ export default function Users() {
             value={form.confirmPassword}
             onChange={handleChange}
           />}
-          {!popupState.isEdit ? errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>:''}
+          {!popupState.isEdit ? errors.confirmPassword && <p className="text-red-500 text-sm text-left">{errors.confirmPassword}</p>:''}
           <SelectField
             id="role"
             value={form.role}
@@ -238,9 +240,10 @@ export default function Users() {
               { label: "User", value: "user" },
             ]}
           />
-          {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
+          
+          {errors.role && <p className="text-red-500 text-sm text-left">{errors.role}</p>}
 
-          {message && <p className="text-red-500 text-sm">{message}</p>}
+          {message && <p className="text-red-500 text-sm text-left">{message}</p>}
         </form>
       </Popup>
     </div>

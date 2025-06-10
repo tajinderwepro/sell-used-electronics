@@ -13,6 +13,7 @@ export default function Button({
 }) {
   const COLOR_CLASSES = useColorClasses();
   const buttonStyles = {
+   
     primary: `${COLOR_CLASSES.primaryBg} ${COLOR_CLASSES.primaryBgHover} text-white`,
 
     // primary: `${COLOR_CLASSES.primaryDark} ${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primary}`,
