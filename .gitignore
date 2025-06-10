@@ -14,3 +14,4 @@ server/app/db/__pycache__
 server/alembic/versions/__pycache__
 server/app/core/__pycache__
 server/app/utils/__pycache__
+server/uploads/

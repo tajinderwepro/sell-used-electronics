@@ -7,8 +7,11 @@ class CategoryBase(BaseModel):
     media_id: Optional[int] = None
 
 # Create schema
-class CategoryCreate(CategoryBase):
-    pass
+class CategoryCreate(BaseModel):
+    name: str
+
+    class Config:
+        arbitrary_types_allowed = True
 
 # Update schema (not used now, but kept for later)
 class CategoryUpdate(CategoryBase):

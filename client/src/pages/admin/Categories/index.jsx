@@ -96,8 +96,7 @@ export default function Categories() {
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
-    if (form.image) formData.append("image", form.image);
-
+    if (form.image) formData.append("file", form.image);
     setLoading(true);
     try {
       await api.admin.createCategory(formData);

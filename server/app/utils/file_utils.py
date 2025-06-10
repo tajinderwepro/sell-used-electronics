@@ -1,3 +1,4 @@
+# file: app/utils/file_utils.py
 import os
 import uuid
 
@@ -8,8 +9,7 @@ def save_file_with_unique_name(file_data: bytes, original_filename: str) -> str:
     unique_name = f"{uuid.uuid4().hex}{ext}"
     file_path = os.path.join(UPLOAD_DIR, unique_name)
 
-    if not os.path.isdir(UPLOAD_DIR):
-        os.makedirs(UPLOAD_DIR)
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
 
     with open(file_path, "wb") as f:
         f.write(file_data)

@@ -2,7 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.media import Media
 from app.utils.file_utils import save_file_with_unique_name
 
-
 class MediaService:
     @staticmethod
     async def store_media(
@@ -11,7 +10,7 @@ class MediaService:
         mediable_type: str,
         mediable_id: int,
         db: AsyncSession
-    ) -> int:
+    ) -> Media:
         stored_path = save_file_with_unique_name(file_data, original_filename)
 
         media = Media(
@@ -23,4 +22,4 @@ class MediaService:
         await db.commit()
         await db.refresh(media)
 
-        return media.id
+        return media  # Add return statement
