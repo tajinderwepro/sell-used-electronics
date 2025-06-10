@@ -11,6 +11,6 @@ router = APIRouter()
 async def add_category(payload: CategoryCreate, db: AsyncSession = Depends(get_db)):
     return await CategoryService.add_category(payload, db)
 
-@router.get("/categories", response_model=List[CategoryOut])
+@router.get("/list", response_model=List[CategoryOut])
 async def get_categories(db: AsyncSession = Depends(get_db)):
     return await CategoryService.get_all_categories(db)

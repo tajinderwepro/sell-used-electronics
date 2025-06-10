@@ -37,7 +37,8 @@ class CategoryService:
             .options(
                 selectinload(Category.brands),
                 selectinload(Category.models),
-                selectinload(Category.media)  
+                selectinload(Category.media) 
+                 
             )
         )
         return result.scalars().all()

@@ -263,11 +263,11 @@ export default function Devices() {
 
           {errors.condition && <p className="text-red-500 text-sm  text-left">{errors.condition}</p>}
 
-          <InputField id="base_price" name="base_price" placeholder="Base Price" value={form.base_price} onChange={handleChange} />
+          <InputField type="number" id="base_price" name="base_price" placeholder="Base Price" value={form.base_price} onChange={handleChange} />
           {errors.base_price && <p className="text-red-500 text-sm  text-left">{errors.base_price}</p>}
 
-          <InputField id="ebay_avg_price" name="ebay_avg_price" placeholder="eBay Avg Price" value={form.ebay_avg_price} onChange={handleChange} />
-          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left">{errors.ebay_avg_price}</p>}
+          <InputField type="number" id="ebay_avg_price" name="ebay_avg_price" placeholder="eBay Avg Price" value={form.ebay_avg_price} onChange={handleChange} />
+          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left mt-2">{errors.ebay_avg_price}</p>}
 
           {message && <p className="text-red-500 text-sm">{message}</p>}
         </form>
