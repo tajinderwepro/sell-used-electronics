@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String
 from app.db.session import Base
 
 class Media(Base):
-    __tablename__ = "media"
+    __tablename__ = "medias"
 
     id = Column(Integer, primary_key=True, index=True)
     path = Column(String, nullable=False)
