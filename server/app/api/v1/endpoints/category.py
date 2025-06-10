@@ -31,6 +31,6 @@ async def upload_image(
 
     return await CategoryService.add_category(name, f"/{file_path}", db)
 
-@router.get("/categories", response_model=List[CategoryOut])
+@router.get("/list", response_model=List[CategoryOut])
 async def get_categories(db: AsyncSession = Depends(get_db)):
     return await CategoryService.get_all_categories(db)

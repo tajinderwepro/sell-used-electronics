@@ -48,9 +48,9 @@ export default function Categories() {
 ];
 
   const fetchCategories = async () => {
-    // const res = await api.admin.getCategories();
-    // setCategories(res.categories || []);
-    setCategories(CATEGORIES)
+    const res = await api.admin.getCategories();
+    setCategories(res || []);
+    // setCategories(CATEGORIES)
   };
 
   useEffect(() => {
@@ -96,7 +96,9 @@ export default function Categories() {
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
-    if (form.image) formData.append("file", form.image);
+     if (form.image instanceof File) {
+      formData.append("file", form.image);
+    }
     setLoading(true);
     try {
       await api.admin.createCategory(formData);
@@ -112,7 +114,6 @@ export default function Categories() {
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
- 
   return (
     <div className="p-6 min-h-screen">
       <div className="flex justify-between mb-6">
@@ -148,7 +149,7 @@ export default function Categories() {
           >
             <div className="w-full h-40 flex items-center justify-center overflow-hidden  mb-2 ">
               <img
-                src={cat.image_url}
+                src={`/storage/${cat.image_url}`}
                 alt={cat.name}
                 className="object-contain w-full h-full bg-transparent"
                 onError={(e) => {
@@ -208,6 +209,7 @@ export default function Categories() {
             name="name"
             placeholder="Category name"
             value={form.name}
+            
             onChange={handleChange}
           />
           {errors.name && (
