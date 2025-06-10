@@ -53,7 +53,7 @@ export default function Brands() {
 
   const fetchBrands = async () => {
     // Replace with actual API call
-    const res = await api.admin.getBrand();
+    const res = await api.admin.getBrand(categoryId);
     console.log(res,"resssssssss")
     // setBrands(res.brands || []);
     // setBrands(MOBILE_BRANDS);
@@ -112,7 +112,7 @@ export default function Brands() {
     formData.append("category_id", categoryId);
     setLoading(true);
     try {
-      await api.admin.addBrand(form);
+      await api.admin.addBrand(categoryId,formData);
       await fetchBrands();
       handleClose();
     } catch (err) {

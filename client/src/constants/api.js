@@ -56,11 +56,19 @@ const api = {
     getCategories: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),  
     
     addModel : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-model`),data),
-    addBrand : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/devices/add-brand`),data),
+    addBrand : (id,data) =>   axiosWrapper(
+        axiosInstance.post(
+          `http://localhost:8000/api/v1/brand/add-brand/${id}`,
+          data,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        ),data
+      ),
+    
 
-   
     getModel : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/model`)),
-    getBrand : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/devices/brand`)),
+    getBrand : (id) => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/brand/list/${id}`)),
 
 
     getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
