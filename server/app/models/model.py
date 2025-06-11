@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
@@ -12,7 +12,7 @@ class Model(Base):
     media_id = Column(Integer, nullable=True)
     brand_id = Column(Integer, ForeignKey("brands.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
-    # base_price = Column(Float, nullable=False)
+    base_price = Column(Float, nullable=False)
 
     # Relationships
     brand = relationship("Brand", back_populates="models")

@@ -7,10 +7,10 @@ class Settings(BaseSettings):
     APP_URL: Optional[str] = None
     JWT_SECRET: Optional[str] = None 
     DATABASE_URL: Optional[str] = None
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     ALGORITHM: str = "HS256"
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
-
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  
     class Config:
         env_file = ".env"
         case_sensitive = True
