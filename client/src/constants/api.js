@@ -54,8 +54,13 @@ const api = {
           }
         )
       ),
-    getCategories: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),  
-    
+    getCategories: (limit = 10, offset = 0) => 
+        axiosWrapper(
+          axiosInstance.post(`http://localhost:8000/api/v1/category/list`, {
+            limit,
+            offset
+          })
+    ),
     createModel: (id, data) => axiosWrapper(
       axiosInstance.post(
         `http://localhost:8000/api/v1/model/add-model/${id}`,
@@ -85,9 +90,14 @@ const api = {
             offset
           })
         ),
-    getBrand : (id) => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/brand/list/${id}`)),
 
-
+    getBrand: (id, limit = 10, offset = 0) => 
+            axiosWrapper(
+              axiosInstance.post(`http://localhost:8000/api/v1/brand/list/${id}`, {
+                limit,
+                offset
+              })
+            ),
     getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
     deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),
     // getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
