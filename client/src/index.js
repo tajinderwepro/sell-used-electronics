@@ -5,15 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from './context/AuthContext';
+import { SessionProvider } from './context/SessionContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <ToastContainer/>
-      <App />
-    </AuthProvider>
+    <SessionProvider>
+      <AuthProvider>
+        <ToastContainer/>
+        <App />
+      </AuthProvider>
+    </SessionProvider>
   </React.StrictMode>
 );
 

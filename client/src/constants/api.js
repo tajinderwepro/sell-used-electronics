@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { triggerSessionModal } from '../context/SessionContext';
 
 const axiosInstance = axios.create({
   headers: {
@@ -24,7 +25,7 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userRole');
-      window.location.href = '/login';  
+      triggerSessionModal();
     }
     return Promise.reject(error);
   }
