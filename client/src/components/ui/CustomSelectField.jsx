@@ -90,7 +90,7 @@ export default function CustomSelectField({
           <option value="" disabled>
             Select {label || id}
           </option>
-          <option value="__custom__">➕ Create new...</option>
+          {/* <option value="__custom__">➕ Create new...</option> */}
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.label}

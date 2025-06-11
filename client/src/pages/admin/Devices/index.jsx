@@ -7,6 +7,7 @@ import SelectField from "../../../components/ui/SelectField";
 import api from "../../../constants/api";
 import CustomSelectField from "../../../components/ui/CustomSelectField";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
+import { toast } from "react-toastify";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -153,13 +154,15 @@ export default function Devices() {
       setErrors(validationErrors);
       return;
     }
-
     try {
       setLoading(true);
       if (popupState.isEdit && popupState.id) {
         await api.admin.updateDevice(popupState.id, form);
       } else {
-        await api.admin.createDevice(form);
+        const res = await api.admin.createDevice(form);
+        if (res) {
+          toast.success(res.message)
+        }
       }
       await fetchDevices();
       handleClose();
@@ -194,7 +197,21 @@ export default function Devices() {
       ),
     },
   ];
-  console.log(form, 'form')
+  const fetchCategories = async () => {
+    try {
+      const res = await api.getCategories()
+      if (Array.isArray(res)) {
+        setCategories(res);
+      }
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+      // toast.error("Error fetching categories");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
   return (
     <div className="min-h-screen">
       <CommonTable
@@ -205,7 +222,6 @@ export default function Devices() {
         title="Devices List"
         onClick={handleOpen}
       />
-
       <Popup
         open={popupState.open}
         onClose={handleClose}
@@ -222,37 +238,61 @@ export default function Devices() {
             label="Category"
             id="category"
             value={form.category}
-            onChange={handleChange}
-            options={categories}
-            setOptions={setCategories}
-            apiUrl="/api/categories"
+            onChange={(e) => {
+              handleChange(e);
+              // Reset brand and model when category changes
+              setForm(prev => ({ ...prev, brand: "", model: "" }));
+            }}
+            options={categories.map((cat) => ({
+              label: cat.name,
+              value: cat.id
+            }))}
           />
-          {/* <InputField id="category" name="category" placeholder="Category" value={form.category} onChange={handleChange} /> */}
-          {errors.category && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.category}</p>}
-           <CustomSelectField
+          {errors.category && (
+            <p className="text-red-500 text-sm text-left mt-1">{errors.category}</p>
+          )}
+
+          {/* Brand Field */}
+          <CustomSelectField
             label="Brand"
             id="brand"
             value={form.brand}
-            onChange={handleChange}
-            options={brands}
-            setOptions={setBrands}
-            apiUrl="/api/brands"
+            onChange={(e) => {
+              handleChange(e);
+              // Reset model when brand changes
+              setForm(prev => ({ ...prev, model: "" }));
+            }}
+            options={
+              (categories.find(c => c.id === parseInt(form.category))?.brands || []).map(brand => ({
+                label: brand.name,
+                value: brand.id
+              }))
+            }
+            disabled={!form.category}
           />
-          {/* <InputField id="brand" name="brand" placeholder="Brand" value={form.brand} onChange={handleChange} /> */}
-          {errors.brand && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.brand}</p>}
-          
+          {errors.brand && (
+            <p className="text-red-500 text-sm text-left mt-1">{errors.brand}</p>
+          )}
+
+          {/* Model Field */}
           <CustomSelectField
             label="Model"
             id="model"
             value={form.model}
             onChange={handleChange}
-            options={models}
-            setOptions={setModels}
-            apiUrl="/api/brands"
+            options={
+              (categories.find(c => c.id === parseInt(form.category))?.models || [])
+                .filter(m => m.brand_id === parseInt(form.brand))
+                .map(model => ({
+                  label: model.name,
+                  value: model.id
+                }))
+            }
+            disabled={!form.brand}
           />
-          {/* <InputField id="model" name="model" placeholder="Model" value={form.model} onChange={handleChange} /> */}
-          {errors.model && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.model}</p>}
-
+          {errors.model && (
+            <p className="text-red-500 text-sm text-left mt-1">{errors.model}</p>
+          )}
           <SelectField
             name="condition"
             value={form.condition}
@@ -264,13 +304,13 @@ export default function Devices() {
             ]}
           />
 
-          {errors.condition && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.condition}</p>}
+          {errors.condition && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.condition}</p>}
 
           <InputField type="number" id="base_price" name="base_price" placeholder="Base Price" value={form.base_price} onChange={handleChange} />
-          {errors.base_price && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.base_price}</p>}
+          {errors.base_price && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.base_price}</p>}
 
           <InputField type="number" id="ebay_avg_price" name="ebay_avg_price" placeholder="eBay Avg Price" value={form.ebay_avg_price} onChange={handleChange} />
-          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left" style={{marginTop:"5px"}}>{errors.ebay_avg_price}</p>}
+          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.ebay_avg_price}</p>}
 
           {message && <p className="text-red-500 text-sm">{message}</p>}
         </form>
