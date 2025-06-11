@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.category import CategoryOut
+from app.schemas.category import CategoryOut,ModelListRequest
 from app.services.category_service import CategoryService
 from typing import List
 import shutil
@@ -25,6 +25,13 @@ async def upload_image(
     app_url = settings.APP_URL
     return await CategoryService.add_category(name, f"{app_url}{file_path}", db)
 
-@router.get("/list", response_model=List[CategoryOut])
-async def get_categories(db: AsyncSession = Depends(get_db)):
-    return await CategoryService.get_all_categories(db)
+@router.post("/list", response_model=List[CategoryOut])
+async def get_categories(
+    request: ModelListRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    return await CategoryService.get_all_categories(
+        limit=request.limit,
+        offset=request.offset,
+        db=db
+    )

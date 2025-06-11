@@ -84,14 +84,15 @@ class CategoryService:
             await db.rollback()
             raise HTTPException(status_code=500, detail=f"Failed to add category: {str(e)}")
     @staticmethod
-    async def get_all_categories(db: AsyncSession):
+    async def get_all_categories(limit: int, offset: int, db: AsyncSession):
         result = await db.execute(
             select(Category)
             .options(
                 selectinload(Category.brands),
                 selectinload(Category.models),
-                selectinload(Category.media) 
-                 
+                selectinload(Category.media)
             )
+            .limit(limit)
+            .offset(offset)
         )
         return result.scalars().all()

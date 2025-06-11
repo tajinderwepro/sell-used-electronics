@@ -12,7 +12,7 @@ class BrandService:
     async def add_brand(category_id: int, name: str, path: str, db: AsyncSession):
         try:
             # Check if brand exists
-            result = await db.execute(select(Brand).where(Brand.name == name))
+            result = await db.execute(select(Brand).where(Brand.name == name,Brand.category_id == category_id))
             existing = result.scalar_one_or_none()
 
             if existing:
@@ -45,7 +45,7 @@ class BrandService:
             }
 
         except HTTPException:
-            raise  # Re-raise HTTPException as is
+            raise  
         except Exception as e:
             await db.rollback()
             raise HTTPException(
@@ -54,15 +54,17 @@ class BrandService:
             )
 
     @staticmethod
-    async def get_all_brands(category_id: int, db: AsyncSession) -> List[BrandOut]:
+    async def get_all_brands(category_id: int, limit: int, offset: int, db: AsyncSession) -> List[BrandOut]:
         result = await db.execute(
             select(Brand)
             .where(Brand.category_id == category_id)
             .options(
                 selectinload(Brand.category),
-                selectinload(Brand.models),  # If you need models
+                selectinload(Brand.models),  
                 selectinload(Brand.media),
-            )
+            ).limit(limit)
+            .offset(offset)
         )
         brands = result.scalars().all()
         return brands
+

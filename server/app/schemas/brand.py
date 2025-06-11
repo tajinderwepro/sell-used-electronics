@@ -14,6 +14,10 @@ class MediaOut(BaseModel):
     class Config:
         orm_mode = True
 
+class ModelListRequest(BaseModel):
+    limit: int = 10
+    offset: int = 0
+
 class ModelOut(BaseModel):
     id: int
     name: str
