@@ -27,8 +27,10 @@ class ModelService:
                 name=payload.name,
                 media_id=payload.media_id,
                 brand_id=brand_id,
-                category_id=payload.category_id
+                category_id=payload.category_id,
+                base_price=payload.base_price  
             )
+
             db.add(new_model)
             await db.commit()
             await db.refresh(new_model)
@@ -53,6 +55,7 @@ class ModelService:
         except Exception as e:
             await db.rollback()
             raise HTTPException(status_code=500, detail=f"Error creating model: {str(e)}")
+
 
     @staticmethod
     async def get_all_models(brand_id: int, limit: int, offset: int, db: AsyncSession):

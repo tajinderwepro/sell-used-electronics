@@ -34,7 +34,9 @@ export default function Brands() {
   const fetchBrands = async () => {
     setLoading(true)
     try {
-       const res = await api.admin.getBrand(categoryId);
+      const limit = 10; 
+      const offset = 0;
+      const res = await api.admin.getBrand(categoryId, limit, offset);
        setBrands(res || []);
     } catch (error) {
       toast.error(error.message)

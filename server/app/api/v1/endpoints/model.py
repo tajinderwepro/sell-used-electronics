@@ -17,6 +17,7 @@ async def upload_model(
     brand_id: int,
     file: UploadFile = File(...),
     name: str = Form(...),
+    base_price: float = Form(...), 
     media_id: int = Form(None),
     category_id: int = Form(...),
     db: AsyncSession = Depends(get_db)
@@ -28,9 +29,11 @@ async def upload_model(
         name=name,
         media_id=media_id,
         brand_id=brand_id,
-        category_id=category_id
+        category_id=category_id,
+        base_price=base_price  
     )
     return await ModelService.add_model(brand_id, payload, f"{app_url}{file_path}", db)
+
 
 
 @router.post("/list/{brand_id}", response_model=List[ModelOut])

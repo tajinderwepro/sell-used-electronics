@@ -39,6 +39,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_brands_id'), 'brands', ['id'], unique=False)
     op.create_table('models',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('base_price',sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('media_id', sa.Integer(), nullable=True),
     sa.Column('brand_id', sa.Integer(), nullable=False),
@@ -65,3 +66,4 @@ def downgrade():
     op.drop_table('brands')
     op.drop_table('models')
     op.drop_table('media')
+    op.drop_column('models', 'base_price')

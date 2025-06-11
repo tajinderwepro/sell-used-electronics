@@ -30,7 +30,9 @@ export default function Categories() {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await api.admin.getCategories();
+       const limit = 10; 
+      const offset = 0;
+      const res = await api.admin.getCategories(limit, offset);
       setCategories(res || []);
     } catch (err) {
       console.error("Failed to fetch categories:", err);
