@@ -46,7 +46,7 @@ class ModelService:
 
             return {
                 "success": True,
-                "message": "Model added",
+                "message": "Model added successfully",
                 "model_id": new_model.id,
                 "media_id": media.id
             }

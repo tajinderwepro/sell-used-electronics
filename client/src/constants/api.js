@@ -56,8 +56,15 @@ const api = {
       ),
     getCategories: () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/category/list`)),  
     
-    CreateModel : (id,data) => axiosWrapper(axiosInstance.post(`http://localhost:8000/api/v1/model/add-model/${id}`,{
-            headers: { 'Content-Type': 'multipart/form-data' },},data),data),
+    createModel: (id, data) => axiosWrapper(
+      axiosInstance.post(
+        `http://localhost:8000/api/v1/model/add-model/${id}`,
+        data,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      )
+    ),
 
 
     addBrand : (id,data) =>   axiosWrapper(
