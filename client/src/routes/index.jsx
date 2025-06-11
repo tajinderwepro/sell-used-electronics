@@ -34,14 +34,14 @@ function AllRoutes() {
                         user && user.role == 'admin' ? <Navigate to="/admin/dashboard" /> : user && user.role == 'user' ? <Navigate to="/" /> : <Outlet />
                     }
                 >
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin/login" element={<GeneralLayout><AdminLogin /></GeneralLayout>} />
                 </Route>
                 <Route
                     element={
                         user && user.role == 'user' ? <Navigate to="/" /> : user && user.role == 'admin' ? <Navigate to="/admin/dashboard" /> : <Outlet />
                     }
                 >
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<GeneralLayout><Login /></GeneralLayout>} />
                 </Route>
                   <Route path="/" element={<Home />} />
                   <Route path="/register" element={<GeneralLayout><Register /></GeneralLayout>} />

@@ -55,7 +55,7 @@ export default function Models() {
       const offset = 0;
       const res = await api.admin.getModel(brandId, limit, offset);
       console.log(res, "model response");
-      setModels(MODELS); 
+      setModels(res); 
     } catch (error) {
       toast.error(error.message)
     }

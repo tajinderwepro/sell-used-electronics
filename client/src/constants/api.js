@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { triggerSessionModal } from '../context/SessionContext';
+import { API_SERVER } from '.';
+
+axios.defaults.baseURL = API_SERVER;
 
 const axiosInstance = axios.create({
   headers: {
@@ -31,82 +34,75 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-const axiosWrapper = (apiCall) =>
-  apiCall.then(res => res.data).catch(err => Promise.reject(err));
-// Define all API calls here
-const api = {
-  admin: {
-    login: (data) => axiosWrapper(axiosInstance.post('http://localhost:8000/api/v1/auth/login', data)),
-    getUsers : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/users/list')),
-    createUser: (data) => axiosWrapper(axiosInstance.post('http://localhost:8000/api/v1/auth/register', data)),
-    getUser : (id) => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/users/${id}`)),
-    deleteUser : (id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/users/${id}`)),
+  const axiosWrapper = (apiCall) =>
+    apiCall.then(res => res.data).catch(err => Promise.reject(err));
 
-    updateUser : (id,data) => axiosWrapper(axiosInstance.put(`http://localhost:8000/api/v1/users/${id}`,data)),
-   
-    createCategory: (data) =>
-      axiosWrapper(
+  const api = {
+    admin: {
+      login: (data) => axiosWrapper(axiosInstance.post('/auth/login', data)),
+      getUsers : () => axiosWrapper(axiosInstance.get('/users/list')),
+      createUser: (data) => axiosWrapper(axiosInstance.post('/auth/register', data)),
+      getUser : (id) => axiosWrapper(axiosInstance.get(`/users/${id}`)),
+      deleteUser : (id) => axiosWrapper(axiosInstance.delete(`/users/${id}`)),
+
+      updateUser : (id,data) => axiosWrapper(axiosInstance.put(`/users/${id}`,data)),
+    
+      createCategory: (data) =>
+        axiosWrapper(
+          axiosInstance.post(
+            `/category/add-category`,
+            data,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          )
+        ),
+      getCategories: (limit = 10, offset = 0) => axiosWrapper(
+               axiosInstance.post(`/category/list`, {
+              limit,
+              offset
+      })),
+      createModel: (id, data) => axiosWrapper(
         axiosInstance.post(
-          `http://localhost:8000/api/v1/category/add-category`,
+          `/model/add-model/${id}`,
           data,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
           }
         )
       ),
-    getCategories: (limit = 10, offset = 0) => 
-        axiosWrapper(
-          axiosInstance.post(`http://localhost:8000/api/v1/category/list`, {
-            limit,
-            offset
-          })
-    ),
-    createModel: (id, data) => axiosWrapper(
-      axiosInstance.post(
-        `http://localhost:8000/api/v1/model/add-model/${id}`,
-        data,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      )
-    ),
 
 
-    addBrand : (id,data) =>   axiosWrapper(
-        axiosInstance.post(
-          `http://localhost:8000/api/v1/brand/add-brand/${id}`,
-          data,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        ),data
-      ),
-    
-
-    getModel: (id, limit = 10, offset = 0) => 
-        axiosWrapper(
-          axiosInstance.post(`http://localhost:8000/api/v1/model/list/${id}`, {
-            limit,
-            offset
-          })
+      addBrand : (id,data) =>   axiosWrapper(
+          axiosInstance.post(
+            `/brand/add-brand/${id}`,
+            data,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          ),data
         ),
+      
 
-    getBrand: (id, limit = 10, offset = 0) => 
-            axiosWrapper(
-              axiosInstance.post(`http://localhost:8000/api/v1/brand/list/${id}`, {
-                limit,
-                offset
-              })
-            ),
-    getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
-    deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`http://localhost:8000/api/v1/devices/${device_id}`)),
-    // getDevices : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/devices/list')),
-    getOrders : () => axiosWrapper(axiosInstance.get('http://localhost:8000/api/v1/orders/list')),
-    },
-  auth :{
-    me : () => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/auth/me`)),
-  }
-};
+      getModel: (id, limit = 10, offset = 0) => 
+          axiosWrapper(
+            axiosInstance.post(`/model/list/${id}`, {
+              limit,
+              offset
+            })
+          ),
+      getBrand : (id,limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`/brand/list/${id}`, {limit, offset})),
+
+
+      getDevices : () => axiosWrapper(axiosInstance.get('/devices/list')),
+      deleteDevice : (device_id) => axiosWrapper(axiosInstance.delete(`/devices/${device_id}`)),
+      // getDevices : () => axiosWrapper(axiosInstance.get('/devices/list')),
+      getOrders : () => axiosWrapper(axiosInstance.get('/orders/list')),
+      },
+    auth :{
+      me : () => axiosWrapper(axiosInstance.get(`/auth/me`)),
+    }
+  };
 
 export { api, axiosInstance };
 export default api;
