@@ -197,7 +197,6 @@ export default function Devices() {
   console.log(form, 'form')
   return (
     <div className="min-h-screen">
-      <CustomBreadcrumbs items={breadcrumbItems} separator=">" />
       <CommonTable
         columns={columns}
         data={devices}

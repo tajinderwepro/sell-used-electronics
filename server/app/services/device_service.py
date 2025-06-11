@@ -1,6 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.device import Device
+from app.models.model import Model
+from app.models.brand import Brand
+from app.models.category import Category
 from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
 
 class DeviceService:
@@ -12,10 +15,38 @@ class DeviceService:
 
     @staticmethod
     async def create_device(device_in: DeviceCreate, db: AsyncSession):
-        device = Device(**device_in.dict())
+
+        category_id = int(device_in.category)  # convert string to integer
+        category_res = await db.execute(select(Category).where(Category.id == category_id))
+        category_obj = category_res.scalar_one_or_none()
+        category_name = category_obj.name if category_obj else None
+
+        # Get brand name
+        brand_id = int(device_in.brand)  # convert string to integer
+        brand_res = await db.execute(select(Brand).where(Brand.id == brand_id))
+        brand_obj = brand_res.scalar_one_or_none()
+        brand_name = brand_obj.name if brand_obj else None
+
+        # Get model name
+        model_id = int(device_in.model)  # convert string to integer
+        model_res = await db.execute(select(Model).where(Model.id == model_id))
+        model_obj = model_res.scalar_one_or_none()
+        model_name = model_obj.name if model_obj else None
+
+        # Create Device instance
+        device = Device(
+            condition=device_in.condition,
+            base_price=device_in.base_price,
+            ebay_avg_price=device_in.ebay_avg_price,
+            category=category_name,
+            brand=brand_name,
+            model=model_name
+        )
+
         db.add(device)
         await db.commit()
         await db.refresh(device)
+
         return {
             "success": True,
             "message": "Submit successfully",
