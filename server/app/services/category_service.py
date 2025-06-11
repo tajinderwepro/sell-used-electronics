@@ -4,6 +4,9 @@ from fastapi import HTTPException
 from app.models.category import Category
 from app.models.media import Media
 from sqlalchemy.orm import selectinload
+from app.models.brand import Brand
+from app.models.model import Model
+from sqlalchemy import delete, update
 
 class CategoryService:
     @staticmethod
@@ -15,13 +18,11 @@ class CategoryService:
             if existing:
                 return {"success": False, "message": "Category already exists"}
 
-            # Create new category
             new_category = Category(name=name)
             db.add(new_category)
             await db.commit()
             await db.refresh(new_category)
 
-            # Create media
             media = Media(
                 path=path,
                 mediable_type="category",
@@ -31,7 +32,6 @@ class CategoryService:
             await db.commit()
             await db.refresh(media)
 
-            # Link media to category
             new_category.media_id = media.id
             await db.commit()
             await db.refresh(new_category)
@@ -88,11 +88,47 @@ class CategoryService:
         result = await db.execute(
             select(Category)
             .options(
-                selectinload(Category.brands),
-                selectinload(Category.models),
-                selectinload(Category.media)
+                selectinload(Category.media),
+                selectinload(Category.models).selectinload(Model.media),
+                selectinload(Category.brands)
+                    .selectinload(Brand.models)
+                    .selectinload(Model.media),
+                selectinload(Category.brands).selectinload(Brand.media)
             )
             .limit(limit)
             .offset(offset)
         )
         return result.scalars().all()
+    @staticmethod
+    async def update_category(category_id: int, name: str, image_path: str, db: AsyncSession):
+        result = await db.execute(select(Category).where(Category.id == category_id))
+        category = result.scalar_one_or_none()
+
+        if not category:
+            raise HTTPException(status_code=404, detail="Category not found")
+
+        category.name = name
+
+        if image_path:
+            media_entry = Media(
+                path=image_path,
+                mediable_id=category_id,
+                mediable_type='category'
+            )
+            db.add(media_entry)
+
+        await db.commit()
+        await db.refresh(category)
+        return {"message": "Category updated successfully"}
+
+    @staticmethod
+    async def delete_category(category_id: int, db: AsyncSession):
+        result = await db.execute(select(Category).where(Category.id == category_id))
+        category = result.scalar_one_or_none()
+
+        if not category:
+            raise HTTPException(status_code=404, detail="Category not found")
+
+        await db.delete(category)
+        await db.commit()
+        return {"message": "Category deleted successfully"}

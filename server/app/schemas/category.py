@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from app.schemas.media import MediaOut
+from .brand import BrandOut
+from .model import ModelOut
+from .media import MediaOut
 # Base schema for input
 class CategoryBase(BaseModel):
     name: str
@@ -27,6 +29,12 @@ class BrandOut(BaseModel):
     class Config:
         orm_mode = True
 
+class CategoryUpdate(BaseModel):
+    name: str
+
+    class Config:
+       orm_mode = True
+
 class ModelOut(BaseModel):
     id: int
     name: str
@@ -50,13 +58,13 @@ class MediaOut(BaseModel):
     class Config:
         orm_mode = True
 
+
 class CategoryOut(BaseModel):
     id: int
     name: str
-    media_id: Optional[int]
+    media: List[MediaOut] = []
     brands: List[BrandOut] = []
     models: List[ModelOut] = []
-    media: List[MediaOut] = []  # ← include media here
 
     class Config:
         orm_mode = True

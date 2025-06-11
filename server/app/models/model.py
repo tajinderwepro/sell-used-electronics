@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
+from sqlalchemy.orm import foreign
 
 class Model(Base):
     __tablename__ = "models"
