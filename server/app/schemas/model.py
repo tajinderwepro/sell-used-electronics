@@ -6,6 +6,7 @@ class ModelBase(BaseModel):
     name: str
     media_id: Optional[int] = None  
     category_id: int
+    base_price: float
 
 class ModelCreate(ModelBase):
     pass
