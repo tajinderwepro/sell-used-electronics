@@ -28,7 +28,7 @@ class ModelService:
                 media_id=payload.media_id,
                 brand_id=brand_id,
                 category_id=payload.category_id,
-                base_price=payload.base_price  
+                # base_price=payload.base_price  
             )
 
             db.add(new_model)
