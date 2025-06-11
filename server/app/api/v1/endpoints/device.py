@@ -1,6 +1,6 @@
 # app/routes/auth_routes.py
 
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate
@@ -76,3 +76,13 @@ async def update_device(
         raise HTTPException(status_code=404, detail="Device not found")
     return updated_device
     
+@router.post("/estimate-price")
+async def estimate_price(request: Request):
+    data = await request.json()
+    base_price = data.get("base_price")
+    
+    if base_price is None:
+        return {"error": "base_price is required"}
+    
+    estimated_price = base_price - ((base_price * 10) / 100)
+    return {"estimated_price": estimated_price}

@@ -51,6 +51,7 @@ class AddressService:
         async with async_session() as session:
             result = await session.execute(
                 select(Address).where(Address.user_id == user_id)
+                .order_by(Address.id) 
             )
             address = result.scalars().all()
             if address:

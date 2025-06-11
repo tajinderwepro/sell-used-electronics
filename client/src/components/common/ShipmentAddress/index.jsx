@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Building, LocateIcon, Mail, MapPin, Pencil, Plus } from 'lucide-react';
+import { Building, LocateIcon, Mail, MapPin, Pencil, PinIcon, Plus } from 'lucide-react';
 import { useColorClasses } from '../../../theme/useColorClasses';
 import api from '../../../constants/api';
 import Button from '../../ui/Button';
@@ -59,8 +59,30 @@ function ShipmentAddress() {
     setEditingIndex(null);
     toast.success(res.message);
   };
+
+  const renderField = (Icon, label, value) => {
+    return  <div className="flex items-start gap-2">
+        <Icon className="w-5 h-5 mt-0.5 text-blue-500" />
+        <p className={COLOR_CLASSES.textPrimary}>
+          <span className={COLOR_CLASSES.textLight}>{label}</span><br />{value}
+        </p>
+      </div>
+  }
+
+  const renderForm = () => {
+    return  <div className={`grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 `}>
+            <InputField label="Address" name="address" value={formData.address || ''} onChange={handleChange} />
+            <InputField label="City" name="city" value={formData.city || ''} onChange={handleChange} />
+            <InputField label="State" name="state" value={formData.state || ''} onChange={handleChange} />
+            <InputField label="Zip" name="zip" value={formData.zip || ''} onChange={handleChange} />
+          <div className="flex gap-2 mt-2">
+          <Button className="text-sm w-40" onClick={handleSave}>Save</Button>
+          <Button className="text-sm w-40" variant="outline" onClick={handleCancel}>Cancel</Button>
+        </div>
+      </div>
+  }
   return (
-    <div className="space-y-8 mt-8">
+    <div className="space-y-5 mt-8">
       <div className='flex items-center justify-between'>
           <h4 className={`text-xl font-bold ${COLOR_CLASSES.textPrimary}`}>Shipment Address</h4>
             <Button
@@ -100,45 +122,15 @@ function ShipmentAddress() {
           </div>
           {editingIndex === index ? (
             <>
-            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 `}>
-              <InputField label="Address" name="address" value={formData.address || ''} onChange={handleChange} />
-              <InputField label="City" name="city" value={formData.city || ''} onChange={handleChange} />
-              <InputField label="State" name="state" value={formData.state || ''} onChange={handleChange} />
-              <InputField label="Zip" name="zip" value={formData.zip || ''} onChange={handleChange} />
-              <div className="flex gap-2 mt-2">
-                <Button className="text-sm w-40" onClick={handleSave}>Save</Button>
-                <Button className="text-sm w-40" variant="outline" onClick={handleCancel}>Cancel</Button>
-              </div>
-            </div>
+              {renderForm()}
             </>
           ) : (
           <div className={`grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 `}>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-5 h-5 mt-0.5 text-blue-500" />
-                <p className={COLOR_CLASSES.textPrimary}>
-                  <span className={COLOR_CLASSES.textLight}>Address:</span><br />{addr.address}
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <Building className="w-5 h-5 mt-0.5 text-blue-500" />
-                <p className={COLOR_CLASSES.textPrimary}>
-                  <span className={COLOR_CLASSES.textLight}>City:</span><br />{addr.city}
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <LocateIcon className="w-5 h-5 mt-0.5 text-blue-500" />
-                <p className={COLOR_CLASSES.textPrimary}>
-                  <span className={COLOR_CLASSES.textLight}>State:</span><br />{addr.state}
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <Mail className="w-5 h-5 mt-0.5 text-blue-500" />
-                <p className={COLOR_CLASSES.textPrimary}>
-                  <span className={COLOR_CLASSES.textLight}>Zip:</span><br />{addr.zip}
-                </p>
-              </div>
+              {renderField(MapPin, 'Address', addr.address)}
+              {renderField(Building, 'City', addr.city)}
+              {renderField(LocateIcon, 'State', addr.state)}
+              {renderField(PinIcon, 'Zip', addr.zip)}
             </div>
-
           )}
         </div>
       ))}
@@ -148,16 +140,7 @@ function ShipmentAddress() {
           className={`${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.shadowMd} border p-4 rounded space-y-2`}
         >
           <h4 className={`font-semibold ${COLOR_CLASSES.textPrimary}`}>Add New Address</h4>
-            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 p-4 `}>
-                <InputField label="Address" name="address" value={formData.address || ''} onChange={handleChange} />
-                <InputField label="City" name="city" value={formData.city || ''} onChange={handleChange} />
-                <InputField label="State" name="state" value={formData.state || ''} onChange={handleChange} />
-                <InputField label="Zip" name="zip" value={formData.zip || ''} onChange={handleChange} />
-             <div className="flex gap-2 mt-2">
-              <Button className="text-sm w-40" onClick={handleSave}>Save</Button>
-              <Button className="text-sm w-40" variant="outline" onClick={handleCancel}>Cancel</Button>
-            </div>
-            </div>
+          {renderForm()}
         </div>
       )
       }

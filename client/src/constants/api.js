@@ -105,6 +105,9 @@ axiosInstance.interceptors.response.use(
     address:{
       get : (user_id) => axiosWrapper(axiosInstance.get(`/addresses/${user_id}`)),
       add : (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`,data)),
+    },
+    public:{
+      getEstimatePrice : (data) => axiosWrapper(axiosInstance.post(`/devices/estimate-price`,data)),
     }
   };
 
