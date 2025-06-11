@@ -55,7 +55,7 @@ class BrandService:
             raise HTTPException(status_code=500, detail=f"Error creating brand: {str(e)}")
 
     @staticmethod
-    async def get_all_brands(category_id: int, limit: int, offset: int, db: AsyncSession) -> List[BrandOut]:
+    async def get_all_brands(category_id: int, limit: int, offset: int, db: AsyncSession):
         result = await db.execute(
             select(Brand)
             .where(Brand.category_id == category_id)
@@ -67,7 +67,14 @@ class BrandService:
             .limit(limit)
             .offset(offset)
         )
-        return result.scalars().all()
+        brands = result.scalars().all()
+
+        return {
+            "success": True,
+            "status_code": 200,
+            "data": brands
+        }
+
 
     @staticmethod
     async def update_brand(brand_id: int, name: str, image_path: str, db: AsyncSession):

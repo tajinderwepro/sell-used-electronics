@@ -59,6 +59,11 @@ class ModelService:
 
     @staticmethod
     async def get_all_models(brand_id: int, limit: int, offset: int, db: AsyncSession):
+        total_result = await db.execute(
+            select(Model).where(Model.brand_id == brand_id)
+        )
+        total_count = len(total_result.scalars().all())
+
         result = await db.execute(
             select(Model)
             .where(Model.brand_id == brand_id)
@@ -70,7 +75,17 @@ class ModelService:
             .limit(limit)
             .offset(offset)
         )
-        return result.scalars().all()
+        models = result.scalars().all()
+
+        return {
+            "success": True,
+            "status_code": 200,
+            "total": total_count,
+            "limit": limit,
+            "offset": offset,
+            "data": models
+        }
+
 
     @staticmethod
     async def update_model(model_id: int, name: str, image_path: str, db: AsyncSession):
