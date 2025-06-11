@@ -12,6 +12,7 @@ const defaultState = {
 
 export const QuoteFormProvider = ({ children }) => {
   const [formState, setFormState] = useState(defaultState);
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
 
   const updateForm = (updates) => {
     setFormState((prev) => ({ ...prev, ...updates }));
@@ -22,7 +23,15 @@ export const QuoteFormProvider = ({ children }) => {
   };
 
   return (
-    <QuoteFormContext.Provider value={{ formState, updateForm, resetForm }}>
+    <QuoteFormContext.Provider
+      value={{
+        formState,
+        updateForm,
+        resetForm,
+        showQuoteForm,
+        setShowQuoteForm,
+      }}
+    >
       {children}
     </QuoteFormContext.Provider>
   );

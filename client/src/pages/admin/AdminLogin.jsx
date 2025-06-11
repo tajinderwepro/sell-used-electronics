@@ -13,6 +13,7 @@ import {
   FONT_WEIGHTS,
 } from "../../constants/theme";
 import { useColorClasses } from "../../theme/useColorClasses";
+import { toast } from "react-toastify";
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
@@ -31,8 +32,10 @@ export default function AdminLogin() {
       await login(form.email, form.password, form.role);
       setError("");
       navigate("/admin/dashboard");
+      toast.success("logged in successfully")
     } catch (error) {
       setError("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials.")
     }
   };
   if (userRole=="admin" && isAuthenticated) {

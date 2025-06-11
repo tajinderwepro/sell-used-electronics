@@ -1,15 +1,20 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Zap, BadgeCheck, Smartphone, Laptop, TabletSmartphone, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Heading from "../components/ui/Heading";
 import {  FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 import QuoteForm from "./quote/QuoteForm";
 import GeneralLayout from "../layouts/GeneralLayout";
 import Modal from "../components/common/Modal";
 import { useColorClasses } from "../theme/useColorClasses";
+import { useQuoteForm } from "../context/QuoteFormContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
-  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const { showQuoteForm, setShowQuoteForm,formState,resetForm } = useQuoteForm();
+  const { step, category, model, condition, price } = formState;
+  const { isAuthenticated } = useAuth();
+
   const COLOR_CLASSES = useColorClasses();
   const features = [
     {
@@ -50,7 +55,12 @@ export default function Home() {
       answer: "Yes! We provide free pickup in major cities and towns at your convenience.",
     },
   ];
-
+  useEffect(()=>{
+    if(isAuthenticated && step === 3){
+       setShowQuoteForm(true)
+    }
+  },[])
+  
   return (
     <>
       <GeneralLayout>
@@ -128,7 +138,7 @@ export default function Home() {
 
         {/* Quote Modal */}
         {showQuoteForm && (
-          <Modal onClose={() => setShowQuoteForm(false)} title={"Get a Quote"}>
+          <Modal onClose={() =>{setShowQuoteForm(false);resetForm()}} title={"Get a Quote"}>
             <QuoteForm onClose={() => setShowQuoteForm(false)} />
           </Modal>
         )}

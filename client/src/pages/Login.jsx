@@ -9,6 +9,7 @@ import Heading from "../components/ui/Heading";
 
 import { FONT_FAMILIES, FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 import { useColorClasses } from "../theme/useColorClasses";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const COLOR_CLASSES = useColorClasses();
@@ -28,8 +29,10 @@ export default function Login() {
       await login(form.email, form.password, form.role);
       setError("");
       navigate("/");
+      toast.success("User logged in successfully")
     } catch (error) {
       setError("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials.")
     }
   };
 

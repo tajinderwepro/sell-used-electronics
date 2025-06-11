@@ -31,7 +31,7 @@ export default function QuoteForm({ onClose }) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const { formState, updateForm, resetForm } = useQuoteForm();
+  const { formState, updateForm, resetForm, } = useQuoteForm();
   const { step, category, model, condition, price } = formState;
 
   const handleNext = () => updateForm({ step: step + 1 });
@@ -45,7 +45,7 @@ export default function QuoteForm({ onClose }) {
     }else{
        resetForm()
     }
-     if (onClose) onClose();
+     if (onClose) {onClose();};
 
   };
 
