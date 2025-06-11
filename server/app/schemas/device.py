@@ -20,6 +20,9 @@ class DeviceOut(BaseModel):
     condition: str
     base_price: float
     ebay_avg_price: float
+    category_name: Optional[str] = None
+    brand_name: Optional[str] = None
+    model_name: Optional[str] = None
 
     class Config:
         from_attributes = True
