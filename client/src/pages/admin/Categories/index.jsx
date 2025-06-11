@@ -29,12 +29,10 @@ export default function Categories() {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-
-
   const fetchCategories = async (currentOffset = 0, append = false) => {
     setLoading(true);
     try {
-      const res = await api.admin.getCategories(limit, currentOffset);
+      const res = await api.getCategories(limit, currentOffset);
       if (res && res.length > 0) {
         setCategories((prev) => append ? [...prev, ...res] : res);
         setHasMore(res.length === limit); // if less than limit, no more data
@@ -48,7 +46,6 @@ export default function Categories() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchCategories(0);

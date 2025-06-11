@@ -57,11 +57,7 @@ axiosInstance.interceptors.response.use(
             }
           )
         ),
-      getCategories: (limit = 10, offset = 0) => axiosWrapper(
-               axiosInstance.post(`/category/list`, {
-              limit,
-              offset
-      })),
+      
       createModel: (id, data) => axiosWrapper(
         axiosInstance.post(
           `/model/add-model/${id}`,
@@ -99,6 +95,11 @@ axiosInstance.interceptors.response.use(
       // getDevices : () => axiosWrapper(axiosInstance.get('/devices/list')),
       getOrders : () => axiosWrapper(axiosInstance.get('/orders/list')),
       },
+      getCategories: (limit = 10, offset = 0) => axiosWrapper(
+               axiosInstance.post(`/category/list`, {
+              limit,
+              offset
+      })),
     auth :{
       me : () => axiosWrapper(axiosInstance.get(`/auth/me`)),
     },
@@ -108,6 +109,7 @@ axiosInstance.interceptors.response.use(
     },
     public:{
       getEstimatePrice : (data) => axiosWrapper(axiosInstance.post(`/devices/estimate-price`,data)),
+      submit : (data) => axiosWrapper(axiosInstance.post(`/devices/submit`,data)),
     }
   };
 

@@ -17,7 +17,7 @@ async def get_list(db: AsyncSession = Depends(get_db)):
         success=True
     )
 
-@router.post("/submit", response_model=DeviceOut)
+@router.post("/submit", response_model=DeviceListResponse)
 async def create_device(device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
     return await DeviceService.create_device(device_in, db)
 

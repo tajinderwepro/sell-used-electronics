@@ -16,7 +16,7 @@ api_router.include_router(
     device.router, 
     prefix="/devices", 
     tags=["devices"],
-    dependencies=[Depends(get_current_user_id)]
+    # dependencies=[Depends(get_current_user_id)]
 )
 api_router.include_router(
     order.router, 
@@ -29,7 +29,7 @@ api_router.include_router(
     category.router, 
     prefix="/category", 
     tags=["category"],
-    dependencies=[Depends(get_current_user_id)]
+    # dependencies=[Depends(get_current_user_id)]
 )
 
 api_router.include_router(

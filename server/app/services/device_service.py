@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.device import Device
-from app.schemas.device import DeviceCreate, DeviceUpdate
+from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
 
 class DeviceService:
 
@@ -16,7 +16,11 @@ class DeviceService:
         db.add(device)
         await db.commit()
         await db.refresh(device)
-        return device
+        return {
+            "success": True,
+            "message": "Submit successfully",
+            "data": [DeviceOut.from_orm(device)],
+        }
 
     @staticmethod
     async def delete_device(device_id: int, db: AsyncSession):

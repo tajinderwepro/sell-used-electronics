@@ -1,12 +1,15 @@
 import SelectField from "../../../components/ui/SelectField";
 
-export default function StepCondition({ condition, setCondition, setPrice, data, category, model, onNext, onBack }) {
+export default function StepCondition({ condition, setCondition }) {
   const handleChange = (e) => {
-    const cond = e.target.value;
-    setCondition(cond);
-    const p = data[category][model].condition[cond];
-    setPrice(p);
+    setCondition(e.target.value);
   };
+
+  const conditionOptions = [
+    { value: "good", label: "Good" },
+    { value: "bad", label: "Bad" },
+    { value: "excellent", label: "Excellent" },
+  ];
 
   return (
     <div>
@@ -15,10 +18,7 @@ export default function StepCondition({ condition, setCondition, setPrice, data,
         id="condition"
         value={condition}
         onChange={handleChange}
-        options={Object.keys(data[category][model].condition).map((cond) => ({
-          value: cond,
-          label: cond,
-        }))}
+        options={conditionOptions}
       />
     </div>
   );

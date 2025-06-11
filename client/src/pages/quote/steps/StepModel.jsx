@@ -1,7 +1,17 @@
 import SelectField from "../../../components/ui/SelectField";
 
-export default function StepModel({ model, setModel, data, category, onNext, onBack }) {
+export default function StepModel({ model, setModel, brand, category, categories }) {
   const handleChange = (e) => setModel(e.target.value);
+
+  const selectedCategory = categories.find((cat) => cat.id === Number(category));
+
+  const filteredModels = selectedCategory?.models?.filter((m) => m.brand_id === Number(brand)) || [];
+
+  const modelOptions = filteredModels.map((m) => ({
+    value: m.id,
+    label: m.name,
+  }));
+
   return (
     <div>
       <SelectField
@@ -9,10 +19,7 @@ export default function StepModel({ model, setModel, data, category, onNext, onB
         id="model"
         value={model}
         onChange={handleChange}
-        options={Object.keys(data[category]).map((mod) => ({
-          value: mod,
-          label: mod,
-        }))}
+        options={modelOptions}
       />
     </div>
   );
