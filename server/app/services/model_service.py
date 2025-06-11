@@ -80,25 +80,44 @@ class ModelService:
         if not model:
             raise HTTPException(status_code=404, detail="Model not found")
 
-        
         model.name = name
 
         if image_path:
-            media_entry = Media(
-                path=image_path,
-                mediable_id=model_id,
-                mediable_type='model'
+            # Look for existing media for this model with type 'model'
+            media_result = await db.execute(
+                select(Media).where(
+                    Media.mediable_id == model_id,
+                    Media.mediable_type == 'model'
+                )
             )
-            db.add(media_entry)
+            media = media_result.scalar_one_or_none()
+
+            if media:
+                # Update existing media path
+                media.path = image_path
+            else:
+                # Create new media if none found
+                media = Media(
+                    path=image_path,
+                    mediable_type='model',
+                    mediable_id=model_id
+                )
+                db.add(media)
+
+            await db.commit()
+            await db.refresh(media)
+            model.media_id = media.id  # Ensure model references correct media ID
 
         await db.commit()
         await db.refresh(model)
+
         return {
             "success": True,
             "status_code": 200,
             "message": "Model updated successfully",
             "model": model
         }
+
 
     @staticmethod
     async def delete_model(model_id: int, db: AsyncSession):
