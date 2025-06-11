@@ -10,6 +10,11 @@ class ModelBase(BaseModel):
 class ModelCreate(ModelBase):
     pass
 
+class ModelListRequest(BaseModel):
+    limit: int = 10
+    offset: int = 0
+
+
 class MediaOut(BaseModel):
     id: int
     path: str

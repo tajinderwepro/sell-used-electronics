@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.model import ModelCreate, ModelOut
+from app.schemas.model import ModelCreate, ModelOut,ModelListRequest
 from app.services.model_service import ModelService
 from app.utils.file_utils import save_upload_file
 from typing import List
@@ -33,7 +33,16 @@ async def upload_model(
     return await ModelService.add_model(brand_id, payload, f"{app_url}{file_path}", db)
 
 
-@router.get("/list/{brand_id}", response_model=List[ModelOut])
-async def get_models(brand_id: int, db: AsyncSession = Depends(get_db)):
-    return await ModelService.get_all_models(brand_id, db)
+@router.post("/list/{brand_id}", response_model=List[ModelOut])
+async def list_models(
+    brand_id: int,
+    request: ModelListRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    return await ModelService.get_all_models(
+        brand_id=brand_id,
+        limit=request.limit,
+        offset=request.offset,
+        db=db
+    )
 

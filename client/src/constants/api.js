@@ -78,7 +78,13 @@ const api = {
       ),
     
 
-    getModel : (id) => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/model/list/${id}`)),
+    getModel: (id, limit = 10, offset = 0) => 
+        axiosWrapper(
+          axiosInstance.post(`http://localhost:8000/api/v1/model/list/${id}`, {
+            limit,
+            offset
+          })
+        ),
     getBrand : (id) => axiosWrapper(axiosInstance.get(`http://localhost:8000/api/v1/brand/list/${id}`)),
 
 

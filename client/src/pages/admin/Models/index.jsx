@@ -47,8 +47,11 @@ export default function Models() {
   const fetchModels = async () => {
     setLoading(true)
     try {
-      const res = await api.admin.getModel(brandId);
-      setModels(res || [ ]); 
+      const limit = 10; 
+      const offset = 0;
+      const res = await api.admin.getModel(brandId, limit, offset);
+      console.log(res, "model response");
+      setModels(MODELS); 
     } catch (error) {
       toast.error(error.message)
     }
