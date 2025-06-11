@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, Plus, CircleHelp } from "lucide-react";
 import SearchInput from "../../../components/ui/SearchInput";
 import Heading from "../../../components/ui/Heading";
 import InputField from "../../../components/ui/InputField";
@@ -20,7 +20,7 @@ export default function Models() {
 
   const [models, setModels] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState({open: false, type: "", id: ""});
   const [form, setForm] = useState({ name: "", image: null });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,51 +35,54 @@ export default function Models() {
     { label: 'Models', path: `/admin/categories/${categoryId}/${brand}/${brandId}` },
   ];
 
-  const MODELS = [
-    { id: 1, name: "iPhone 13", image_url: "/iphone.png" },
-    { id: 2, name: "Galaxy S21", image_url: "/iphone.jpg" },
-    { id: 3, name: "Redmi Note 10", image_url: "/iphone.jpg" },
-    { id: 4, name: "OnePlus 9", image_url: "/iphone.jpg" },
-    { id: 5, name: "Realme 8", image_url: "/iphone.jpg" },
-    { id: 6, name: "Oppo Reno 6", image_url: "/iphone.jpg" },
-    { id: 7, name: "Vivo V21", image_url: "/iphone.jpg" },
-    { id: 8, name: "Moto G60", image_url: "/iphone.jpg" },
-    { id: 9, name: "Nokia 5.4", image_url: "/iphone.jpg" },
-    { id: 10, name: "Xperia 5 III", image_url: "/iphone.jpg" },
-  ];
-
-  const fetchModels = async () => {
+  const fetchModels = async (currentOffset = 0, append = false) => {
     setLoading(true)
     try {
-      const limit = 10; 
-      const offset = 0;
-      const res = await api.admin.getModel(brandId, limit, offset);
-      console.log(res, "model response");
-      setModels(res || []); 
+      const res = await api.admin.getModel(brandId, limit, currentOffset);
+      if (res && res.length > 0) {
+        setModels((prev) => append ? [...prev, ...res] : res);
+        setHasMore(res.length === limit);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       toast.error(error.message)
     }
-    finally{
+    finally {
       setLoading(false)
     }
   };
 
-  const handleModelClick = (model) => {
-    navigate(`/admin/categories/${categoryId}/${brand}/${brandId}/${model.name}/${model.id}`);
-  };
-
   useEffect(() => {
-    fetchModels();
+    fetchModels(0);
   }, [brandId]);
+
+  const handleLoadMore = () => {
+    const newOffset = offset + limit;
+    setOffset(newOffset);
+    fetchModels(newOffset, true);
+  };
 
   const handleOpen = () => {
     setForm({ name: "", image: null });
     setPreview(null);
-    setPopupOpen(true);
+    setErrors({});
+    setPopupOpen({ open: true, type: "create" });
+  };
+
+  const handleEdit = (model) => {
+    setForm({ name: model.name, image: model.media?.[0]?.path || null });
+    setPreview(model.media?.[0]?.path || null);
+    setErrors({});
+    setPopupOpen({ open: true, type: "edit", id: model.id });
+  };
+
+  const handleDelete = (model) => {
+    setPopupOpen({ open: true, type: "delete", id: model.id });
   };
 
   const handleClose = () => {
-    setPopupOpen(false);
+    setPopupOpen({open: false, type: "", id: ""});
     setErrors({});
   };
 
@@ -110,21 +113,53 @@ export default function Models() {
   };
 
   const handleSubmit = async () => {
+    if (popupOpen.type === "delete") {
+      try {
+        setLoading(true);
+        const res = await api.admin.deleteModel(popupOpen.id);
+        if (res.success) {
+          toast.success(res.message);
+          fetchModels();
+        } else {
+          toast.error(res.message);
+        }
+        handleClose();
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (!validateForm()) return;
+    
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("file", form.image);
+    if (form.image instanceof File) {
+      formData.append("file", form.image);
+    }
     formData.append("brand_id", brandId);
     formData.append("category_id", categoryId);
 
     setLoading(true);
     try {
-      const res=await api.admin.createModel(brandId,formData);
-      await fetchModels();
-      handleClose();
-      toast.success(res.message)
+      let res;
+      if (popupOpen.type === "edit") {
+        res = await api.admin.editModel(popupOpen.id, formData);
+      } else {
+        res = await api.admin.createModel(brandId, formData);
+      }
+      
+      if (res.success) {
+        toast.success(res.message);
+        fetchModels();
+        handleClose();
+      } else {
+        toast.error(res.message);
+      }
     } catch (err) {
-      toast.error(err.message)
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -133,14 +168,15 @@ export default function Models() {
   const filteredModels = models.filter((model) =>
     model.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   return (
     <div className="min-h-screen">
       <LoadingIndicator isLoading={loading}/>
       <div className="flex justify-between items-center mb-6">
-       <CustomBreadcrumbs 
-        items={breadcrumbItems} 
-        separator={<ChevronRight style={{ fontSize: "12px" }} />} 
-      />
+        <CustomBreadcrumbs 
+          items={breadcrumbItems} 
+          separator={<ChevronRight style={{ fontSize: "12px" }} />} 
+        />
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search model..."
@@ -159,65 +195,99 @@ export default function Models() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredModels.map((model) => (
-          <Cards key={model.id} brand={model} onClick={handleModelClick} />
-         
+          <Cards 
+            key={model.id} 
+            brand={model} 
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
 
+      {hasMore && models.length > 0 && (
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleLoadMore}
+            className="px-6 py-2 text-sm"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load More"}
+          </Button>
+        </div>
+      )}
+      {models.length == 0 && <div className="flex justify-center items-center h-[50vh]">No Models Available!</div>}
+
       <Popup
-        open={popupOpen}
+        open={popupOpen.open}
         onClose={handleClose}
         onSubmit={handleSubmit}
-        title="Create Model"
+        title={
+          popupOpen.type === "edit"
+            ? "Edit Model"
+            : popupOpen.type === "delete"
+            ? "Delete Model"
+            : "Create Model"
+        }
         btnCancel="Cancel"
-        btnSubmit="Submit"
+        btnSubmit={
+          popupOpen.type === "delete" ? "Delete" : "Submit"
+        }
         isbtnCancel={true}
         isbtnSubmit={true}
         loading={loading}
       >
-        <div className="space-y-4">
-          <div className="flex flex-col items-center mb-4">
-            <label
-              htmlFor="model-image"
-              className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
-            >
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Model Preview"
-                  className="w-full h-full object-cover"
+        {popupOpen.type === "delete" ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className="w-28 h-28" />
+            <p className="text-gray-700 text-sm font-medium">
+              Are you sure you want to delete this model?
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-col items-center mb-4">
+              <label
+                htmlFor="model-image"
+                className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Model Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-500">Upload Image</span>
+                )}
+                <input
+                  type="file"
+                  id="model-image"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
                 />
-              ) : (
-                <span className="text-sm text-gray-500">Upload Image</span>
+              </label>
+              {errors.image && (
+                <p className="text-red-500 text-sm text-center mt-1">
+                  {errors.image}
+                </p>
               )}
-              <input
-                type="file"
-                id="model-image"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-            {errors.image && (
-              <p className="text-red-500 text-sm text-center mt-1">
-                {errors.image}
+            </div>
+
+            <InputField
+              id="name"
+              name="name"
+              placeholder="Model name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm text-left" style={{ marginTop: "5px" }}>
+                {errors.name}
               </p>
             )}
           </div>
-
-          <InputField
-            id="name"
-            name="name"
-            placeholder="Model name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm text-left" style={{ marginTop: "5px" }}>
-              {errors.name}
-            </p>
-          )}
-        </div>
+        )}
       </Popup>
     </div>
   );

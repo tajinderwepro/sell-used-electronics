@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, ChevronRight, Plus } from "lucide-react";
+import { ArrowRight, ChevronRight, Plus, CircleHelp } from "lucide-react";
 import SearchInput from "../../../components/ui/SearchInput";
 import Heading from "../../../components/ui/Heading";
 import InputField from "../../../components/ui/InputField";
@@ -17,55 +17,75 @@ import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function Brands() {
   const { categoryId } = useParams();
+  const navigate = useNavigate();
 
   const [brands, setBrands] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState({ open: false, type: "", id: "" });
   const [form, setForm] = useState({ name: "", image: null });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const navigate= useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10); 
-  const COLOR_CLASSES = useColorClasses();
+  const [limit] = useState(10); // constant limit
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-   const breadcrumbItems = [
+  const breadcrumbItems = [
     { label: 'Category', path: '/admin/categories' },
     { label: 'Brands', path: `/admin/categories/${categoryId}/brand` }, 
   ];
 
-  const fetchBrands = async () => {
-    setLoading(true)
+  const fetchBrands = async (currentOffset = 0, append = false) => {
+    setLoading(true);
     try {
-      const offset = (currentPage - 1) * limit;
-      const res = await api.admin.getBrand(categoryId, limit, offset);
-       setBrands(res || []);
+      const res = await api.admin.getBrand(categoryId, limit, currentOffset);
+      if (res && res.length > 0) {
+        setBrands((prev) => append ? [...prev, ...res] : res);
+        setHasMore(res.length === limit);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
-      toast.error(error.message)
-    }
-    finally{
-      setLoading(false)
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
-  
+
+  const handleLoadMore = () => {
+    const newOffset = offset + limit;
+    setOffset(newOffset);
+    fetchBrands(newOffset, true);
+  };
 
   const handleBrandClick = (brand) => {
     navigate(`/admin/categories/${categoryId}/${brand.name}/${brand.id}`);
   };
 
   useEffect(() => {
-    fetchBrands();
+    fetchBrands(0);
   }, [categoryId]);
 
   const handleOpen = () => {
     setForm({ name: "", image: null });
     setPreview(null);
-    setPopupOpen(true);
+    setErrors({});
+    setPopupOpen({ open: true, type: "create" });
+  };
+
+  const handleEdit = (brand) => {
+    setForm({ name: brand.name, image: brand.media?.[0]?.path || null });
+    setPreview(brand.media?.[0]?.path || null);
+    setErrors({});
+    setPopupOpen({ open: true, type: "edit", id: brand.id });
+  };
+
+  const handleDelete = (brand) => {
+    setPopupOpen({ open: true, type: "delete", id: brand.id });
   };
 
   const handleClose = () => {
-    setPopupOpen(false);
+    setPopupOpen({ open: false, type: "", id: "" });
     setErrors({});
   };
 
@@ -96,20 +116,53 @@ export default function Brands() {
   };
 
   const handleSubmit = async () => {
+    if (popupOpen.type === "delete") {
+      try {
+        setLoading(true);
+        const res = await api.admin.deleteBrand(popupOpen.id);
+        if (res.success) {
+          toast.success(res.message);
+          fetchBrands();
+        } else {
+          toast.error(res.message);
+        }
+        handleClose();
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     if (!validateForm()) return;
+    
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("file", form.image);
+    if (form.image instanceof File) {
+      formData.append("file", form.image);
+    }
     formData.append("category_id", categoryId);
+
     setLoading(true);
     try {
-      const res=await api.admin.addBrand(categoryId,formData);
-      await fetchBrands();
-      handleClose();
-      toast.success(res.message)
+      let res;
+      if (popupOpen.type === "edit") {
+        res = await api.admin.editBrand(popupOpen.id, formData);
+      } else {
+        res = await api.admin.addBrand(categoryId, formData);
+      }
+      
+      if (res.success) {
+        toast.success(res.message);
+        fetchBrands();
+        handleClose();
+      } else {
+        toast.error(res.message);
+      }
     } catch (err) {
       console.error(err);
-      toast.error(err.message)
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -123,7 +176,7 @@ export default function Brands() {
     <div className="min-h-screen">
       <LoadingIndicator isLoading={loading}/>
       <div className="flex justify-between items-center mb-6">
-      <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
+        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/> }/>
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search brand..."
@@ -133,9 +186,9 @@ export default function Brands() {
             }}
           />
           <Button
-          className="px-4 py-2 text-white text-sm"
-          onClick={handleOpen}
-          icon={<Plus size={16} />}
+            className="px-4 py-2 text-white text-sm"
+            onClick={handleOpen}
+            icon={<Plus size={16} />}
           >
             Create Brand
           </Button>
@@ -144,83 +197,101 @@ export default function Brands() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredBrands.map((brand) => (
-           <Cards key={brand.id} brand={brand} onClick={handleBrandClick} />
+          <Cards 
+            key={brand.id} 
+            brand={brand} 
+            onClick={handleBrandClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
 
+      {hasMore && brands.length > 0 && (
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleLoadMore}
+            className="px-6 py-2 text-sm"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load More"}
+          </Button>
+        </div>
+      )}
+      {brands.length == 0 && <div className="flex justify-center items-center h-[50vh]">No Brands Available!</div>}
+
       <Popup
-        open={popupOpen}
+        open={popupOpen.open}
         onClose={handleClose}
         onSubmit={handleSubmit}
-        title="Create Brand"
+        title={
+          popupOpen.type === "edit"
+            ? "Edit Brand"
+            : popupOpen.type === "delete"
+            ? "Delete Brand"
+            : "Create Brand"
+        }
         btnCancel="Cancel"
-        btnSubmit="Submit"
+        btnSubmit={
+          popupOpen.type === "delete" ? "Delete" : "Submit"
+        }
         isbtnCancel={true}
         isbtnSubmit={true}
         loading={loading}
       >
-        <div className="space-y-4">
-          <div className="flex flex-col items-center mb-4">
-            <label
-              htmlFor="brand-image"
-              className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
-            >
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Brand Preview"
-                  className="w-full h-full object-cover"
+        {popupOpen.type === "delete" ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className="w-28 h-28" />
+            <p className="text-gray-700 text-sm font-medium">
+              Are you sure you want to delete this brand?
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-col items-center mb-4">
+              <label
+                htmlFor="brand-image"
+                className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Brand Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-500">Upload Image</span>
+                )}
+                <input
+                  type="file"
+                  id="brand-image"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
                 />
-              ) : (
-                <span className="text-sm text-gray-500">Upload Image</span>
+              </label>
+              {errors.image && (
+                <p className="text-red-500 text-sm text-center mt-1">
+                  {errors.image}
+                </p>
               )}
-              <input
-                type="file"
-                id="brand-image"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-            {errors.image && (
-              <p className="text-red-500 text-sm text-center mt-1">
-                {errors.image}
+            </div>
+
+            <InputField
+              id="name"
+              name="name"
+              placeholder="Brand name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>
+                {errors.name}
               </p>
             )}
           </div>
-
-          <InputField
-            id="name"
-            name="name"
-            placeholder="Brand name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.name}</p>
-          )}
-        </div>
+        )}
       </Popup>
-
-       <div className={`flex justify-center items-center ${brands.length > 0 ? " " :"h-[50vh]"}`}>
-        {brands.length > 0 ?<><button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 mr-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
-        >
-          Previous
-        </button>
-        <span className={`${COLOR_CLASSES.textSecondary} mr-3`}>
-          Page {currentPage}
-        </span>
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={brands.length < limit}
-          className={`px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
-        >
-          Next
-        </button></>:"No Brand Available!"}
-      </div>
     </div>
   );
 }

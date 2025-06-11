@@ -57,17 +57,23 @@ axiosInstance.interceptors.response.use(
             }
           )
         ),
-      
-      createModel: (id, data) => axiosWrapper(
-        axiosInstance.post(
-          `/model/add-model/${id}`,
-          data,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        )
-      ),
+      editCategory: (id,data) =>
+        axiosWrapper(
+          axiosInstance.put(
+            `/category/update-category/${id}`,
+            data,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          )
+        ),
+      getCategories: (limit = 10, offset = 0) => axiosWrapper(
+               axiosInstance.post(`/category/list`, {
+              limit,
+              offset
+      })),
 
+      deleteCategory : (id) => axiosWrapper(axiosInstance.delete(`/category/delete-category/${id}`)),
 
       addBrand : (id,data) =>   axiosWrapper(
           axiosInstance.post(
@@ -78,7 +84,19 @@ axiosInstance.interceptors.response.use(
             }
           ),data
         ),
-      
+
+      editBrand : (id,data) =>   axiosWrapper(
+          axiosInstance.put(
+            `/brand/update-brand/${id}`,
+            data,
+            {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            }
+          )
+        ),
+
+      deleteBrand : (id) => axiosWrapper(axiosInstance.delete(`/brand/delete-brand/${id}`)),
+      getBrand : (id,limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`/brand/list/${id}`, {limit, offset})),
 
       getModel: (id, limit = 10, offset = 0) => 
           axiosWrapper(
@@ -87,7 +105,27 @@ axiosInstance.interceptors.response.use(
               offset
             })
           ),
-      getBrand : (id,limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`/brand/list/${id}`, {limit, offset})),
+
+      createModel: (id, data) => axiosWrapper(
+        axiosInstance.post(
+          `/model/add-model/${id}`,
+          data,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        )
+      ),  
+      
+      editModel: (id, data) => axiosWrapper(
+        axiosInstance.put(
+          `/model/update-model/${id}`,
+          data,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        )
+      ),
+      deleteModel : (id) => axiosWrapper(axiosInstance.delete(`/model/delete-model/${id}`)),
 
 
       getDevices : () => axiosWrapper(axiosInstance.get('/devices/list')),
