@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.model import ModelCreate, ModelOut,ModelListRequest
+from app.schemas.model import ModelCreate, ModelOut,ModelListRequest,ModelUpdate
 from app.services.model_service import ModelService
 from app.utils.file_utils import save_upload_file
 from typing import List
@@ -48,4 +48,31 @@ async def list_models(
         offset=request.offset,
         db=db
     )
+
+@router.put("/update-model/{model_id}")
+async def update_model(
+    model_id: int,
+    name: str = Form(...),
+    file: UploadFile = File(None),
+    db: AsyncSession = Depends(get_db)
+):
+    image_path = None
+    if file:
+        saved_path = save_upload_file(file)
+        image_path = f"{settings.APP_URL}{saved_path}"
+
+    return await ModelService.update_model(
+        model_id=model_id,
+        name=name,
+        image_path=image_path,
+        db=db
+    )
+
+
+@router.delete("/delete-model/{model_id}")
+async def delete_model(
+    model_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    return await ModelService.delete_model(model_id, db)
 
