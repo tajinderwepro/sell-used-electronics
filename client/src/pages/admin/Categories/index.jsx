@@ -3,7 +3,7 @@ import { ChevronRight, Plus } from "lucide-react";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import api from "../../../constants/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Heading from "../../../components/ui/Heading";
 import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import { PROJECT_NAME } from "../../../constants";
@@ -11,6 +11,8 @@ import Button from "../../../components/ui/Button";
 import SearchInput from "../../../components/ui/SearchInput";
 import { toast } from "react-toastify";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
+import Cards from "../../../common/Cards";
+import LoadingIndicator from "../../../common/LoadingIndicator";
   const breadcrumbItems = [
     { label: 'Category', path: '/admin/categories' },
   ];
@@ -22,6 +24,8 @@ export default function Categories() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate= useNavigate();
+
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -99,9 +103,13 @@ export default function Categories() {
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const handleCategoryClick = (cat) => {
+    navigate(`/admin/categories/${cat.id}/brand`);
+  };
   return (
     <div className="min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+      <LoadingIndicator isLoading={loading}/>
+      <div className="flex justify-between items-center mb-[30px] mt-1">
         <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
         <div className="flex gap-3">
           <SearchInput
@@ -122,20 +130,7 @@ export default function Categories() {
       {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredCategories.map((cat) => (
-          <Link
-            to={`/admin/categories/${cat.id}/brand`}
-            key={cat.id}
-            className="rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all border border-grey-200 flex flex-col items-center justify-center text-center space-y-3"
-          >
-            <div className="w-28 h-28 flex items-center justify-center ">
-              <img
-                src={cat.media[0]?.path || "/brands/default.png"}
-                alt={cat.name}
-                className="object-contain w-20 h-20"
-              />
-            </div>
-            <h3 className="text-base font-medium text-gray-800">{cat.name}</h3>
-          </Link>
+           <Cards key={cat.id} brand={cat} onClick={handleCategoryClick} />
         ))}
       </div>
 

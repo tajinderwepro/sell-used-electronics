@@ -22,6 +22,7 @@ export const COLOR_CLASSES_LIGHT = {
   borderPrimary: "border-[#1e3a8a]",
   borderGray100: "border-[#f3f4f6]",
   borderGray200: "border-[#e5e7eb]",
+  borderHoverPrimary: "hover:border-[#1e3a8a]",  
 
   bgWhite: "bg-white",
   bgGradient: "bg-gradient-to-br from-white via-gray-50 to-gray-100",
@@ -35,8 +36,8 @@ export const COLOR_CLASSES_DARK = {
   primaryLightBg: "bg-[#202734]",          // Muted dark slate
   primaryBg: "bg-[#252f3f]",               // Soft dark base
   primaryBgHover: "hover:bg-[#303a4c]",    // Very mild hover shift
-  primaryRing: "ring-[#5b8cd8]",           // Washed-out blue ring
-
+  primaryRing: "ring-[#5b8cd8]",            // Washed-out blue ring
+            
   secondary: "text-[#bfc9d6]",             // Muted grayish-blue
   secondaryDark: "text-[#aab4c3]",         // Slightly lighter gray-blue
   secondaryBg: "bg-[#313b4b]",             // Gentle dark background
@@ -50,6 +51,7 @@ export const COLOR_CLASSES_DARK = {
   borderPrimary: "border-[#e5e7eb29]",       // Soft slate border
   borderGray100: "border-[#3b4654]",       // Light border
   borderGray200: "border-[#2e3845]",
+  borderHoverPrimary: "hover:border-[#e5e7eb29]",  
 
   bgWhite: "bg-[#151d27]",                 // Slightly lifted black
   bgGradient: "bg-gradient-to-br from-[#151d27] via-[#1f2733] to-[#232b38]",

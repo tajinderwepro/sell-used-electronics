@@ -9,6 +9,9 @@ import api from "../../../constants/api";
 import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import Button from "../../../components/ui/Button";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
+import Cards from "../../../common/Cards";
+import { toast } from "react-toastify";
+import LoadingIndicator from "../../../common/LoadingIndicator";
 
 export default function Models() {
   const { categoryId, brand, brandId } = useParams();
@@ -42,13 +45,18 @@ export default function Models() {
   ];
 
   const fetchModels = async () => {
+    setLoading(true)
     try {
-      // Replace with actual API call
-      const res = await api.admin.getModel(brandId);
+      const limit = 10; 
+      const offset = 0;
+      const res = await api.admin.getModel(brandId, limit, offset);
       console.log(res, "model response");
-      setModels(MODELS); // Use res.data when API is ready
+      setModels(MODELS); 
     } catch (error) {
-      console.error("Error fetching models:", error);
+      toast.error(error.message)
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -101,42 +109,34 @@ export default function Models() {
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("image", form.image);
+    formData.append("file", form.image);
     formData.append("brand_id", brandId);
+    formData.append("category_id", categoryId);
 
     setLoading(true);
     try {
-      await api.admin.createModel(formData);
+      const res=await api.admin.createModel(brandId,formData);
       await fetchModels();
       handleClose();
+      toast.success(res.message)
     } catch (err) {
-      console.error(err);
+      toast.error(err.message)
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredModels = MODELS.filter((model) =>
+  const filteredModels = models.filter((model) =>
     model.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   return (
     <div className="min-h-screen">
-      <CustomBreadcrumbs 
+      <LoadingIndicator isLoading={loading}/>
+      <div className="flex justify-between items-center mb-6">
+       <CustomBreadcrumbs 
         items={breadcrumbItems} 
         separator={<ChevronRight style={{ fontSize: "12px" }} />} 
       />
-      
-      {/* <div className="flex justify-between items-center mb-[4.5rem]">
-        <Heading className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold}`}>
-          {brand.toUpperCase()} MODELS
-        </Heading>
-      </div> */}
-
-      <div className="flex justify-between items-center mb-5">
-        <Heading className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold}`}>
-          SELECT MODEL
-        </Heading>
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search model..."
@@ -155,26 +155,8 @@ export default function Models() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredModels.map((model) => (
-          <div
-            key={model.id}
-            onClick={() => handleModelClick(model)}
-            
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col items-center p-4 cursor-pointer"
-          >
-            <div className="w-20 h-20 mb-4 flex items-center justify-center overflow-hidden">
-              <img
-                src={model.image_url}
-                alt={model.name}
-                className="object-contain w-full h-full"
-                // onError={(e) => {
-                //   e.target.src = "/models/default.png";
-                // }}
-              />
-            </div>
-            <h3 className="text-sm font-semibold text-gray-800 text-center">
-              {model.name}
-            </h3>
-          </div>
+          <Cards key={model.id} brand={model} onClick={handleModelClick} />
+         
         ))}
       </div>
 

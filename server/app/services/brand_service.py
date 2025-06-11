@@ -39,7 +39,7 @@ class BrandService:
 
             return {
                 "success": True,
-                "message": "Brand added",
+                "message": "Brand added successfully",
                 "brand_id": new_brand.id,
                 "media_id": media.id
             }

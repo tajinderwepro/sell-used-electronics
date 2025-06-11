@@ -12,7 +12,6 @@ class ModelService:
     @staticmethod
     async def add_model(brand_id: int, payload: ModelCreate, path: str, db: AsyncSession):
         try:
-            # Check if model with same name exists under same brand and category
             result = await db.execute(
                 select(Model).where(
                     Model.name == payload.name,
@@ -24,7 +23,6 @@ class ModelService:
             if existing:
                 raise HTTPException(status_code=400, detail="Model already exists")
 
-            # Create new model
             new_model = Model(
                 name=payload.name,
                 media_id=payload.media_id,
@@ -35,7 +33,6 @@ class ModelService:
             await db.commit()
             await db.refresh(new_model)
 
-            # Create media
             media = Media(
                 path=path,
                 mediable_type="model",
@@ -46,7 +43,7 @@ class ModelService:
 
             return {
                 "success": True,
-                "message": "Model added",
+                "message": "Model added successfully",
                 "model_id": new_model.id,
                 "media_id": media.id
             }
@@ -58,7 +55,7 @@ class ModelService:
             raise HTTPException(status_code=500, detail=f"Error creating model: {str(e)}")
 
     @staticmethod
-    async def get_all_models(brand_id: int, db: AsyncSession) -> List[ModelOut]:
+    async def get_all_models(brand_id: int, limit: int, offset: int, db: AsyncSession):
         result = await db.execute(
             select(Model)
             .where(Model.brand_id == brand_id)
@@ -67,5 +64,9 @@ class ModelService:
                 selectinload(Model.category),
                 selectinload(Model.media)
             )
+            .limit(limit)
+            .offset(offset)
         )
         return result.scalars().all()
+
+

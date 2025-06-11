@@ -10,6 +10,9 @@ import { FONT_SIZES, FONT_WEIGHTS } from "../../../constants/theme";
 import { COLOR_CLASSES_DARK } from "../../../theme/colors";
 import Button from "../../../components/ui/Button";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
+import Cards from "../../../common/Cards";
+import { toast } from "react-toastify";
+import LoadingIndicator from "../../../common/LoadingIndicator";
 
 export default function Brands() {
   const { categoryId } = useParams();
@@ -28,38 +31,21 @@ export default function Brands() {
     { label: 'Brands', path: `/admin/categories/${categoryId}/brand` }, 
   ];
 
-  const MOBILE_BRANDS = [
-    { id: 1, name: "Apple", image_url: "/apple.png" },
-    { id: 2, name: "Samsung", image_url: "/iphone.jpg" },
-    { id: 3, name: "Xiaomi", image_url: "/iphone.jpg" },
-    { id: 4, name: "OnePlus", image_url: "/iphone.jpg" },
-    { id: 5, name: "Realme", image_url: "/iphone.jpg" },
-    { id: 6, name: "Oppo", image_url: "/iphone.jpg" },
-    { id: 7, name: "Vivo", image_url: "/iphone.jpg" },
-    { id: 8, name: "Motorola", image_url: "/iphone.jpg" },
-    { id: 9, name: "Nokia", image_url: "/iphone.jpg" },
-    { id: 10, name: "Sony", image_url: "/iphone.jpg" },
-    { id: 11, name: "Asus", image_url: "/iphone.jpg" },
-    { id: 12, name: "Google Pixel", image_url: "/iphone.jpg" },
-    { id: 13, name: "Honor", image_url: "/iphone.jpg" },
-    { id: 14, name: "Infinix", image_url: "/iphone.jpg" },
-    { id: 15, name: "Tecno", image_url: "/iphone.jpg" },
-    { id: 16, name: "Lenovo", image_url: "/iphone.jpg" },
-    { id: 17, name: "Micromax", image_url: "/iphone.jpg" },
-    { id: 18, name: "Lava", image_url: "/iphone.jpg" },
-    { id: 19, name: "iQOO", image_url: "/iphone.jpg" },
-    { id: 20, name: "Nothing", image_url: "/iphone.jpg" },
-  ];
-
   const fetchBrands = async () => {
-    
-    const res = await api.admin.getBrand(categoryId);
-    console.log(res,"resssssssss")
-    setBrands(res || []);
-    // setBrands(MOBILE_BRANDS);
+    setLoading(true)
+    try {
+       const res = await api.admin.getBrand(categoryId);
+       setBrands(res || []);
+    } catch (error) {
+      toast.error(error.message)
+    }
+    finally{
+      setLoading(false)
+    }
   };
+  
 
-    const handleBrandClick = (brand) => {
+  const handleBrandClick = (brand) => {
     navigate(`/admin/categories/${categoryId}/${brand.name}/${brand.id}`);
   };
 
@@ -112,11 +98,13 @@ export default function Brands() {
     formData.append("category_id", categoryId);
     setLoading(true);
     try {
-      await api.admin.addBrand(categoryId,formData);
+      const res=await api.admin.addBrand(categoryId,formData);
       await fetchBrands();
       handleClose();
+      toast.success(res.message)
     } catch (err) {
       console.error(err);
+      toast.error(err.message)
     } finally {
       setLoading(false);
     }
@@ -128,6 +116,7 @@ export default function Brands() {
 
   return (
     <div className="min-h-screen">
+      <LoadingIndicator isLoading={loading}/>
       <div className="flex justify-between items-center mb-6">
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
         <div className="flex gap-3">
@@ -150,23 +139,7 @@ export default function Brands() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredBrands.map((brand) => (
-          <div
-            key={brand.id}
-              onClick={() => handleBrandClick(brand)}
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col items-center p-4 cursor-pointer"
-          >
-            <div className="w-20 h-20 mb-4 flex items-center justify-center overflow-hidden">
-              <img
-                src={brand.media[0]?.path}
-                alt={brand.name}
-                className="object-contain w-full h-full"
-              
-              />
-            </div>
-            <h3 className="text-sm font-semibold text-gray-800 text-center">
-              {brand.name}
-            </h3>
-          </div>
+           <Cards key={brand.id} brand={brand} onClick={handleBrandClick} />
         ))}
       </div>
 
