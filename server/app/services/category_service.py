@@ -66,7 +66,15 @@ class CategoryService:
             .limit(limit)
             .offset(offset)
         )
-        return result.scalars().all()
+
+        categories = result.scalars().all()
+
+        return {
+            "success": True,
+            "status_code": 200,
+            "data": categories
+        }
+
 
     @staticmethod
     async def update_category(category_id: int, name: str, image_path: str, db: AsyncSession):
