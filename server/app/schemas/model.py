@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
-
+from .media import MediaOut
 
 class ModelBase(BaseModel):
     name: str
@@ -31,9 +31,23 @@ class ModelUpdate(BaseModel):
     brand_id: Optional[int] = None
     category_id: Optional[int] = None
 
-class ModelOut(ModelBase):
+    class Config:
+        orm_mode = True
+
+class ModelUpdate(BaseModel):
+    name: Optional[str] = None
+    media_id: Optional[int] = None
+    brand_id: Optional[int] = None
+    category_id: Optional[int] = None
+
+
+class ModelOut(BaseModel):
     id: int
-    media: List[MediaOut] = []  
+    name: str
+    media_id: Optional[int]
+    brand_id: int
+    category_id: int
+    media: List[MediaOut] = []
 
     class Config:
         orm_mode = True

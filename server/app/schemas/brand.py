@@ -20,6 +20,10 @@ class ModelListRequest(BaseModel):
     limit: int = 10
     offset: int = 0
 
+class BrandUpdate(BaseModel):
+    name: Optional[str] = None
+
+
 class ModelOut(BaseModel):
     id: int
     name: str

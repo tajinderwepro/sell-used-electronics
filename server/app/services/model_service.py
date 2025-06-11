@@ -1,12 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+from sqlalchemy.exc import NoResultFound
+from fastapi import HTTPException, status
+from typing import List
+
 from app.models.model import Model
 from app.models.media import Media
-from fastapi import HTTPException
-from typing import List
-from app.schemas.model import ModelCreate, ModelOut
-from sqlalchemy.orm import selectinload
-
+from app.schemas.model import ModelCreate, ModelOut, ModelUpdate
 
 class ModelService:
     @staticmethod
@@ -28,7 +29,7 @@ class ModelService:
                 media_id=payload.media_id,
                 brand_id=brand_id,
                 category_id=payload.category_id,
-                base_price= 0  
+                # base_price=payload.base_price
             )
 
             db.add(new_model)
@@ -56,7 +57,6 @@ class ModelService:
             await db.rollback()
             raise HTTPException(status_code=500, detail=f"Error creating model: {str(e)}")
 
-
     @staticmethod
     async def get_all_models(brand_id: int, limit: int, offset: int, db: AsyncSession):
         result = await db.execute(
@@ -72,4 +72,46 @@ class ModelService:
         )
         return result.scalars().all()
 
+    @staticmethod
+    async def update_model(model_id: int, name: str, image_path: str, db: AsyncSession):
+        result = await db.execute(select(Model).where(Model.id == model_id))
+        model = result.scalar_one_or_none()
 
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+
+        
+        model.name = name
+
+        if image_path:
+            media_entry = Media(
+                path=image_path,
+                mediable_id=model_id,
+                mediable_type='model'
+            )
+            db.add(media_entry)
+
+        await db.commit()
+        await db.refresh(model)
+        return {
+            "success": True,
+            "status_code": 200,
+            "message": "Model updated successfully",
+            "model": model
+        }
+
+    @staticmethod
+    async def delete_model(model_id: int, db: AsyncSession):
+        result = await db.execute(select(Model).where(Model.id == model_id))
+        model = result.scalar_one_or_none()
+
+        if not model:
+            raise HTTPException(status_code=404, detail="Model not found")
+
+        await db.delete(model)
+        await db.commit()
+        return {
+            "success": True,
+            "status_code": 200,
+            "message": "Model deleted successfully"
+        }

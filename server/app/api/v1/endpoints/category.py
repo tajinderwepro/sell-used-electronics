@@ -64,3 +64,9 @@ async def delete_category(
 ):
     return await CategoryService.delete_category(category_id, db)
 
+@router.get("/category/{category_id}")
+async def get_category_by_id(
+    category_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    return await CategoryService.get_category_by_id(category_id, db)

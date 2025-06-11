@@ -37,3 +37,24 @@ async def get_brands(
         offset=request.offset,
         db=db
     )
+
+@router.put("/update-brand/{brand_id}")
+async def update_brand(
+    brand_id: int,
+    name: str = Form(...),
+    file: UploadFile = File(None),
+    db: AsyncSession = Depends(get_db)
+):
+    image_path = None
+    if file:
+        image_path = save_upload_file(file)
+        image_path = f"{settings.APP_URL}{image_path}"
+
+    return await BrandService.update_brand(brand_id, name, image_path, db)
+
+@router.delete("/delete-brand/{brand_id}")
+async def delete_brand(
+    brand_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    return await BrandService.delete_brand(brand_id, db)
