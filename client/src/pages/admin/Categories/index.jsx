@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, CircleHelp, Plus } from "lucide-react";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import api from "../../../constants/api";
@@ -18,8 +18,8 @@ import LoadingIndicator from "../../../common/LoadingIndicator";
   ];
 export default function Categories() {
   const [categories, setCategories] = useState([]);
-  const [popupOpen, setPopupOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", image: null });
+  const [popupOpen, setPopupOpen] = useState({open:false,type:" ",id: " "});
+  const [form, setForm] = useState({ name: "", image: null , });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -31,14 +31,16 @@ export default function Categories() {
 
   const fetchCategories = async (currentOffset = 0, append = false) => {
     setLoading(true);
+
     try {
       const res = await api.getCategories(limit, currentOffset);
       if (res && res.length > 0) {
         setCategories((prev) => append ? [...prev, ...res] : res);
-        setHasMore(res.length === limit); // if less than limit, no more data
+        setHasMore(res.length  === limit );
       } else {
         setHasMore(false);
       }
+
     } catch (err) {
       console.error("Failed to fetch categories:", err);
       toast.error(err.message);
@@ -57,16 +59,34 @@ export default function Categories() {
     fetchCategories(newOffset, true);
   };
 
-  const handleOpen = () => {
-    setForm({ name: "", image: null });
-    setPreview(null);
-    setPopupOpen(true);
-  };
+  // const handleOpen = () => {
+  //   setForm({ name: "", image: null });
+  //   setPreview(null);
+  //   setPopupOpen(true);
+  // };
 
   const handleClose = () => {
     setPopupOpen(false);
     setErrors({});
   };
+  const handleOpen = () => {
+    setForm({ name: "", image: null });
+    setPreview(null);
+    setErrors({});
+    setPopupOpen({ open: true, type: "create" });
+  };
+
+  const handleEdit = (cat) => {
+    setForm({ name: cat.name, image: cat.media?.[0]?.path || null });
+    setPreview(cat.media?.[0]?.path || null);
+    setErrors({});
+    setPopupOpen({ open: true, type: "edit", id: cat.id });
+  };
+
+  const handleDelete = (cat) => {
+    setPopupOpen({ open: true, type: "delete", id: cat.id });
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,25 +113,64 @@ export default function Categories() {
   };
 
   const handleSubmit = async () => {
+    if (popupOpen.type === "delete") {
+      try {
+        setLoading(true);
+        const res = await api.admin.deleteCategory(popupOpen.id);
+        if (res.success) {
+          toast.success(res.message);
+          fetchCategories();
+        } else {
+          toast.error(res.message);
+        }
+        handleClose();
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // Create or Edit
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("name", form.name);
     if (form.image instanceof File) {
       formData.append("file", form.image);
     }
+
     setLoading(true);
     try {
-      const res = await api.admin.createCategory(formData);
-      await fetchCategories();
-      handleClose();
-      toast.success(res.message);
+      let res;
+      if (popupOpen.type === "edit") {
+        res = await api.admin.editCategory(popupOpen.id, formData);
+        if (res.success) {
+          toast.success(res.message);
+          fetchCategories();
+          handleClose();
+        } else {
+          toast.error(res.message);
+        }
+      } else {
+        res = await api.admin.createCategory(formData);
+        if (res.success) {
+          toast.success(res.message);
+          fetchCategories();
+          handleClose();
+        } else {
+          toast.error(res.message);
+        }
+      }
+
+      
     } catch (err) {
-      console.error(err);
       toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
+
 
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -119,6 +178,7 @@ export default function Categories() {
   const handleCategoryClick = (cat) => {
     navigate(`/admin/categories/${cat.id}/brand`);
   };
+
   return (
     <div className="min-h-screen">
       <LoadingIndicator isLoading={loading}/>
@@ -143,11 +203,11 @@ export default function Categories() {
       {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredCategories.map((cat) => (
-           <Cards key={cat.id} brand={cat} onClick={handleCategoryClick} />
+           <Cards key={cat.id} brand={cat} onClick={handleCategoryClick} handleEdit={handleEdit} handleDelete={handleDelete}/>
         ))}
       </div>
 
-      {hasMore && (
+      {hasMore && categories.length > 0 && (
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleLoadMore}
@@ -158,20 +218,38 @@ export default function Categories() {
           </Button>
         </div>
       )}
+       {categories.length == 0 && <div className="flex justify-center items-center h-[50vh]">No Categories Available!</div>}
 
       {/* Popup */}
-      <Popup
-        open={popupOpen}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-        title="Create Category"
-        btnCancel="Cancel"
-        btnSubmit="Submit"
-        isbtnCancel={true}
-        isbtnSubmit={true}
-        loading={loading}
-      >
+     <Popup
+      open={popupOpen.open}
+      onClose={handleClose}
+      onSubmit={handleSubmit}
+      title={
+        popupOpen.type === "edit"
+          ? "Edit Category"
+          : popupOpen.type === "delete"
+          ? "Delete Category"
+          : "Create Category"
+      }
+      btnCancel="Cancel"
+      btnSubmit={
+        popupOpen.type === "delete" ? "Delete" : "Submit"
+      }
+      isbtnCancel={true}
+      isbtnSubmit={true}
+      loading={loading}
+    >
+      {popupOpen.type === "delete" ? (
+        <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+          <CircleHelp className="w-28 h-28" />
+          <p className="text-gray-700 text-sm font-medium">
+            Are you sure you want to delete this category?
+          </p>
+        </div>
+      ) : (
         <div className="space-y-4">
+          {/* Image Upload */}
           <div className="flex flex-col items-center mb-4">
             <label
               htmlFor="category-image"
@@ -201,6 +279,7 @@ export default function Categories() {
             )}
           </div>
 
+          {/* Name Input */}
           <InputField
             id="name"
             name="name"
@@ -209,15 +288,14 @@ export default function Categories() {
             onChange={handleChange}
           />
           {errors.name && (
-            <p
-              className="text-red-500 text-sm text-left "
-              style={{ marginTop: "5px" }}
-            >
+            <p className="text-red-500 text-sm text-left mt-1">
               {errors.name}
             </p>
           )}
         </div>
-      </Popup>
+      )}
+     </Popup>
+
     </div>
   );
 }

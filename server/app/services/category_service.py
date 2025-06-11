@@ -62,6 +62,7 @@ class CategoryService:
                     .selectinload(Model.media),
                 selectinload(Category.brands).selectinload(Brand.media)
             )
+            .order_by(Category.id)
             .limit(limit)
             .offset(offset)
         )
