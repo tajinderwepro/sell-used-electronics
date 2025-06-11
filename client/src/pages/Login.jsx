@@ -27,7 +27,7 @@ export default function Login() {
     try {
       await login(form.email, form.password, form.role);
       setError("");
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       setError("Login failed. Please check your credentials.");
     }

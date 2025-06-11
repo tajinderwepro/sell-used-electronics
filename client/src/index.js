@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from './context/AuthContext';
 import { SessionProvider } from './context/SessionContext';
+import { QuoteFormProvider } from './context/QuoteFormContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -13,8 +14,10 @@ root.render(
   <React.StrictMode>
     <SessionProvider>
       <AuthProvider>
-        <ToastContainer/>
-        <App />
+         <QuoteFormProvider>
+          <ToastContainer/>
+           <App />
+         </QuoteFormProvider>
       </AuthProvider>
     </SessionProvider>
   </React.StrictMode>

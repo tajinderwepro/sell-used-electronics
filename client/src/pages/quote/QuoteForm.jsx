@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import StepCategory from './steps/StepCategory';
 import StepModel from './steps/StepModel';
 import StepCondition from './steps/StepCondition';
@@ -7,6 +7,9 @@ import Button from '../../components/ui/Button';
 import { FONT_WEIGHTS } from '../../constants/theme';
 import { useColorClasses } from '../../theme/useColorClasses';
 import Stepper from '../../components/common/Stepper';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useQuoteForm } from '../../context/QuoteFormContext';
 
 const data = {
   Mobiles: {
@@ -25,28 +28,34 @@ const data = {
 
 export default function QuoteForm({ onClose }) {
   const COLOR_CLASSES = useColorClasses();
-  const [step, setStep] = useState(0);
-  const [category, setCategory] = useState('');
-  const [model, setModel] = useState('');
-  const [condition, setCondition] = useState('');
-  const [price, setPrice] = useState('');
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  const handleNext = () => setStep((prev) => prev + 1);
-  const handleBack = () => setStep((prev) => prev - 1);
+  const { formState, updateForm, resetForm } = useQuoteForm();
+  const { step, category, model, condition, price } = formState;
+
+  const handleNext = () => updateForm({ step: step + 1 });
+  const handleBack = () => updateForm({ step: step - 1 });
+
   const stepConstant = ['Category', 'Model', 'Condition', 'Price'];
 
   const handleSubmit = () => {
-    alert(`Submitted: ${category} > ${model} > ${condition} > $${price}`);
-    if (onClose) onClose();
+    if (!isAuthenticated) {
+      navigate('/login');
+    }else{
+       resetForm()
+    }
+     if (onClose) onClose();
+
   };
 
   const steps = [
-    <StepCategory category={category} setCategory={setCategory} data={data} />,
-    <StepModel model={model} setModel={setModel} data={data} category={category} />,
+    <StepCategory category={category} setCategory={(val) => updateForm({ category: val })} data={data} />,
+    <StepModel model={model} setModel={(val) => updateForm({ model: val })} data={data} category={category} />,
     <StepCondition
       condition={condition}
-      setCondition={setCondition}
-      setPrice={setPrice}
+      setCondition={(val) => updateForm({ condition: val })}
+      setPrice={(val) => updateForm({ price: val })}
       data={data}
       category={category}
       model={model}
@@ -72,17 +81,16 @@ export default function QuoteForm({ onClose }) {
   return (
     <div className={`mx-auto p-10 rounded-2xl w-full max-w-3xl`}>
       <div className="mb-10">
-        <div className={`flex justify-between items-center text-sm ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary} relative`}>
-          <Stepper
-            steps={stepConstant}
-            currentStep={step}
-          />
-         <div className="absolute top-4 left-[12.5%] w-[75%] h-1 bg-gray-200 rounded">
-          <div
-            className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
-            style={{ width: `${(step / 3) * 100}%` }} 
-          />
-        </div>
+        <div
+          className={`flex justify-between items-center text-sm ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary} relative`}
+        >
+          <Stepper steps={stepConstant} currentStep={step} />
+          <div className="absolute top-4 left-[12.5%] w-[75%] h-1 bg-gray-200 rounded">
+            <div
+              className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
+              style={{ width: `${(step / 3) * 100}%` }}
+            />
+          </div>
         </div>
       </div>
 
@@ -92,21 +100,11 @@ export default function QuoteForm({ onClose }) {
       {/* Controls */}
       <div className="pt-10 flex justify-center items-center gap-4">
         {step === 0 ? (
-          <Button
-            type="button"
-            onClick={onClose}
-            variant="secondary"
-            className="px-6 py-2 shadow"
-          >
+          <Button type="button" onClick={onClose} variant="secondary" className="px-6 py-2 shadow">
             Cancel
           </Button>
         ) : (
-          <Button
-            type="button"
-            onClick={handleBack}
-            variant="secondary"
-            className="px-6 py-2 shadow"
-          >
+          <Button type="button" onClick={handleBack} variant="secondary" className="px-6 py-2 shadow">
             Back
           </Button>
         )}
@@ -118,7 +116,7 @@ export default function QuoteForm({ onClose }) {
           variant="primary"
           className="px-6 py-2 shadow disabled:opacity-50"
         >
-          {step === steps.length - 1 ? 'Submit' : 'Next'}
+          {step === steps.length - 1 ? (!isAuthenticated ? 'Login' : 'Submit') : 'Next'}
         </Button>
       </div>
     </div>
