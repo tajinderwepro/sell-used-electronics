@@ -13,6 +13,7 @@ import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import Cards from "../../../common/Cards";
 import { toast } from "react-toastify";
 import LoadingIndicator from "../../../common/LoadingIndicator";
+import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function Brands() {
   const { categoryId } = useParams();
@@ -25,6 +26,9 @@ export default function Brands() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate= useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(10); 
+  const COLOR_CLASSES = useColorClasses();
 
    const breadcrumbItems = [
     { label: 'Category', path: '/admin/categories' },
@@ -34,8 +38,7 @@ export default function Brands() {
   const fetchBrands = async () => {
     setLoading(true)
     try {
-      const limit = 10; 
-      const offset = 0;
+      const offset = (currentPage - 1) * limit;
       const res = await api.admin.getBrand(categoryId, limit, offset);
        setBrands(res || []);
     } catch (error) {
@@ -198,6 +201,26 @@ export default function Brands() {
           )}
         </div>
       </Popup>
+
+       <div className={`flex justify-center items-center ${brands.length > 0 ? " " :"h-[50vh]"}`}>
+        {brands.length > 0 ?<><button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 mr-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
+        >
+          Previous
+        </button>
+        <span className={`${COLOR_CLASSES.textSecondary} mr-3`}>
+          Page {currentPage}
+        </span>
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={brands.length < limit}
+          className={`px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
+        >
+          Next
+        </button></>:"No Brand Available!"}
+      </div>
     </div>
   );
 }

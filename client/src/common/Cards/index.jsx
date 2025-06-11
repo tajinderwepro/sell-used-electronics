@@ -16,7 +16,7 @@ const Cards = ({ brand, onClick }) => {
     >
       <div className="w-20 h-20 mb-4 flex items-center justify-center overflow-hidden">
         <img
-          src={brand.media[0]?.path}
+          src={brand?.media[0]?.path}
           alt={brand.name}
           className="object-contain w-full h-full"
         />

@@ -25,15 +25,22 @@ export default function Categories() {
   const [errors, setErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const navigate= useNavigate();
+  const [limit] = useState(10); // constant limit
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
 
-  const fetchCategories = async () => {
+
+  const fetchCategories = async (currentOffset = 0, append = false) => {
     setLoading(true);
     try {
-       const limit = 10; 
-      const offset = 0;
-      const res = await api.admin.getCategories(limit, offset);
-      setCategories(res || []);
+      const res = await api.admin.getCategories(limit, currentOffset);
+      if (res && res.length > 0) {
+        setCategories((prev) => append ? [...prev, ...res] : res);
+        setHasMore(res.length === limit); // if less than limit, no more data
+      } else {
+        setHasMore(false);
+      }
     } catch (err) {
       console.error("Failed to fetch categories:", err);
       toast.error(err.message);
@@ -42,9 +49,16 @@ export default function Categories() {
     }
   };
 
+
   useEffect(() => {
-    fetchCategories();
+    fetchCategories(0);
   }, []);
+
+  const handleLoadMore = () => {
+    const newOffset = offset + limit;
+    setOffset(newOffset);
+    fetchCategories(newOffset, true);
+  };
 
   const handleOpen = () => {
     setForm({ name: "", image: null });
@@ -111,7 +125,7 @@ export default function Categories() {
   return (
     <div className="min-h-screen">
       <LoadingIndicator isLoading={loading}/>
-      <div className="flex justify-between items-center mb-[30px] mt-1">
+      <div className="flex justify-between items-center mb-6">
         <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
         <div className="flex gap-3">
           <SearchInput
@@ -135,6 +149,18 @@ export default function Categories() {
            <Cards key={cat.id} brand={cat} onClick={handleCategoryClick} />
         ))}
       </div>
+
+      {hasMore && (
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleLoadMore}
+            className="px-6 py-2 text-sm"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load More"}
+          </Button>
+        </div>
+      )}
 
       {/* Popup */}
       <Popup

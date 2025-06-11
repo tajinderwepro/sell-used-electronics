@@ -12,6 +12,7 @@ import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import Cards from "../../../common/Cards";
 import { toast } from "react-toastify";
 import LoadingIndicator from "../../../common/LoadingIndicator";
+import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function Models() {
   const { categoryId, brand, brandId } = useParams();
@@ -24,6 +25,9 @@ export default function Models() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [limit] = useState(10); // constant limit
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   const breadcrumbItems = [
     { label: 'Device', path: '/admin/categories' },
