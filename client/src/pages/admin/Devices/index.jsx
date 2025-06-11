@@ -76,12 +76,12 @@ export default function Devices() {
       setLoading(true);
       const device = await api.admin.getDevice(id);
       setForm({
-        category: device.category || "",
-        brand: device.brand || "",
-        model: device.model || "",
+        category:device.category?.toString() || "",
+        brand: device.brand?.toString() || "",
+        model: device.model?.toString() || "",
         condition: device.condition || "new",
-        base_price: device.base_price || "",
-        ebay_avg_price: device.ebay_avg_price || "",
+        base_price: device.base_price?.toString() || "",
+        ebay_avg_price: device.ebay_avg_price?.toString() || "",
       });
       setPopupState({ open: true, isEdit: true, id });
     } catch (err) {
@@ -90,6 +90,7 @@ export default function Devices() {
       setLoading(false);
     }
   };
+
 
   const handleOpen = () => {
     setForm({
@@ -119,6 +120,7 @@ export default function Devices() {
     setMessage("");
   };
 
+  console.log(form,"formmmm")
   const validate = () => {
     const newErrors = {};
     if (!form.category.trim()) newErrors.category = "Category is required";
@@ -156,13 +158,18 @@ export default function Devices() {
     }
     try {
       setLoading(true);
+      const payload = {
+        ...form,
+        category_id: parseInt(form.category),
+        brand_id: parseInt(form.brand),
+        model_id: parseInt(form.model),
+      };
       if (popupState.isEdit && popupState.id) {
-        await api.admin.updateDevice(popupState.id, form);
+        const res = await api.admin.updateDevice(popupState.id, payload);
+        if (res) toast.success(res.message);
       } else {
-        const res = await api.admin.createDevice(form);
-        if (res) {
-          toast.success(res.message)
-        }
+        const res = await api.admin.createDevice(payload);
+        if (res) toast.success(res.message);
       }
       await fetchDevices();
       handleClose();
@@ -173,6 +180,7 @@ export default function Devices() {
       setLoading(false);
     }
   };
+
 
   const columns = [
     { key: "id", label: "ID" },
@@ -245,27 +253,25 @@ export default function Devices() {
             }}
             options={categories.map((cat) => ({
               label: cat.name,
-              value: cat.id
+              value: String(cat.id), // Convert to string
             }))}
           />
           {errors.category && (
             <p className="text-red-500 text-sm text-left mt-1">{errors.category}</p>
           )}
 
-          {/* Brand Field */}
           <CustomSelectField
             label="Brand"
             id="brand"
             value={form.brand}
             onChange={(e) => {
               handleChange(e);
-              // Reset model when brand changes
               setForm(prev => ({ ...prev, model: "" }));
             }}
             options={
-              (categories.find(c => c.id === parseInt(form.category))?.brands || []).map(brand => ({
+              (categories.find(c => String(c.id) === form.category)?.brands || []).map(brand => ({
                 label: brand.name,
-                value: brand.id
+                value: String(brand.id), // Convert to string
               }))
             }
             disabled={!form.category}
@@ -274,18 +280,17 @@ export default function Devices() {
             <p className="text-red-500 text-sm text-left mt-1">{errors.brand}</p>
           )}
 
-          {/* Model Field */}
           <CustomSelectField
             label="Model"
             id="model"
             value={form.model}
             onChange={handleChange}
             options={
-              (categories.find(c => c.id === parseInt(form.category))?.models || [])
-                .filter(m => m.brand_id === parseInt(form.brand))
+              (categories.find(c => String(c.id) === form.category)?.models || [])
+                .filter(m => String(m.brand_id) === form.brand)
                 .map(model => ({
                   label: model.name,
-                  value: model.id
+                  value: String(model.id), // Convert to string
                 }))
             }
             disabled={!form.brand}
@@ -293,14 +298,16 @@ export default function Devices() {
           {errors.model && (
             <p className="text-red-500 text-sm text-left mt-1">{errors.model}</p>
           )}
+
           <SelectField
             name="condition"
+            id={"condition"}
             value={form.condition}
             onChange={handleChange}
             options={[
-              { label: "New", value: "new" },
-              { label: "Used", value: "used" },
-              { label: "Refurbished", value: "refurbished" },
+              { label: "Good", value: "good" },
+              { label: "Bad", value: "bad" },
+              { label: "Excellent", value: "excellent" },
             ]}
           />
 

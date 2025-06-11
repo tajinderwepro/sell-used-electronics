@@ -130,6 +130,8 @@ const api = {
 
 
     getDevices: () => axiosWrapper(axiosInstance.get('/devices/list')),
+    getDevice: (id) => axiosWrapper(axiosInstance.get(`/devices/${id}`)),
+    updateDevice: (id,data) => axiosWrapper(axiosInstance.put(`/devices/${id}`,data)),
     deleteDevice: (device_id) => axiosWrapper(axiosInstance.delete(`/devices/${device_id}`)),
     createDevice: (data) => axiosWrapper(axiosInstance.post('/devices/submit', data)),
     getOrders: () => axiosWrapper(axiosInstance.get('/orders/list')),
