@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.api.v1.endpoints import users, auth, device, order, category, brand, model
+from app.api.v1.endpoints import users, auth, device, order, category, brand, model, address
 from app.core.security import get_current_user_id  
 
 api_router = APIRouter()
@@ -43,5 +43,12 @@ api_router.include_router(
     model.router, 
     prefix="/model", 
     tags=["model"],
+    dependencies=[Depends(get_current_user_id)]
+)
+
+api_router.include_router(
+    address.router, 
+    prefix="/addresses", 
+    tags=["addresses"],
     dependencies=[Depends(get_current_user_id)]
 )

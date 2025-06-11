@@ -25,7 +25,7 @@ export default function AdminLayout() {
         <Header setMobileMenuOpen={setMobileMenuOpen} />
         <main className={`flex-1 p-2 ${COLOR_CLASSES.bgWhite}`}>
           <div
-            className={`${COLOR_CLASSES.bgWhite} rounded-lg ${COLOR_CLASSES.shadowLg} p-6`}
+            className={`${COLOR_CLASSES.bgWhite} rounded-lg p-6`}
           >
             <Outlet />
           </div>

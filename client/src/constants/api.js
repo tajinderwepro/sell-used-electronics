@@ -101,6 +101,10 @@ axiosInstance.interceptors.response.use(
       },
     auth :{
       me : () => axiosWrapper(axiosInstance.get(`/auth/me`)),
+    },
+    address:{
+      get : (user_id) => axiosWrapper(axiosInstance.get(`/addresses/${user_id}`)),
+      add : (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`,data)),
     }
   };
 

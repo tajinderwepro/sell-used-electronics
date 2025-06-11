@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 const GeneralLayout = ({ children }) => {
   const COLOR_CLASSES = useColorClasses();
   const {user, isAuthenticated, logout} = useAuth();
-  const paths = ['/products', '/dashboard', ];
+  const paths = ['/products', '/dashboard', '/address' ];
   const location = useLocation();
   return (
     <div

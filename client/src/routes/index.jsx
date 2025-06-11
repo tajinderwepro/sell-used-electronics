@@ -3,7 +3,6 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import AdminDashboard from "../pages/admin/Dashbaord";
-import UserList from "../pages/admin/UserList";
 import AdminRoute from "./AdminRoutes";
 import AdminLogin from "../pages/admin/AdminLogin";
 import UserRoute from "./UserRoute";
@@ -20,6 +19,8 @@ import Brands from "../pages/admin/Brands";
 import Products from "../pages/users/Products";
 import Models from "../pages/admin/Models";
 import LoadingIndicator from "../common/LoadingIndicator";
+import Settings from "../pages/admin/Settings";
+import ShipmentAddress from "../components/common/ShipmentAddress";
 function AllRoutes() {
   const auth = useAuth();
   const {user, isAuthenticated, loading } = auth;
@@ -59,6 +60,7 @@ function AllRoutes() {
         {/* Admin Protected Routes */}
         <Route element={<AdminRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/settings" element={<Settings />} />
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/devices" element={<Devices />} />
           <Route path="/admin/orders" element={<Orders />} />
@@ -72,6 +74,7 @@ function AllRoutes() {
         <Route element={<UserRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/address" element={<ShipmentAddress/>} />
         </Route>
 
         {/* Catch-All 404 Route (MUST be last) */}

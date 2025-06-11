@@ -10,7 +10,8 @@ export default function InputField({
   onChange,
   placeholder,
   required = false,
-  className = ''
+  className = '',
+  name = ''
 }) {
   const COLOR_CLASSES = useColorClasses();
 
@@ -27,7 +28,7 @@ export default function InputField({
       <input
         id={id}
         type={type}
-        name={id}
+        name={name ? name : id}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
