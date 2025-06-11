@@ -96,9 +96,7 @@ class BrandService:
             else:
                 # Create new media if not found
                 media = Media(
-                    path=image_path,
-                    mediable_type="brand",
-                    mediable_id=brand_id
+                    Media.id == brand.media_id,
                 )
                 db.add(media)
 

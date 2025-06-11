@@ -86,8 +86,7 @@ class ModelService:
             # Look for existing media for this model with type 'model'
             media_result = await db.execute(
                 select(Media).where(
-                    Media.mediable_id == model_id,
-                    Media.mediable_type == 'model'
+                    Media.id == model.media_id,
                 )
             )
             media = media_result.scalar_one_or_none()

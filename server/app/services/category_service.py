@@ -82,8 +82,7 @@ class CategoryService:
             # Check if media already exists for this category
             media_result = await db.execute(
                 select(Media).where(
-                    Media.mediable_id == category_id,
-                    Media.mediable_type == "category"
+                    Media.id == category.media_id,
                 )
             )
             media = media_result.scalar_one_or_none()
