@@ -176,9 +176,9 @@ export default function Devices() {
 
   const columns = [
     { key: "id", label: "ID" },
-    { key: "category", label: "Category" },
-    { key: "brand", label: "Brand" },
-    { key: "model", label: "Model" },
+    { key: "category_name", label: "Category" },
+    { key: "brand_name", label: "Brand" },
+    { key: "model_name", label: "Model" },
     { key: "condition", label: "Condition" },
     { key: "base_price", label: "Base Price" },
     { key: "ebay_avg_price", label: "Ebay Avg Price" },

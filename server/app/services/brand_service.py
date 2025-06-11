@@ -75,18 +75,31 @@ class BrandService:
         brand = result.scalar_one_or_none()
 
         if not brand:
-            raise HTTPException(status_code=404, message="Brand not found")
+            raise HTTPException(status_code=404, detail="Brand not found")
 
         if name:
             brand.name = name
 
         if image_path:
-            media = Media(
-                path=image_path,
-                mediable_type="brand",
-                mediable_id=brand_id
+            # Find media linked to this brand
+            media_result = await db.execute(
+                select(Media).where(
+                    Media.mediable_id == brand_id,
+                    Media.mediable_type == "brand"
+                )
             )
-            db.add(media)
+            media = media_result.scalar_one_or_none()
+
+            if media:
+                # Update path only
+                media.path = image_path
+            else:
+                # Create new media if not found
+                media = Media(
+                    Media.id == brand.media_id,
+                )
+                db.add(media)
+
             await db.commit()
             await db.refresh(media)
             brand.media_id = media.id
@@ -94,7 +107,12 @@ class BrandService:
         await db.commit()
         await db.refresh(brand)
 
-        return {"success": True, "message": "Brand updated successfully", "brand_id": brand.id}
+        return {
+            "success": True,
+            "message": "Brand updated successfully",
+            "brand_id": brand.id
+        }
+
 
     @staticmethod
     async def delete_brand(brand_id: int, db: AsyncSession):

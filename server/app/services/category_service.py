@@ -79,15 +79,30 @@ class CategoryService:
         category.name = name
 
         if image_path:
-            media_entry = Media(
-                path=image_path,
-                mediable_id=category_id,
-                mediable_type='category'
+            # Check if media already exists for this category
+            media_result = await db.execute(
+                select(Media).where(
+                    Media.id == category.media_id,
+                )
             )
-            db.add(media_entry)
+            media = media_result.scalar_one_or_none()
+
+            if media:
+                media.path = image_path  # Update existing media path
+            else:
+                # Create new media
+                media = Media(
+                    path=image_path,
+                    mediable_type='category',
+                    mediable_id=category_id
+                )
+                db.add(media)
+                await db.flush()  # Ensure media.id is available
+                category.media_id = media.id  # Update category media_id
 
         await db.commit()
         await db.refresh(category)
+
         return {
             "success": True,
             "status_code": 200,
