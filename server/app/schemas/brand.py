@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
+from .model import ModelOut
+from .media import MediaOut
 
 # Assuming you have these schemas defined elsewhere
 # from app.schemas.media import MediaOut
@@ -39,10 +41,12 @@ class BrandUpdate(BrandBase):
     name: Optional[str] = None  # Allow updating name
     category_id: Optional[int] = None # Allow updating category_id
 
-class BrandOut(BrandBase):
+class BrandOut(BaseModel):
     id: int
-    media: List[MediaOut] = []  # List of associated media
-    models: List[ModelOut] = []  # List of associated models
+    name: str
+    category_id: int
+    media: List[MediaOut] = []
+    models: List[ModelOut] = []
 
     class Config:
         orm_mode = True

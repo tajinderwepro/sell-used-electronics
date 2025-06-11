@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
+from sqlalchemy.orm import foreign
+
 
 class Category(Base):
     __tablename__ = "categories"
