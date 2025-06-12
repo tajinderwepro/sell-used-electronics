@@ -1,33 +1,39 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List,Generic, TypeVar
 from .brand import BrandOut
 from .model import ModelOut
 from .media import MediaOut
-# Base schema for input
+from pydantic.generics import GenericModel
+
+T = TypeVar("T")
+
+class ListResponse(GenericModel, Generic[T]):
+    success: bool
+    status_code: int
+    data: List[T]
+
 class CategoryBase(BaseModel):
     name: str
     media_id: Optional[int] = None
 
-# Create schema
 class CategoryCreate(BaseModel):
     name: str
 
     class Config:
         arbitrary_types_allowed = True
 
-# Update schema (not used now, but kept for later)
 class CategoryUpdate(CategoryBase):
     pass
 
-# Output schemas for nested Brand and Model
 class BrandOut(BaseModel):
     id: int
     name: str
     media_id: Optional[int]
     category_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 class CategoryUpdate(BaseModel):
     name: str
@@ -42,8 +48,9 @@ class ModelOut(BaseModel):
     brand_id: int
     category_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 class ModelListRequest(BaseModel):
     limit: int = 10
@@ -55,8 +62,9 @@ class MediaOut(BaseModel):
     mediable_type: str
     mediable_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 
 class CategoryOut(BaseModel):
@@ -66,5 +74,6 @@ class CategoryOut(BaseModel):
     brands: List[BrandOut] = []
     models: List[ModelOut] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }

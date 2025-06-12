@@ -7,6 +7,8 @@ from app.models.category import Category
 from app.models.media import Media
 from app.models.brand import Brand
 from app.models.model import Model
+from app.schemas.category import CategoryOut
+from app.schemas.category import ListResponse
 
 
 class CategoryService:
@@ -56,24 +58,20 @@ class CategoryService:
             select(Category)
             .options(
                 selectinload(Category.media),
-                selectinload(Category.models).selectinload(Model.media),
-                selectinload(Category.brands)
-                    .selectinload(Brand.models)
-                    .selectinload(Model.media),
-                selectinload(Category.brands).selectinload(Brand.media)
+                selectinload(Category.brands),
+                selectinload(Category.models)
             )
-            .order_by(Category.id)
             .limit(limit)
             .offset(offset)
         )
 
         categories = result.scalars().all()
 
-        return {
-            "success": True,
-            "status_code": 200,
-            "data": categories
-        }
+        return ListResponse[CategoryOut](
+            success=True,
+            status_code=200,
+            data=[CategoryOut.from_orm(cat) for cat in categories]
+        )
 
 
     @staticmethod

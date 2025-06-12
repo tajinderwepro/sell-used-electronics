@@ -10,6 +10,7 @@ import uuid
 from app.utils.file_utils import save_upload_file
 from app.core.config import settings  
 from app.schemas.category import CategoryUpdate 
+from app.schemas.category import ListResponse
 
 router = APIRouter()
 
@@ -26,7 +27,7 @@ async def upload_image(
     app_url = settings.APP_URL
     return await CategoryService.add_category(name, f"{app_url}{file_path}", db)
 
-@router.post("/list", response_model=List[CategoryOut])
+@router.post("/list", response_model=ListResponse[CategoryOut])
 async def get_categories(
     request: ModelListRequest,
     db: AsyncSession = Depends(get_db)
@@ -36,7 +37,6 @@ async def get_categories(
         offset=request.offset,
         db=db
     )
-
 @router.put("/update-category/{category_id}")
 async def update_category(
     category_id: int,
