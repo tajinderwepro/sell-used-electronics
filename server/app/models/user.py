@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Enum as SAEnum
 from app.db.session import Base
+from sqlalchemy.orm import relationship
 import enum
+from app.models.base import TimestampMixin
 
 class RoleEnum(str, enum.Enum):
     admin = 'admin'
@@ -14,3 +16,5 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
+
+    devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")

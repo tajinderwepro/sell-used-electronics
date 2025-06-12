@@ -30,6 +30,11 @@ class DeviceOut(BaseModel):
         from_attributes = True
 
 class DeviceListResponse(BaseModel):
+    success: bool
+    message: str
+    devices: List[DeviceOut]
+
+class DeviceListResponse(BaseModel):
     data: List[DeviceOut]
     message: str
     success: bool

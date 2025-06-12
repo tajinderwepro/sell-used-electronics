@@ -7,6 +7,8 @@ from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy import select, asc, desc, or_, func
 from app.utils.db_helpers import paginate_query
+from app.models.device import Device
+from app.schemas.device import DeviceOut
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -78,5 +80,15 @@ class UserService:
         return {
             "user": UserOut.from_orm(user),
             "message": "User updated successfully",
+            "success": True
+        }
+
+    @staticmethod
+    async def get_user_devices(user_id: int, db: AsyncSession):
+        result = await db.execute(select(Device).where(Device.user_id == user_id))
+        devices = result.scalars().all()
+        return {
+            "devices": [DeviceOut.from_orm(device) for device in devices],
+            "message": "Devices fetched successfully",
             "success": True
         }

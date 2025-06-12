@@ -96,7 +96,7 @@ async def update_device_status(
     status_in: DeviceStatusUpdate,
     db: AsyncSession = Depends(get_db),
 ):
-    updated_device = await DeviceService.update_status(device_id, status_in.status, db)
+    updated_device = await DeviceService.update_status(device_id,status_in.user_id, status_in.status, db)
     if not updated_device:
         raise HTTPException(status_code=404, detail="Device not found")
     return updated_device

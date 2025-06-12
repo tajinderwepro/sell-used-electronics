@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean 
 from sqlalchemy.orm import relationship
 from app.db.session import Base
-
-class Address(Base):
+from app.models.base import TimestampMixin
+class Address(Base,TimestampMixin):
     __tablename__ = 'addresses'
 
     id = Column(Integer, primary_key=True, index=True)

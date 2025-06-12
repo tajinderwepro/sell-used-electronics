@@ -1,8 +1,10 @@
 # app/models/device.py
 from sqlalchemy import Column, Integer, String, Float,ForeignKey
 from app.db.session import Base
+from sqlalchemy.orm import relationship
+from app.models.base import TimestampMixin
 
-class Device(Base):
+class Device(Base,TimestampMixin):
     __tablename__ = 'devices'
 
     id = Column(Integer, primary_key=True, index=True)
@@ -14,5 +16,15 @@ class Device(Base):
     ebay_avg_price = Column(Float, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     status = Column(String, default="pending",nullable=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    brand_id = Column(Integer, ForeignKey("brands.id"), nullable=True)
+    model_id = Column(Integer, ForeignKey("models.id"), nullable=True)
+
+    # Relationships
+    user = relationship("User", back_populates="devices")
+    category_ref = relationship("Category", back_populates="devices")
+    brand_ref = relationship("Brand", back_populates="devices")
+    model_ref = relationship("Model", back_populates="devices")
+
 
 

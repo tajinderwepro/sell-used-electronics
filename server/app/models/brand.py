@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
 from sqlalchemy.orm import foreign
+from app.models.base import TimestampMixin
 
-class Brand(Base):
+class Brand(Base,TimestampMixin):
     __tablename__ = "brands"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -15,6 +16,7 @@ class Brand(Base):
     # Relationships
     category = relationship("Category", back_populates="brands")
     models = relationship("Model", back_populates="brand", cascade="all, delete-orphan")
+    devices = relationship("Device", back_populates="brand")
    
     media = relationship(
     "Media",

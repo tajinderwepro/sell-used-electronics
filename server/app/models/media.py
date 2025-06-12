@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String
 from app.db.session import Base
+from app.models.base import TimestampMixin
 
-class Media(Base):
+class Media(Base,TimestampMixin):
     __tablename__ = "media"
 
     id = Column(Integer, primary_key=True, index=True)

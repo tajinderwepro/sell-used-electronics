@@ -3,9 +3,9 @@ from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
 from sqlalchemy.orm import foreign
+from app.models.base import TimestampMixin
 
-
-class Category(Base):
+class Category(Base,TimestampMixin):
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -23,3 +23,5 @@ class Category(Base):
         viewonly=True,
         uselist=True
     )
+
+    devices = relationship("Device", back_populates="category_ref")

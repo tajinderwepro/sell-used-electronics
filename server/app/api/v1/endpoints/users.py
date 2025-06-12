@@ -6,6 +6,7 @@ from app.services.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 
+from app.schemas.device import DeviceListResponse
 
 router = APIRouter()
 
@@ -49,5 +50,16 @@ async def update_user(
     print(user_id)
     print(user.model_dump(exclude_unset=True))  
     return await UserService.update_user(user_id, user, db)
+
+@router.get("/devices/{user_id}")
+async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
+    devices = await UserService.get_user_devices(user_id,db)
+    if not devices:
+        raise HTTPException(status_code=404, detail="Devices not found")
+    return devices
+
+@router.get("/user/{user_id}", response_model=DeviceListResponse)
+async def get_user_devices(user_id: int, db: AsyncSession = Depends(get_db)):
+    return await DeviceService.get_user_devices(user_id, db)
 
 
