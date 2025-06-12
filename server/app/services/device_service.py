@@ -63,6 +63,8 @@ class DeviceService:
                 "condition": device.condition,
                 "base_price": device.base_price,
                 "ebay_avg_price": device.ebay_avg_price,
+                "status": device.status,
+                "user_id": device.user_id,
             })
 
         return response
