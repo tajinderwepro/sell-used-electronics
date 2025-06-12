@@ -2,8 +2,9 @@
 from sqlalchemy import Column, Integer, String, Float,ForeignKey
 from app.db.session import Base
 from sqlalchemy.orm import relationship
+from app.models.base import TimestampMixin
 
-class Device(Base):
+class Device(Base,TimestampMixin):
     __tablename__ = 'devices'
 
     id = Column(Integer, primary_key=True, index=True)

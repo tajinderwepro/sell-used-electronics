@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Enum as SAEnum
 from app.db.session import Base
 from sqlalchemy.orm import relationship
 import enum
+from app.models.base import TimestampMixin
 
 class RoleEnum(str, enum.Enum):
     admin = 'admin'

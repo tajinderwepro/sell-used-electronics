@@ -2,8 +2,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from app.db.session import Base
+from app.models.base import TimestampMixin
 
-class Order(Base):
+class Order(Base,TimestampMixin):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True, index=True)

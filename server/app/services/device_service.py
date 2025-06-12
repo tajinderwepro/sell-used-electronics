@@ -211,7 +211,7 @@ class DeviceService:
         return [row[0] for row in result.fetchall() if row[0]]
     
     @staticmethod
-    async def update_status(device_id: int, status: str, db: AsyncSession):
+    async def update_status(device_id: int,user_id:int, status: str, db: AsyncSession):
         result = await db.execute(select(Device).where(Device.id == device_id))
         device = result.scalar_one_or_none()
 
@@ -219,6 +219,7 @@ class DeviceService:
             return None
 
         device.status = status
+        device.user_id = user_id
         await db.commit()
         await db.refresh(device)
         return device

@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 from app.db.session import Base
 from app.models.media import Media 
 from sqlalchemy.orm import foreign
+from app.models.base import TimestampMixin
 
-class Model(Base):
+class Model(Base,TimestampMixin):
     __tablename__ = "models"
 
     id = Column(Integer, primary_key=True, index=True)
