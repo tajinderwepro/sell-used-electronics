@@ -27,7 +27,7 @@ async def me(
     user_id: int = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db)
 ):
-    return await AuthService.get_me(user_id, db)
+    return await AuthService.get_me(user_id, db) 
 @router.post("/logout")
 def logout():
     return {"message": "Logout successful. Please discard your token."}
