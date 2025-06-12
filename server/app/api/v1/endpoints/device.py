@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate
 from app.services.device_service import DeviceService
-
+from app.services.ebay_service import EbayService
 router = APIRouter()
 
 @router.get("/list", response_model=DeviceListResponse)
@@ -76,6 +76,11 @@ async def update_device(
     
 @router.post("/estimate-price")
 async def estimate_price(request: Request):
+    # CLIENT_ID = "YOUR_CLIENT_ID"
+    # CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+
+    # ebayService = EbayService(CLIENT_ID, CLIENT_SECRET)
+    # estimated_price = ebayService.get_estimated_price("iPhone 13 Pro Max")
     data = await request.json()
     base_price = data.get("base_price")
     
