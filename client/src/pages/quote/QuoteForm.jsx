@@ -81,8 +81,8 @@ export default function QuoteForm({ onClose }) {
   const fetchCategories = async (currentOffset = 0, append = false) => {
     try {
       const res = await api.getCategories(10, 0);
-      if (res && res.length > 0) {
-        setCategories((prev) => append ? [...prev, ...res] : res);
+      if (res.success) {
+        setCategories((prev) => append ? [...prev, ...res.data] : res.data);
       } 
     } catch (err) {
       console.error("Failed to fetch categories:", err);

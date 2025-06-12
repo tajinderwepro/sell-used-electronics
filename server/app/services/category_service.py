@@ -53,18 +53,28 @@ class CategoryService:
             raise HTTPException(status_code=500, detail=f"Failed to add category: {str(e)}")
 
     @staticmethod
-    async def get_all_categories(limit: int, offset: int, db: AsyncSession):
-        result = await db.execute(
-            select(Category)
-            .options(
-                selectinload(Category.media),
-                selectinload(Category.brands),
-                selectinload(Category.models)
+    async def get_all_categories( limit: int,offset: int, flag: bool = True, db: AsyncSession = None) -> ListResponse[CategoryOut]:
+        if flag:
+            result = await db.execute(
+                select(Category)
+                .options(
+                    selectinload(Category.media),
+                    selectinload(Category.brands),
+                    selectinload(Category.models)
+                )
+                .order_by(Category.id)
+                .limit(limit)
+                .offset(offset)
             )
-            .order_by(Category.id)
-            .limit(limit)
-            .offset(offset)
-        )
+        else:
+            result = await db.execute(
+                select(Category)
+                .options(
+                    selectinload(Category.media),
+                    selectinload(Category.brands),
+                    selectinload(Category.models)
+                )
+            )
 
         categories = result.scalars().all()
 
@@ -73,7 +83,6 @@ class CategoryService:
             status_code=200,
             data=[CategoryOut.from_orm(cat) for cat in categories]
         )
-
 
     @staticmethod
     async def update_category(category_id: int, name: str, image_path: str, db: AsyncSession):

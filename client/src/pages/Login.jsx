@@ -28,7 +28,7 @@ export default function Login() {
     try {
       await login(form.email, form.password, form.role);
       setError("");
-      navigate("/");
+      navigate("/dashboard");
       toast.success("User logged in successfully")
     } catch (error) {
       setError("Login failed. Please check your credentials.");
@@ -37,7 +37,7 @@ export default function Login() {
   };
 
   if (userRole=="user" && isAuthenticated ) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (

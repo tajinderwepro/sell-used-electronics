@@ -139,8 +139,10 @@ const api = {
   getCategories: (limit = 10, offset = 0) => axiosWrapper(
     axiosInstance.post(`/category/list`, {
       limit,
-      offset
+      offset,
+    
     })),
+  getDevices: () => axiosWrapper(axiosInstance.get('/devices/list')),  
   auth: {
     me: () => axiosWrapper(axiosInstance.get(`/auth/me`)),
   },
@@ -149,7 +151,6 @@ const api = {
     add: (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`, data)),
   },
   public: {
-    getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/devices/estimate-price`, data)),
     submit: (data) => axiosWrapper(axiosInstance.post(`/devices/submit`, data)),
   }
 };

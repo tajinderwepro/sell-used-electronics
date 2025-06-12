@@ -14,6 +14,7 @@ const CommonTable = ({
   pageSize = 10,
   title = '',
   onClick = () => {},
+  isCreate=true
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -44,10 +45,10 @@ const CommonTable = ({
   return (
     <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}>
       {/* Title & Button */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
-        <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
-        <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18} />}>Create</Button>
-      </div>
+        {isCreate && title !== "" && <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+          <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
+          <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18} />}>Create</Button>
+        </div>} 
 
       {/* Table & Search */}
       <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
