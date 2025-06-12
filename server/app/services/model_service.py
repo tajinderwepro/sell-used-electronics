@@ -7,7 +7,8 @@ from typing import List
 
 from app.models.model import Model
 from app.models.media import Media
-from app.schemas.model import ModelCreate, ModelOut, ModelUpdate
+from app.schemas.model import ModelCreate, ModelOut, ModelUpdate,ListResponse
+
 
 class ModelService:
     @staticmethod
@@ -77,14 +78,11 @@ class ModelService:
         )
         models = result.scalars().all()
 
-        return {
-            "success": True,
-            "status_code": 200,
-            "total": total_count,
-            "limit": limit,
-            "offset": offset,
-            "data": models
-        }
+        return ListResponse[ModelOut](
+            success=True,
+            status_code=200,
+            data=[ModelOut.from_orm(model) for model in models]
+        )
 
 
     @staticmethod

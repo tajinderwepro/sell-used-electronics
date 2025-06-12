@@ -1,6 +1,15 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List,Generic, TypeVar
 from .media import MediaOut
+from pydantic.generics import GenericModel
+
+
+T = TypeVar("T")
+
+class ListResponse(GenericModel, Generic[T]):
+    success: bool
+    status_code: int
+    data: List[T]
 
 class ModelBase(BaseModel):
     name: str
@@ -22,8 +31,9 @@ class MediaOut(BaseModel):
     mediable_type: str
     mediable_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 class ModelUpdate(BaseModel):
     name: Optional[str] = None
@@ -49,5 +59,6 @@ class ModelOut(BaseModel):
     category_id: int
     media: List[MediaOut] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }

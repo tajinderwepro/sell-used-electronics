@@ -9,6 +9,8 @@ import shutil
 import os
 import uuid
 from app.core.config import settings 
+from app.schemas.brand import ListResponse
+
 
 router = APIRouter()
 UPLOAD_FOLDER = "uploads"
@@ -25,7 +27,7 @@ async def upload_image(
     app_url = settings.APP_URL
     return await BrandService.add_brand(category_id, name, f"{app_url}{file_path}", db)
 
-@router.post("/list/{category_id}", response_model=List[BrandOut])
+@router.post("/list/{category_id}", response_model=ListResponse[BrandOut])
 async def get_brands(
     category_id: int,
     request: ModelListRequest,

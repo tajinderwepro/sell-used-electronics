@@ -7,6 +7,7 @@ from app.utils.file_utils import save_upload_file
 from typing import List
 import os
 from app.core.config import settings
+from app.schemas.model import ListResponse
 
 router = APIRouter()
 UPLOAD_FOLDER = "uploads"
@@ -36,7 +37,7 @@ async def upload_model(
 
 
 
-@router.post("/list/{brand_id}", response_model=List[ModelOut])
+@router.post("/list/{brand_id}", response_model=ListResponse[ModelOut])
 async def list_models(
     brand_id: int,
     request: ModelListRequest,

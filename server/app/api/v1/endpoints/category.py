@@ -37,6 +37,7 @@ async def get_categories(
         offset=request.offset,
         db=db
     )
+    
 @router.put("/update-category/{category_id}")
 async def update_category(
     category_id: int,

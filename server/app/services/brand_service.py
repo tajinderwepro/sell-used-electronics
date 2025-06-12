@@ -6,7 +6,7 @@ from typing import List
 
 from app.models.brand import Brand
 from app.models.media import Media
-from app.schemas.brand import BrandCreate, BrandOut, BrandUpdate
+from app.schemas.brand import BrandCreate, BrandOut, BrandUpdate,ListResponse
 
 
 class BrandService:
@@ -69,11 +69,11 @@ class BrandService:
         )
         brands = result.scalars().all()
 
-        return {
-            "success": True,
-            "status_code": 200,
-            "data": brands
-        }
+        return ListResponse[BrandOut](
+            success=True,
+            status_code=200,
+            data=[BrandOut.from_orm(brand) for brand in brands]
+        )
 
 
     @staticmethod

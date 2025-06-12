@@ -1,11 +1,19 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List,Generic, TypeVar
 from .model import ModelOut
 from .media import MediaOut
+from pydantic.generics import GenericModel
 
 # Assuming you have these schemas defined elsewhere
 # from app.schemas.media import MediaOut
 # from app.schemas.model import ModelOut
+
+T = TypeVar("T")
+
+class ListResponse(GenericModel, Generic[T]):
+    success: bool
+    status_code: int
+    data: List[T]
 
 class MediaOut(BaseModel):
     id: int
@@ -13,8 +21,9 @@ class MediaOut(BaseModel):
     mediable_type: str
     mediable_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 class ModelListRequest(BaseModel):
     limit: int = 10
@@ -31,8 +40,9 @@ class ModelOut(BaseModel):
     brand_id: int
     category_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
 
 class BrandBase(BaseModel):
     name: str
@@ -52,5 +62,6 @@ class BrandOut(BaseModel):
     media: List[MediaOut] = []
     models: List[ModelOut] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+    "from_attributes": True
+    }
