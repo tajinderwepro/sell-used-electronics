@@ -11,16 +11,17 @@ export default function InputField({
   placeholder,
   required = false,
   className = '',
-  name = ''
+  name = '',
+  marginBottom="mb-4"
 }) {
   const COLOR_CLASSES = useColorClasses();
 
 
   return (
-    <div className="mb-6">
+    <div className={marginBottom}>
       <label
         htmlFor={id}
-        className={`block mb-2 ${COLOR_CLASSES.primary} font-semibold`}
+        className={`block mb-2 ${COLOR_CLASSES.primary} font-semibold text-left`}
       >
         {label}
       </label>

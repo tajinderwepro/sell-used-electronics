@@ -61,6 +61,7 @@ class CategoryService:
                 selectinload(Category.brands),
                 selectinload(Category.models)
             )
+            .order_by(Category.id)
             .limit(limit)
             .offset(offset)
         )
@@ -78,6 +79,11 @@ class CategoryService:
     async def update_category(category_id: int, name: str, image_path: str, db: AsyncSession):
         result = await db.execute(select(Category).where(Category.id == category_id))
         category = result.scalar_one_or_none()
+
+        res = await db.execute(select(Category).where(Category.name == name))
+        existing = res.scalar_one_or_none()
+        if existing:
+            return {"success": False, "message": "Category already exists"}
 
         if not category:
             raise HTTPException(status_code=404, detail="Category not found")

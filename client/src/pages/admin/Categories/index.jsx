@@ -34,9 +34,10 @@ export default function Categories() {
 
     try {
       const res = await api.getCategories(limit, currentOffset);
-      if (res && res.length > 0) {
-        setCategories((prev) => append ? [...prev, ...res] : res);
-        setHasMore(res.length  === limit );
+      console.log(res,'res')
+      if (res.success) {
+        setCategories((prev) => append ? [...prev, ...res.data] : res.data);
+        setHasMore(res.data.length  === limit );
       } else {
         setHasMore(false);
       }
@@ -171,14 +172,13 @@ export default function Categories() {
     }
   };
 
-
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const handleCategoryClick = (cat) => {
     navigate(`/admin/categories/${cat.id}/brand`);
   };
-
+console.log(categories,'ssss')
   return (
     <div className="min-h-screen">
       <LoadingIndicator isLoading={loading}/>
@@ -218,7 +218,7 @@ export default function Categories() {
           </Button>
         </div>
       )}
-       {categories.length == 0 && <div className="flex justify-center items-center h-[50vh]">No Categories Available!</div>}
+       {(categories.length == 0 && loading==false) && <div className="flex justify-center items-center h-[50vh]">No Categories Available!</div>}
 
       {/* Popup */}
      <Popup

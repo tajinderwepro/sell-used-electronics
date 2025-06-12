@@ -39,9 +39,9 @@ export default function Models() {
     setLoading(true)
     try {
       const res = await api.admin.getModel(brandId, limit, currentOffset);
-      if (res && res.length > 0) {
-        setModels((prev) => append ? [...prev, ...res] : res);
-        setHasMore(res.length === limit);
+      if (res.success) {
+        setModels((prev) => append ? [...prev, ...res.data] : res.data);
+        setHasMore(res.data.length === limit);
       } else {
         setHasMore(false);
       }
@@ -215,7 +215,7 @@ export default function Models() {
           </Button>
         </div>
       )}
-      {models.length == 0 && <div className="flex justify-center items-center h-[50vh]">No Models Available!</div>}
+      {(models.length == 0  && !loading) &&  <div className="flex justify-center items-center h-[50vh]">No Models Available!</div>}
 
       <Popup
         open={popupOpen.open}
