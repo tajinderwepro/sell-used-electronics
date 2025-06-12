@@ -7,6 +7,12 @@ from pydantic.generics import GenericModel
 
 T = TypeVar("T")
 
+
+class CategoryBase(BaseModel):
+    id: int
+    name: str
+    class Config:
+        orm_mode = True
 class ListResponse(GenericModel, Generic[T]):
     success: bool
     status_code: int

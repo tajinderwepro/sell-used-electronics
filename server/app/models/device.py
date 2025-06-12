@@ -21,10 +21,9 @@ class Device(Base,TimestampMixin):
     model_id = Column(Integer, ForeignKey("models.id"), nullable=True)
 
     # Relationships
-    user = relationship("User", back_populates="devices")
-    category_ref = relationship("Category", back_populates="devices")
-    brand_ref = relationship("Brand", back_populates="devices")
-    model_ref = relationship("Model", back_populates="devices")
-
+    category_rel = relationship("Category", back_populates="devices")
+    brand_rel = relationship("Brand", back_populates="devices")
+    model_rel = relationship("Model", back_populates="devices")
+    user_rel = relationship("User", back_populates="devices")
 
 

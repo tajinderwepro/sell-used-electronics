@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate,DeviceStatusUpdate
+from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate,DeviceStatusUpdate, DeviceResponse
 from app.services.device_service import DeviceService
 from app.services.ebay_service import EbayService
 router = APIRouter()
@@ -11,12 +11,15 @@ router = APIRouter()
 @router.post("/list", response_model=DeviceListResponse)
 async def get_list(db: AsyncSession = Depends(get_db)):
     devices = await DeviceService.get_all_devices(db)
+
+    # Convert SQLAlchemy Device objects to Pydantic DeviceResponse objects
+    device_responses = [DeviceResponse.from_orm(device) for device in devices]
+
     return DeviceListResponse(
-        data=devices,
+        data=device_responses,
         message="All devices fetched successfully",
         success=True
     )
-
 @router.post("/submit/{id}", response_model=DeviceListResponse)
 async def create_device(id: int, device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
     return await DeviceService.create_device(id, device_in, db)

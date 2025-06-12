@@ -10,6 +10,15 @@ from pydantic.generics import GenericModel
 
 T = TypeVar("T")
 
+
+# schemas/brand.py
+class BrandBase(BaseModel):
+    id: int
+    name: str
+    media_id: Optional[int] = None  
+    class Config:
+        orm_mode = True
+
 class ListResponse(GenericModel, Generic[T]):
     success: bool
     status_code: int

@@ -17,4 +17,5 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
 
-    devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
+    devices = relationship("Device", back_populates="user_rel", cascade="all, delete-orphan")
+    

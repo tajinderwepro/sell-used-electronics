@@ -18,7 +18,7 @@ class Model(Base,TimestampMixin):
     # Relationships
     brand = relationship("Brand", back_populates="models")
     category = relationship("Category", back_populates="models")
-    devices = relationship("Device", back_populates="models")
+    devices = relationship("Device", back_populates="model_rel")
 
     media = relationship(
         "Media",

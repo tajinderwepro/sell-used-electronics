@@ -24,4 +24,4 @@ class Category(Base,TimestampMixin):
         uselist=True
     )
 
-    devices = relationship("Device", back_populates="category_ref")
+    devices = relationship("Device", back_populates="category_rel")

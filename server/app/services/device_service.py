@@ -7,78 +7,66 @@ from app.models.category import Category
 from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
 from sqlalchemy.orm import selectinload
 from sqlalchemy import cast, Integer
+from sqlalchemy.orm import joinedload
 
 class DeviceService:
 
     @staticmethod
     async def get_all_devices(db: AsyncSession):
-        result = await db.execute(select(Device))
-        devices = result.scalars().all()
-
-        response = []
-
-        for device in devices:
-            category = None
-            brand = None
-            model = None
-
-            try:
-                if device.category:
-                    category_id = int(device.category)
-                    category_result = await db.execute(
-                        select(Category).where(Category.id == category_id)
-                    )
-                    category = category_result.scalar_one_or_none()
-            except ValueError:
-                pass  # Invalid ID string
-
-            try:
-                if device.brand:
-                    brand_id = int(device.brand)
-                    brand_result = await db.execute(
-                        select(Brand).where(Brand.id == brand_id)
-                    )
-                    brand = brand_result.scalar_one_or_none()
-            except ValueError:
-                pass
-
-            try:
-                if device.model:
-                    model_id = int(device.model)
-                    model_result = await db.execute(
-                        select(Model).where(Model.id == model_id)
-                    )
-                    model = model_result.scalar_one_or_none()
-            except ValueError:
-                pass
-
-            response.append({
-                "id": device.id,
-                "category": device.category,
-                "brand": device.brand,
-                "model": device.model,
-                "category_name": category.name if category else None,
-                "brand_name": brand.name if brand else None,
-                "model_name": model.name if model else None,
-                "condition": device.condition,
-                "base_price": device.base_price,
-                "ebay_avg_price": device.ebay_avg_price,
-                "status": device.status,
-                "user_id": device.user_id,
-            })
-
-        return response
+        result = await db.execute(
+            select(Device)
+            .options(
+                selectinload(Device.category_rel),
+                selectinload(Device.brand_rel),
+                selectinload(Device.model_rel)
+            )
+        )
+        return result.scalars().all()
 
     @staticmethod
     async def create_device(user_id: int, device_in: DeviceCreate, db: AsyncSession):
+        category_name = None
+        brand_name = None
+        model_name = None
+
+        try:
+            category_id = int(device_in.category)
+            category_result = await db.execute(select(Category).where(Category.id == category_id))
+            category_obj = category_result.scalar_one_or_none()
+            if category_obj:
+                category_name = category_obj.name
+        except (ValueError, TypeError):
+            category_id = None
+
+        try:
+            brand_id = int(device_in.brand)
+            brand_result = await db.execute(select(Brand).where(Brand.id == brand_id))
+            brand_obj = brand_result.scalar_one_or_none()
+            if brand_obj:
+                brand_name = brand_obj.name
+        except (ValueError, TypeError):
+            brand_id = None
+
+        try:
+            model_id = int(device_in.model)
+            model_result = await db.execute(select(Model).where(Model.id == model_id))
+            model_obj = model_result.scalar_one_or_none()
+            if model_obj:
+                model_name = model_obj.name
+        except (ValueError, TypeError):
+            model_id = None
+
         device = Device(
             condition=device_in.condition,
             base_price=device_in.base_price,
             ebay_avg_price=device_in.ebay_avg_price,
-            category=device_in.category,
-            brand=device_in.brand,
-            model=device_in.model,
-            user_id=user_id,  # use the parameter here
+            model=model_name,
+            brand=brand_name,
+            category=category_name,
+            category_id=category_id,
+            brand_id=brand_id,
+            model_id=model_id,
+            user_id=user_id,
         )
 
         db.add(device)
@@ -90,7 +78,6 @@ class DeviceService:
             "message": "Submit successfully",
             "data": [DeviceOut.from_orm(device)],
         }
-
 
     @staticmethod
     async def delete_device(device_id: int, db: AsyncSession):
