@@ -1,6 +1,7 @@
 # app/models/device.py
 from sqlalchemy import Column, Integer, String, Float,ForeignKey
 from app.db.session import Base
+from sqlalchemy.orm import relationship
 
 class Device(Base):
     __tablename__ = 'devices'
@@ -15,4 +16,6 @@ class Device(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     status = Column(String, default="pending",nullable=True)
 
+    #  relationship
+    user = relationship("User", back_populates="devices")
 

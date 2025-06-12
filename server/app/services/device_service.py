@@ -222,3 +222,6 @@ class DeviceService:
         await db.commit()
         await db.refresh(device)
         return device
+
+    
+    

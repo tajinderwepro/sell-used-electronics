@@ -4,6 +4,8 @@ from app.db.session import async_session
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
+from app.models.device import Device
+from app.schemas.device import DeviceOut
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -64,5 +66,15 @@ class UserService:
         return {
             "user": UserOut.from_orm(user),
             "message": "User updated successfully",
+            "success": True
+        }
+
+    @staticmethod
+    async def get_user_devices(user_id: int, db: AsyncSession):
+        result = await db.execute(select(Device).where(Device.user_id == user_id))
+        devices = result.scalars().all()
+        return {
+            "devices": [DeviceOut.from_orm(device) for device in devices],
+            "message": "Devices fetched successfully",
             "success": True
         }
