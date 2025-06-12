@@ -65,6 +65,7 @@ class BrandService:
                 selectinload(Brand.media),
             )
             .limit(limit)
+            .order_by(Brand.id)
             .offset(offset)
         )
         brands = result.scalars().all()
@@ -91,8 +92,7 @@ class BrandService:
             # Find media linked to this brand
             media_result = await db.execute(
                 select(Media).where(
-                    Media.mediable_id == brand_id,
-                    Media.mediable_type == "brand"
+                    Media.id == brand.media_id,
                 )
             )
             media = media_result.scalar_one_or_none()
@@ -103,7 +103,9 @@ class BrandService:
             else:
                 # Create new media if not found
                 media = Media(
-                    Media.id == brand.media_id,
+                    path=image_path,
+                    mediable_type="brand",
+                    mediable_id=brand_id
                 )
                 db.add(media)
 

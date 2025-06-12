@@ -21,7 +21,6 @@ export default function InputField({
     focus:outline-none focus:ring-2 transition-all duration-300
     ${isCurrencyFormat ? 'pl-8' : ''}
     ${className}
-    ${COLOR_CLASSES.primary}
     ${COLOR_CLASSES.bgWhite}
     ${error ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' : COLOR_CLASSES.borderPrimary + ' focus:ring-' + COLOR_CLASSES.primaryBg + ' focus:border-' + COLOR_CLASSES.primary}
   `;

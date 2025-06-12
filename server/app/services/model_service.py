@@ -44,6 +44,11 @@ class ModelService:
             )
             db.add(media)
             await db.commit()
+            await db.refresh(media)
+            
+            new_model.media_id = media.id
+            await db.commit()
+            await db.refresh(new_model)
 
             return {
                 "success": True,
