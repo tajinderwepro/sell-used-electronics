@@ -16,7 +16,15 @@ class Device(Base,TimestampMixin):
     ebay_avg_price = Column(Float, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     status = Column(String, default="pending",nullable=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    brand_id = Column(Integer, ForeignKey("brands.id"), nullable=True)
+    model_id = Column(Integer, ForeignKey("models.id"), nullable=True)
 
-    #  relationship
+    # Relationships
     user = relationship("User", back_populates="devices")
+    category_ref = relationship("Category", back_populates="devices")
+    brand_ref = relationship("Brand", back_populates="devices")
+    model_ref = relationship("Model", back_populates="devices")
+
+
 

@@ -23,3 +23,5 @@ class Category(Base,TimestampMixin):
         viewonly=True,
         uselist=True
     )
+
+    devices = relationship("Device", back_populates="category_ref")
