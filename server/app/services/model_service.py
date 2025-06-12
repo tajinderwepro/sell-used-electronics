@@ -91,7 +91,7 @@ class ModelService:
         model = result.scalar_one_or_none()
 
         if not model:
-            raise HTTPException(status_code=404, detail="Model not found")
+            return {"success": False, "message": "Model already exist"}
 
         model.name = name
 

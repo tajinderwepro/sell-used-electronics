@@ -21,7 +21,7 @@ class BrandService:
             )
             existing = result.scalar_one_or_none()
             if existing:
-                raise HTTPException(status_code=400, message="Brand already exists")
+                return {"success": False, "message": "Brand already exist"}
 
             new_brand = Brand(name=name, category_id=category_id)
             db.add(new_brand)
@@ -69,7 +69,7 @@ class BrandService:
         )
         brands = result.scalars().all()
 
-        return ListResponse[BrandOut](
+        return ListResponse[BrandOut](                                                                                                                         
             success=True,
             status_code=200,
             data=[BrandOut.from_orm(brand) for brand in brands]
