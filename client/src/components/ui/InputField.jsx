@@ -11,7 +11,6 @@ export default function InputField({
   className = '',
   name = '',
   marginBottom = "mb-4",
-  isCurrencyFormat = false,
   error = ''
 }) {
   const COLOR_CLASSES = useColorClasses();
@@ -19,7 +18,6 @@ export default function InputField({
   const inputBaseClasses = `
     w-full border rounded-lg p-3 placeholder-${COLOR_CLASSES.primaryBgHover}
     focus:outline-none focus:ring-2 transition-all duration-300
-    ${isCurrencyFormat ? 'pl-8' : ''}
     ${className}
     ${COLOR_CLASSES.bgWhite}
     ${error ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' : COLOR_CLASSES.borderPrimary + ' focus:ring-' + COLOR_CLASSES.primaryBg + ' focus:border-' + COLOR_CLASSES.primary}
@@ -37,9 +35,6 @@ export default function InputField({
       )}
 
       <div className="relative">
-        {isCurrencyFormat && (
-          <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">$</span>
-        )}
 
         <input
           id={id}

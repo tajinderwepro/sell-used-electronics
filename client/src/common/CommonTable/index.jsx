@@ -6,6 +6,8 @@ import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useColorClasses } from '../../theme/useColorClasses';
 import { FONT_FAMILIES } from '../../constants/theme';
 import { useFilters } from '../../context/FilterContext';
+import { Chip } from '../../components/ui/Chip';
+import { formatCurrency } from '../../components/ui/CurrencyFormatter';
 
 const CommonTable = ({
   columns,
@@ -61,15 +63,22 @@ const CommonTable = ({
 
 
   return (
-    <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite} ${FONT_FAMILIES.primary}`}>
-      {isCreate && title !== "" && (
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
-          <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
-          <Button className="w-24 text-sm" onClick={onClick} icon={<Plus size={18} />}>Create</Button>
-        </div>
-      )}
-
-      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
+    <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}>
+      {/* Title & Button */}
+        {(isCreate || title !== "") && (
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+            {title !== "" && (
+              <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
+            )}
+            {isCreate && (
+              <Button className="w-24 text-sm" onClick={onClick} icon={<Plus size={18} />}>
+                Create
+              </Button>
+            )}
+          </div>
+        )}
+      {/* Table & Search */}
+      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
         <LoadingIndicator isLoading={loading} />
 
         <div className="flex flex-col md:flex-row justify-end items-center gap-2 m-3">
@@ -114,7 +123,8 @@ const CommonTable = ({
                       key={col.key}
                       className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     >
-                      {col.render ? col.render(row) : row[col.key]}
+
+                      {['role','status'].includes(col.key) ?  Chip(row[col.key]) : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
                     </td>
                   ))}
                 </tr>

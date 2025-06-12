@@ -6,7 +6,6 @@ import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import SelectField from "../../../components/ui/SelectField";
 import { useColorClasses } from "../../../theme/useColorClasses";
-import Joi from 'joi';
 import { validateFormData } from "../../../utils/validateUtils";
 import { toast } from "react-toastify";
 import { CreateuserSchema, EditUserSchema } from "../../../common/Schema";

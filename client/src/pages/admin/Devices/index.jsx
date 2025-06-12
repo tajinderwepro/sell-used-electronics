@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2, SquarePen, CircleHelp } from "lucide-react";
+import { Trash2, SquarePen, CircleHelp, CircleCheckBig } from "lucide-react";
 import CommonTable from "../../../common/CommonTable";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
@@ -12,6 +12,8 @@ import { useColorClasses } from "../../../theme/useColorClasses";
 import { validateFormData } from "../../../utils/validateUtils";
 import { deviceSchema } from "../../../common/Schema";
 import { useFilters } from "../../../context/FilterContext";
+import { useAuth } from "../../../context/AuthContext";
+import { formatCurrency } from "../../../components/ui/CurrencyFormatter";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -23,6 +25,7 @@ export default function Devices() {
   const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
   const [categories, setCategories] = useState([]);
   const COLOR_CLASSES = useColorClasses();
+  const {user}=useAuth();
 
   const [form, setForm] = useState({
     category: "",
@@ -57,31 +60,34 @@ export default function Devices() {
       toast.success(res.message);
       await fetchDevices();
     } catch (err) {
-      toast.success(err.message);
+      toast.error(err.message);
       console.error("Failed to delete device:", err);
     } finally {
       setLoading(false);
     }
   };
 
+
   const getDevice = async (id) => {
-    try {
-      setLoading(true);
-      const device = await api.admin.getDevice(id);
-      setForm({
-        category: device.category?.toString() || "",
-        brand: device.brand?.toString() || "",
-        model: device.model?.toString() || "",
-        condition: device.condition || "new",
-        base_price: device.base_price?.toString() || "",
-        ebay_avg_price: device.ebay_avg_price?.toString() || "",
-      });
-      setPopupState({ open: true, isEdit: true, id });
-    } catch (err) {
-      console.error("Failed to fetch device:", err);
-    } finally {
-      setLoading(false);
-    }
+      try {
+        setLoading(true);
+        const device = await api.admin.getDevice(id);
+        setForm({
+          category: device.category?.toString() || "",
+          brand: device.brand?.toString() || "",
+          model: device.model?.toString() || "",
+          condition: device.condition || "new",
+          base_price: formatCurrency(device.base_price?.toString() || ""),
+          ebay_avg_price:formatCurrency(device.ebay_avg_price?.toString() || ""),
+          status:device.status?.toString() || "",
+          user_id:device.user_id
+        });
+        setPopupState({ open: true, isEdit: true, id });
+      } catch (err) {
+        console.error("Failed to fetch device:", err);
+      } finally {
+        setLoading(false);
+      }
   };
 
 
@@ -113,19 +119,36 @@ export default function Devices() {
     setMessage("");
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear any existing errors for this field
-    setErrors(prev => ({
-      ...prev,
-      [name]: ''
-    }));
+
+    if (name === "ebay_avg_price" || name === "base_price") {
+      const rawValue = value.replace(/\D/g, "");
+      const formattedValue = formatCurrency(rawValue);
+
+      setForm((prev) => ({
+        ...prev,
+        [name]: formattedValue, 
+      }));
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
+
 
   const handleCreateOrUpdate = async () => {
     const validationErrors = await validateFormData(form, deviceSchema);
@@ -143,13 +166,15 @@ export default function Devices() {
         category_id: parseInt(form.category),
         brand_id: parseInt(form.brand),
         model_id: parseInt(form.model),
+        base_price: parseInt(form.base_price.replace(/\D/g, ""), 10),
+        ebay_avg_price: parseInt(form.ebay_avg_price.replace(/\D/g, ""), 10),
       };
 
       if (popupState.isEdit && popupState.id) {
         const res = await api.admin.updateDevice(popupState.id, payload);
         if (res) toast.success(res.message);
       } else {
-        const res = await api.admin.createDevice(payload);
+        const res = await api.admin.submit(user.id,payload);
         if (res) toast.success(res.message);
       }
 
@@ -168,6 +193,7 @@ export default function Devices() {
   };
 
 
+
   const columns = [
     { key: "id", label: "ID", sortable: true },
     { key: "category_name", label: "Category", sortable: true },
@@ -176,6 +202,7 @@ export default function Devices() {
     { key: "condition", label: "Condition", sortable: true },
     { key: "base_price", label: "Base Price", sortable: true },
     { key: "ebay_avg_price", label: "Ebay Avg Price", sortable: true },
+    { key: "status", label: "Status", sortable: true },
     {
       key: "actions",
       label: "Actions",
@@ -187,6 +214,19 @@ export default function Devices() {
           <button onClick={() => handleDeletePopup(device.id)}>
             <Trash2 size={18} color="gray" />
           </button>
+          <button
+            onClick={() => handleApprovedPopup(device.id)}
+            disabled={device.status === "approved"}
+            className={`transition-opacity ${
+              device.status === "approved"
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-80"
+            }`}
+          >
+            <CircleCheckBig size={18} color={`${device.status === "approved"?"green":"gray"}`} />
+          </button>
+
+         
         </div>
       ),
     },
@@ -197,21 +237,39 @@ export default function Devices() {
       if (res?.data) {
         setCategories(res?.data);
       }
-      // if (Array.isArray(res)) {
-      // }s
+    
     } catch (err) {
       console.error("Failed to fetch categories:", err);
-      // toast.error("Error fetching categories");
     }
   };
+
+  const handleApprovedPopup = (id) => {
+    setPopupState({ open: true, type: "approved", id });
+  };
+
+  const handleApproved =async( )=>{
+   
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("user_id", user.id);
+      formData.append("status", "approved");
+      const res = await api.admin.updateDeviceStatus(popupState.id,formData);
+      toast.success(res.message);
+      await fetchDevices();
+      handleClose()
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+    
+  }
 
   useEffect(() => {
     fetchCategories()
   }, []);
 
-  console.log(popupState, "popupState")
-
-  console.log(categories, 'jdsjjskfhj')
   return (
     <div className="min-h-screen">
       <CommonTable
@@ -233,7 +291,7 @@ export default function Devices() {
               handleDelete(popupState.id);
               handleClose();
             }
-            : handleCreateOrUpdate
+            : popupState.type === "approved"?handleApproved: handleCreateOrUpdate
         }
         onDelete={() => {
           handleDelete(popupState.id);
@@ -244,7 +302,7 @@ export default function Devices() {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Device"
-              : "Create Device"
+              :popupState.type === "approved"?"Aproved Device": "Create Device"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"
@@ -254,11 +312,11 @@ export default function Devices() {
         isbtnDelete={popupState.type === "delete"}
         loading={loading}
       >
-        {popupState.type === "delete" ? (
+        {popupState.type === "delete" || popupState.type === "approved" ? (
           <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
             <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
             <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
-              Are you sure you want to delete this category?
+             {` Are you sure you want to ${popupState.type === "approved" ?"approved":"delete"} this device?`}
             </p>
           </div>
         ) : (
@@ -329,9 +387,8 @@ export default function Devices() {
               ]}
             />
             <InputField
-              isCurrencyFormat={true}
               label="Base Price"
-              type="number"
+               type="text"
               id="base_price"
               name="base_price"
               placeholder="Base Price"
@@ -341,10 +398,9 @@ export default function Devices() {
             />
 
             <InputField
-              isCurrencyFormat={true}
               error={errors.ebay_avg_price}
               label="Ebay Avg Price"
-              type="number"
+              type="text"
               id="ebay_avg_price"
               name="ebay_avg_price"
               placeholder="eBay Avg Price"
