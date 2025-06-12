@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { SquarePen, Trash2 } from "lucide-react";
+import { CircleHelp, SquarePen, Trash2 } from "lucide-react";
 import CommonTable from "../../../common/CommonTable";
 import api from "../../../constants/api";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import SelectField from "../../../components/ui/SelectField";
-// import SelectField from "../../../components/ui/SelectBox";
-
+import { useColorClasses } from "../../../theme/useColorClasses";
+import Joi from 'joi';
+import { validateFormData } from "../../../utils/validateUtils";
+import { toast } from "react-toastify";
+import { CreateuserSchema, EditUserSchema } from "../../../common/Schema";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [popupState, setPopupState] = useState({ open: false, isEdit: false, id: null });
-
+  const [popupState, setPopupState] = useState({ open: false, type: "create", id: null });
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -20,10 +22,11 @@ export default function Users() {
     confirmPassword: "",
     role: "admin",
   });
-
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
+  // const errors = await validateFormData(form, userSchema, { isCreate: popupState.type === "create" });
 
+  const [message, setMessage] = useState("");
+  const COLOR_CLASSES = useColorClasses();
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -40,16 +43,19 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      setLoading(true);
-      const response = await api.admin.deleteUser(id);
-      if (response) fetchUsers();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const handleOpen = () => {
+    setPopupState({ open: true, type: "create", id: null });
+    setForm({
+      name: "",
+      email: "",
+      password_hash: "",
+      confirmPassword: "",
+      role: "admin",
+    });
+  };
+
+  const handleDeleteOpen = (id) => {
+    setPopupState({ open: true, type: "delete", id });
   };
 
   const getUser = async (id) => {
@@ -64,7 +70,7 @@ export default function Users() {
           confirmPassword: "",
           role: response.user.role || "admin",
         });
-        setPopupState({ open: true, isEdit: true, id });
+        setPopupState({ open: true, type: "edit", id });
       }
     } catch (err) {
       console.error(err);
@@ -73,19 +79,8 @@ export default function Users() {
     }
   };
 
-  const handleOpen = () => {
-    setPopupState({ open: true, isEdit: false, id: null });
-    setForm({
-      name: "",
-      email: "",
-      password_hash: "",
-      confirmPassword: "",
-      role: "admin",
-    });
-  };
-
   const handleClose = () => {
-    setPopupState({ open: false, isEdit: false, id: null });
+    setPopupState({ open: false, type: "create", id: null });
     setForm({
       name: "",
       email: "",
@@ -101,7 +96,7 @@ export default function Users() {
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.email.trim()) newErrors.email = "Email is required";
-    if (!popupState.isEdit && !form.password_hash.trim()) newErrors.password_hash = "Password is required";
+    if (popupState.type === "create" && !form.password_hash.trim()) newErrors.password_hash = "Password is required";
     if (form.password_hash !== form.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
     if (!form.role || (form.role !== "admin" && form.role !== "user"))
@@ -112,38 +107,69 @@ export default function Users() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
   };
 
-  const handleCreateUser = async () => {
-  const newErrors = validate();
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
+  const handleSubmit = async (e) => {
 
-  try {
-    setLoading(true);
-    let payload = { ...form };
-
-    // Exclude passwords on update
-    if (popupState.isEdit) {
-      delete payload.password_hash;
-      delete payload.confirmPassword;
-      await api.admin.updateUser(popupState.id, payload);
-    } else {
-      await api.admin.createUser(payload);
+    if (popupState.type === "delete") {
+      try {
+        setLoading(true);
+        await api.admin.deleteUser(popupState.id);
+        await fetchUsers();
+        handleClose();
+      } catch (err) {
+        console.error(err);
+        setMessage("Failed to delete user.");
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
 
-    await fetchUsers();
-    handleClose();
-  } catch (err) {
-    console.error(err);
-    setMessage("Failed to submit form.");
-  } finally {
-    setLoading(false);
-  }
-};
+    // const newErrors = validate();
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors);
+    //   return;
+    // }
+    e.preventDefault();
+    const isCreate = popupState.type === "create";
+    const validationErrors = await validateFormData(form, isCreate ? CreateuserSchema : EditUserSchema, { isCreate });
+
+    if (validationErrors) {
+      setErrors(validationErrors);
+      toast.error("Please fix the errors");
+      return;
+    }
+
+
+    try {
+      setLoading(true);
+      const payload = { ...form };
+
+      if (popupState.type === "edit") {
+        delete payload.password_hash;
+        delete payload.confirmPassword;
+        await api.admin.updateUser(popupState.id, payload);
+      } else {
+        await api.admin.createUser(payload);
+      }
+      await fetchUsers();
+      handleClose();
+    } catch (err) {
+      console.error(err);
+      setMessage("Failed to submit form.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns = [
     { key: "id", label: "ID" },
@@ -158,7 +184,7 @@ export default function Users() {
           <button onClick={() => getUser(user.id)}>
             <SquarePen size={18} color="grey" />
           </button>
-          <button onClick={() => handleDelete(user.id)}>
+          <button onClick={() => handleDeleteOpen(user.id)}>
             <Trash2 size={18} color="grey" />
           </button>
         </div>
@@ -173,78 +199,94 @@ export default function Users() {
         data={users}
         loading={loading}
         pageSize={10}
-        title={"Users List"}
+        title="Users List"
         onClick={handleOpen}
       />
-
       <Popup
         open={popupState.open}
         onClose={handleClose}
-        onSubmit={handleCreateUser}
-        title={popupState.isEdit ? "Edit User" : "Create User"}
+        onSubmit={handleSubmit}
+        title={
+          popupState.type === "edit"
+            ? "Edit User"
+            : popupState.type === "delete"
+              ? "Delete User"
+              : "Create User"
+        }
         btnCancel="Cancel"
-        btnSubmit="Submit"
-        isbtnCancel={true}
-        isbtnSubmit={true}
+        btnSubmit={popupState.type === "delete" ? "Delete" : "Submit"}
+        isbtnSubmit={popupState.type !== "delete"}
+        isbtnDelete={popupState.type === "delete"}
         loading={loading}
       >
-        <form className="space-y-4">
-          <InputField
-            id="name"
-            name="name"
-            placeholder="Enter name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          {errors.name && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.name}</p>}
-
-          <InputField
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter email"
-            value={form.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.email}</p>}
-
-          {!popupState.isEdit && 
-
+        {popupState.type === "delete" ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
+            <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
+              Are you sure you want to delete this category?
+            </p>
+          </div>
+        ) : (
+          <form className="space-y-4">
             <InputField
-            id="password_hash"
-            name="password_hash"
-            type="password"
-            placeholder="Enter password"
-            value={form.password_hash}
-            onChange={handleChange}
-          />
-          }
-          {!popupState.isEdit ? errors.password_hash && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.password_hash}</p>:''}
+              id="name"
+              name="name"
+              label={"Name"}
+              placeholder="Enter name"
+              value={form.name}
+              onChange={handleChange}
+              error={errors.name}
+            />
+            <InputField
+              error={errors.email}
+              label={"Email"}
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter email"
+              value={form.email}
+              onChange={handleChange}
+            />
 
-          {!popupState.isEdit && <InputField
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-          />}
-          {!popupState.isEdit ? errors.confirmPassword && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.confirmPassword}</p>:''}
-          <SelectField
-            id="role"
-            value={form.role}
-            onChange={handleChange}
-            required={true}
-            options={[
-              { label: "Admin", value: "admin" },
-              { label: "User", value: "user" },
-            ]}
-          />
-          
-          {errors.role && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{errors.role}</p>}
+            {popupState.type === "create" && (
+              <>
+                <InputField
+                  label={"Password"}
+                  id="password_hash"
+                  name="password_hash"
+                  type="password"
+                  error={errors.password_hash}
+                  placeholder="Enter password"
+                  value={form.password_hash}
+                  onChange={handleChange}
+                />
 
-          {message && <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>{message}</p>}
-        </form>
+                <InputField
+                  label={"Confirm Password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  error={errors.confirmPassword}
+                />
+              </>
+            )}
+            <SelectField
+              id="role"
+              label="Role"
+              value={form.role}
+              onChange={handleChange}
+              error={errors.role}
+              options={[
+                { label: "Admin", value: "admin" },
+                { label: "User", value: "user" },
+              ]}
+            />
+            {message && <p className="text-red-500 text-sm">{message}</p>}
+          </form>
+        )}
       </Popup>
     </div>
   );

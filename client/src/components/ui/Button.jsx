@@ -18,7 +18,7 @@ export default function Button({
 
     // primary: `${COLOR_CLASSES.primaryDark} ${COLOR_CLASSES.primaryLightBg} ${COLOR_CLASSES.primary}`,
     secondary: `${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.secondaryBgHover} text-white`,
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
+    warning: 'bg-red-600 hover:bg-red-700 text-white',
     outline: 'bg-transparent border border-gray-300 text-gray-800 hover:bg-gray-100',
   };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2, SquarePen } from "lucide-react";
+import { Trash2, SquarePen, CircleHelp } from "lucide-react";
 import CommonTable from "../../../common/CommonTable";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
@@ -8,6 +8,9 @@ import api from "../../../constants/api";
 import CustomSelectField from "../../../components/ui/CustomSelectField";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import { toast } from "react-toastify";
+import { useColorClasses } from "../../../theme/useColorClasses";
+import { validateFormData } from "../../../utils/validateUtils";
+import { deviceSchema } from "../../../common/Schema";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -16,20 +19,9 @@ const breadcrumbItems = [
 export default function Devices() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [popupState, setPopupState] = useState({ open: false, isEdit: false, id: null });
-  const [categories, setCategories] = useState([
-    { label: "Mobile", value: "mobile" },
-    { label: "Laptop", value: "laptop" }
-  ]);
-  const [brands, setBrands] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Vivo", value: "vivo" }
-  ]);
-  const [models, setModels] = useState([
-    { label: "I phon 15", value: "i_phone_15" },
-    { label: "Vivo 80X", value: "vivo_80x" }
-  ]);
-
+  const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
+  const [categories, setCategories] = useState([]);
+  const COLOR_CLASSES = useColorClasses();
 
   const [form, setForm] = useState({
     category: "",
@@ -62,9 +54,11 @@ export default function Devices() {
   const handleDelete = async (id) => {
     try {
       setLoading(true);
-      await api.admin.deleteDevice(id);
+      const res = await api.admin.deleteDevice(id);
+      toast.success(res.message);
       await fetchDevices();
     } catch (err) {
+      toast.success(err.message);
       console.error("Failed to delete device:", err);
     } finally {
       setLoading(false);
@@ -76,7 +70,7 @@ export default function Devices() {
       setLoading(true);
       const device = await api.admin.getDevice(id);
       setForm({
-        category:device.category?.toString() || "",
+        category: device.category?.toString() || "",
         brand: device.brand?.toString() || "",
         model: device.model?.toString() || "",
         condition: device.condition || "new",
@@ -107,7 +101,7 @@ export default function Devices() {
   };
 
   const handleClose = () => {
-    setPopupState({ open: false, isEdit: false, id: null });
+    setPopupState({ open: false, type: "form", isEdit: false, id: null });
     setForm({
       category: "",
       brand: "",
@@ -120,22 +114,6 @@ export default function Devices() {
     setMessage("");
   };
 
-  console.log(form,"formmmm")
-  const validate = () => {
-    const newErrors = {};
-    if (!form.category.trim()) newErrors.category = "Category is required";
-    if (!form.brand.trim()) newErrors.brand = "Brand is required";
-    if (!form.model.trim()) newErrors.model = "Model is required";
-    if (!form.condition.trim()) newErrors.condition = "Condition is required";
-    if (!form.base_price.trim()) newErrors.base_price = "Base price is required";
-    if (!form.ebay_avg_price.trim()) newErrors.ebay_avg_price = "Ebay average price is required";
-    return newErrors;
-  };
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setForm((prev) => ({ ...prev, [name]: value }));
-  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -151,11 +129,14 @@ export default function Devices() {
   };
 
   const handleCreateOrUpdate = async () => {
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length) {
+    const validationErrors = await validateFormData(form, deviceSchema);
+
+    if (validationErrors) {
       setErrors(validationErrors);
+      toast.error("Please fix the validation errors.");
       return;
     }
+
     try {
       setLoading(true);
       const payload = {
@@ -164,6 +145,7 @@ export default function Devices() {
         brand_id: parseInt(form.brand),
         model_id: parseInt(form.model),
       };
+
       if (popupState.isEdit && popupState.id) {
         const res = await api.admin.updateDevice(popupState.id, payload);
         if (res) toast.success(res.message);
@@ -171,6 +153,7 @@ export default function Devices() {
         const res = await api.admin.createDevice(payload);
         if (res) toast.success(res.message);
       }
+
       await fetchDevices();
       handleClose();
     } catch (err) {
@@ -179,6 +162,10 @@ export default function Devices() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeletePopup = (id) => {
+    setPopupState({ open: true, type: "delete", id });
   };
 
 
@@ -198,7 +185,7 @@ export default function Devices() {
           <button onClick={() => getDevice(device.id)}>
             <SquarePen size={18} color="gray" />
           </button>
-          <button onClick={() => handleDelete(device.id)}>
+          <button onClick={() => handleDeletePopup(device.id)}>
             <Trash2 size={18} color="gray" />
           </button>
         </div>
@@ -208,9 +195,11 @@ export default function Devices() {
   const fetchCategories = async () => {
     try {
       const res = await api.getCategories()
-      if (Array.isArray(res)) {
-        setCategories(res);
+      if (res?.data) {
+        setCategories(res?.data);
       }
+      // if (Array.isArray(res)) {
+      // }s
     } catch (err) {
       console.error("Failed to fetch categories:", err);
       // toast.error("Error fetching categories");
@@ -219,7 +208,11 @@ export default function Devices() {
 
   useEffect(() => {
     fetchCategories()
-  }, [])
+  }, []);
+
+  console.log(popupState, "popupState")
+
+  console.log(categories, 'jdsjjskfhj')
   return (
     <div className="min-h-screen">
       <CommonTable
@@ -233,95 +226,135 @@ export default function Devices() {
       <Popup
         open={popupState.open}
         onClose={handleClose}
-        onSubmit={handleCreateOrUpdate}
-        title={popupState.isEdit ? "Edit Device" : "Create Device"}
+        onSubmit={
+          popupState.type === "delete"
+            ? () => {
+              handleDelete(popupState.id);
+              handleClose();
+            }
+            : handleCreateOrUpdate
+        }
+        onDelete={() => {
+          handleDelete(popupState.id);
+          handleClose();
+        }}
+        title={
+          popupState.type === "delete"
+            ? "Delete Confirmation"
+            : popupState.isEdit
+              ? "Edit Device"
+              : "Create Device"
+        }
         btnCancel="Cancel"
         btnSubmit="Submit"
+        btnDelete="Delete"
         isbtnCancel={true}
-        isbtnSubmit={true}
+        isbtnSubmit={popupState.type !== "delete"}
+        isbtnDelete={popupState.type === "delete"}
         loading={loading}
       >
-        <form className="space-y-4">
-          <CustomSelectField
-            label="Category"
-            id="category"
-            value={form.category}
-            onChange={(e) => {
-              handleChange(e);
-              // Reset brand and model when category changes
-              setForm(prev => ({ ...prev, brand: "", model: "" }));
-            }}
-            options={categories.map((cat) => ({
-              label: cat.name,
-              value: String(cat.id), // Convert to string
-            }))}
-          />
-          {errors.category && (
-            <p className="text-red-500 text-sm text-left mt-1">{errors.category}</p>
-          )}
+        {popupState.type === "delete" ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
+            <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
+              Are you sure you want to delete this category?
+            </p>
+          </div>
+        ) : (
+          <form>
+            <SelectField
+              label="Category"
+              name="category"
+              id="category"
+              error={errors.category}
+              value={form.category}
+              onChange={(e) => {
+                handleChange(e);
+                setForm((prev) => ({ ...prev, brand: "", model: "" }));
+              }}
+              options={categories.map((cat) => ({
+                label: cat.name,
+                value: String(cat.id),
+              }))}
+            />
+            <SelectField
+              label="Brand"
+              name="brand"
+              id="brand"
+              error={errors.brand}
+              value={form.brand}
+              onChange={(e) => {
+                handleChange(e);
+                setForm((prev) => ({ ...prev, model: "" }));
+              }}
+              options={
+                (categories.find((c) => String(c.id) === form.category)?.brands || []).map(
+                  (brand) => ({
+                    label: brand.name,
+                    value: String(brand.id),
+                  })
+                )
+              }
+              disabled={!form.category}
+            />
+            <SelectField
+              error={errors.model}
+              label="Model"
+              name="model"
+              id="model"
+              value={form.model}
+              onChange={handleChange}
+              options={
+                (categories.find((c) => String(c.id) === form.category)?.models || [])
+                  .filter((m) => String(m.brand_id) === form.brand)
+                  .map((model) => ({
+                    label: model.name,
+                    value: String(model.id),
+                  }))
+              }
+              disabled={!form.brand}
+            />
+            <SelectField
+              error={errors.condition}
+              label={"Condition"}
+              name="condition"
+              id={"condition"}
+              value={form.condition}
+              onChange={handleChange}
+              options={[
+                { label: "Good", value: "good" },
+                { label: "Bad", value: "bad" },
+                { label: "Excellent", value: "excellent" },
+              ]}
+            />
+            <InputField
+              isCurrencyFormat={true}
+              label="Base Price"
+              type="number"
+              id="base_price"
+              name="base_price"
+              placeholder="Base Price"
+              value={form.base_price}
+              error={errors.base_price}
+              onChange={handleChange}
+            />
 
-          <CustomSelectField
-            label="Brand"
-            id="brand"
-            value={form.brand}
-            onChange={(e) => {
-              handleChange(e);
-              setForm(prev => ({ ...prev, model: "" }));
-            }}
-            options={
-              (categories.find(c => String(c.id) === form.category)?.brands || []).map(brand => ({
-                label: brand.name,
-                value: String(brand.id), // Convert to string
-              }))
-            }
-            disabled={!form.category}
-          />
-          {errors.brand && (
-            <p className="text-red-500 text-sm text-left mt-1">{errors.brand}</p>
-          )}
-
-          <CustomSelectField
-            label="Model"
-            id="model"
-            value={form.model}
-            onChange={handleChange}
-            options={
-              (categories.find(c => String(c.id) === form.category)?.models || [])
-                .filter(m => String(m.brand_id) === form.brand)
-                .map(model => ({
-                  label: model.name,
-                  value: String(model.id), // Convert to string
-                }))
-            }
-            disabled={!form.brand}
-          />
-          {errors.model && (
-            <p className="text-red-500 text-sm text-left mt-1">{errors.model}</p>
-          )}
-
-          <SelectField
-            name="condition"
-            id={"condition"}
-            value={form.condition}
-            onChange={handleChange}
-            options={[
-              { label: "Good", value: "good" },
-              { label: "Bad", value: "bad" },
-              { label: "Excellent", value: "excellent" },
-            ]}
-          />
-
-          {errors.condition && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.condition}</p>}
-
-          <InputField type="number" id="base_price" name="base_price" placeholder="Base Price" value={form.base_price} onChange={handleChange} />
-          {errors.base_price && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.base_price}</p>}
-
-          <InputField type="number" id="ebay_avg_price" name="ebay_avg_price" placeholder="eBay Avg Price" value={form.ebay_avg_price} onChange={handleChange} />
-          {errors.ebay_avg_price && <p className="text-red-500 text-sm  text-left" style={{ marginTop: "5px" }}>{errors.ebay_avg_price}</p>}
-
-          {message && <p className="text-red-500 text-sm">{message}</p>}
-        </form>
+            <InputField
+              isCurrencyFormat={true}
+              error={errors.ebay_avg_price}
+              label="Ebay Avg Price"
+              type="number"
+              id="ebay_avg_price"
+              name="ebay_avg_price"
+              placeholder="eBay Avg Price"
+              value={form.ebay_avg_price}
+              onChange={handleChange}
+            />
+            {message && <p className="text-red-500 text-sm">{message}</p>}
+          </form>
+        )}
       </Popup>
+
     </div>
   );
 }
