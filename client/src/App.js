@@ -4,6 +4,7 @@ import { ModeProvider } from "./context/ModeContext";
 import AllRoutes from "./routes";
 import api from "./constants/api";
 import SessionExpiredModal from "./components/common/SessionExpiredModal";
+import { FilterProvider } from "./context/FilterContext";
 
 function App() {
   const { user } = useAuth();
@@ -20,7 +21,9 @@ function App() {
   };
   return (
     <ModeProvider>
-      <AllRoutes />
+      <FilterProvider>
+          <AllRoutes />
+      </FilterProvider>
       <SessionExpiredModal/>
     </ModeProvider>
   );

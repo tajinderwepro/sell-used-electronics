@@ -10,6 +10,7 @@ import Joi from 'joi';
 import { validateFormData } from "../../../utils/validateUtils";
 import { toast } from "react-toastify";
 import { CreateuserSchema, EditUserSchema } from "../../../common/Schema";
+import { useFilters } from "../../../context/FilterContext";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -24,24 +25,22 @@ export default function Users() {
   });
   const [errors, setErrors] = useState({});
   // const errors = await validateFormData(form, userSchema, { isCreate: popupState.type === "create" });
-
+  const {filters} = useFilters();
   const [message, setMessage] = useState("");
   const COLOR_CLASSES = useColorClasses();
+  const [totalItems, setTotalItems] = useState(0);
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await api.admin.getUsers();
-      setUsers(response.users);
+      const response = await api.admin.getUsers(filters);
+      setUsers(response.data);
+      setTotalItems(response.total);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const handleOpen = () => {
     setPopupState({ open: true, type: "create", id: null });
@@ -172,10 +171,10 @@ export default function Users() {
   };
 
   const columns = [
-    { key: "id", label: "ID" },
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email" },
-    { key: "role", label: "Role" },
+    { key: "id", label: "ID", sortable: true  },
+    { key: "name", label: "Name", sortable: true  },
+    { key: "email", label: "Email", sortable: true  },
+    { key: "role", label: "Role", sortable: true  },
     {
       key: "actions",
       label: "Actions",
@@ -188,10 +187,10 @@ export default function Users() {
             <Trash2 size={18} color="grey" />
           </button>
         </div>
-      ),
+      ), 
+      sortable: false 
     },
   ];
-
   return (
     <div className="min-h-screen">
       <CommonTable
@@ -201,6 +200,8 @@ export default function Users() {
         pageSize={10}
         title="Users List"
         onClick={handleOpen}
+        onFetch={fetchUsers}
+        totalItems={totalItems}
       />
       <Popup
         open={popupState.open}

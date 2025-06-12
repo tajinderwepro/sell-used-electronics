@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { validateFormData } from "../../../utils/validateUtils";
 import { deviceSchema } from "../../../common/Schema";
+import { useFilters } from "../../../context/FilterContext";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -34,11 +35,13 @@ export default function Devices() {
 
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-
+  const [totalItems, setTotalItems] = useState(0);
+  const {filters} = useFilters();
   const fetchDevices = async () => {
     try {
       setLoading(true);
-      const response = await api.admin.getDevices();
+      const response = await api.admin.getDevices(filters);
+      setTotalItems(response.total);
       setDevices(response.data);
     } catch (err) {
       console.error("Failed to fetch devices:", err);
@@ -46,10 +49,6 @@ export default function Devices() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchDevices();
-  }, []);
 
   const handleDelete = async (id) => {
     try {
@@ -170,13 +169,13 @@ export default function Devices() {
 
 
   const columns = [
-    { key: "id", label: "ID" },
-    { key: "category_name", label: "Category" },
-    { key: "brand_name", label: "Brand" },
-    { key: "model_name", label: "Model" },
-    { key: "condition", label: "Condition" },
-    { key: "base_price", label: "Base Price" },
-    { key: "ebay_avg_price", label: "Ebay Avg Price" },
+    { key: "id", label: "ID", sortable: true },
+    { key: "category_name", label: "Category", sortable: true },
+    { key: "brand_name", label: "Brand", sortable: true },
+    { key: "model_name", label: "Model", sortable: true },
+    { key: "condition", label: "Condition", sortable: true },
+    { key: "base_price", label: "Base Price", sortable: true },
+    { key: "ebay_avg_price", label: "Ebay Avg Price", sortable: true },
     {
       key: "actions",
       label: "Actions",
@@ -222,6 +221,8 @@ export default function Devices() {
         pageSize={10}
         title="Devices List"
         onClick={handleOpen}
+        totalItems={totalItems}
+        onFetch={fetchDevices} 
       />
       <Popup
         open={popupState.open}

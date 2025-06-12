@@ -51,10 +51,10 @@ class RegisterUserResponse(BaseModel):
 
 
 class UserListResponse(BaseModel):
-    users: List[UserOut]
+    data: List[UserOut]
     message: str
     success: bool
-
+    total: int
     class Config:
         from_attributes = True
 
@@ -66,3 +66,9 @@ class UserUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+class UserListRequest(BaseModel):
+    search: Optional[str] = None
+    sort_by: str = "name"
+    order_by: str = "asc"
+    current_page: int = 1
+    limit: int = 10

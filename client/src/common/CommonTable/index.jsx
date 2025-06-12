@@ -1,66 +1,82 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import LoadingIndicator from '../LoadingIndicator';
 import SearchInput from '../../components/ui/SearchInput';
 import Button from '../../components/ui/Button';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useColorClasses } from '../../theme/useColorClasses';
 import { FONT_FAMILIES } from '../../constants/theme';
+import { useFilters } from '../../context/FilterContext';
 
 const CommonTable = ({
   columns,
   data = [],
   loading = false,
   searchable = true,
-  pageSize = 10,
   title = '',
   onClick = () => {},
-  isCreate=true
+  isCreate = true,
+  totalItems = 0,
+  onFetch = null,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
+  const {filters, setFilters} = useFilters();
   const COLOR_CLASSES = useColorClasses();
+  const totalPages = Math.ceil(totalItems / filters.limit || 1);
 
-  const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
-    return data.filter((row) =>
-      columns.some((col) => {
-        const value = row[col.key];
-        return (
-          typeof value === 'string' &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      })
-    );
-  }, [searchTerm, data, columns]);
+  useEffect(() => {
+    if (onFetch) {
+      onFetch(filters);
+    }
+  }, [filters]);
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
-  const paginatedData = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [filteredData, page, pageSize]);
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setFilters((prev) => ({
+      ...prev,
+      current_page: 1,
+      search: value,
+    }));
+  };
 
-  const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
-  const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
+  const handleSort = (key) => {
+    setFilters((prev) => {
+      const isSameKey = prev.sort_by === key;
+      const newOrder = isSameKey && prev.order_by === 'asc' ? 'desc' : 'asc';
+
+      return {
+        ...prev,
+        sort_by: key,
+        order_by: newOrder,
+        current_page: 1,
+      };
+    });
+  };
+
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({
+      ...prev,
+      current_page: newPage,
+    }));
+  };
+
 
   return (
-    <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}>
-      {/* Title & Button */}
-        {isCreate && title !== "" && <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+    <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite} ${FONT_FAMILIES.primary}`}>
+      {isCreate && title !== "" && (
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
           <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
-          <Button className='w-24 text-sm' onClick={onClick} icon={<Plus size={18} />}>Create</Button>
-        </div>} 
+          <Button className="w-24 text-sm" onClick={onClick} icon={<Plus size={18} />}>Create</Button>
+        </div>
+      )}
 
-      {/* Table & Search */}
-      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite}  border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
+      <div className={`overflow-x-auto ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd}`}>
         <LoadingIndicator isLoading={loading} />
+
         <div className="flex flex-col md:flex-row justify-end items-center gap-2 m-3">
           {searchable && (
             <SearchInput
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(1);
-              }}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           )}
         </div>
@@ -71,16 +87,22 @@ const CommonTable = ({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-6 py-5 text-left text-xs font-semibold uppercase tracking-wider ${COLOR_CLASSES.textSecondary}`}
+                  className={`px-6 py-5 text-left text-xs font-semibold uppercase tracking-wider cursor-pointer ${COLOR_CLASSES.textSecondary}`}
+                  onClick={() => col.sortable && handleSort(col.key)}
                 >
-                  {col.label}
+                  <div className="flex items-center gap-1">
+                    {col.label}
+                    {col.sortable && filters.sort_by === col.key && (
+                      filters.order_by === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
+                    )}
+                  </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className={`divide-y ${COLOR_CLASSES.borderGray200}`}>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((row, rowIndex) => (
+            {data.length > 0 ? (
+              data.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
                   className={`${
@@ -111,22 +133,21 @@ const CommonTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-4 text-sm mr-3">
           <button
-            onClick={handlePrev}
-            disabled={page === 1}
+            onClick={() => handlePageChange(filters.current_page - 1)}
+            disabled={filters.current_page === 1}
             className={`px-4 py-2 mr-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
           >
             Previous
           </button>
           <span className={`${COLOR_CLASSES.textSecondary} mr-3`}>
-            Page {page} of {totalPages}
+            Page {filters.current_page} of {totalPages}
           </span>
           <button
-            onClick={handleNext}
-            disabled={page === totalPages}
+            onClick={() => handlePageChange(filters.current_page + 1)}
+            disabled={filters.current_page === totalPages}
             className={`px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${COLOR_CLASSES.secondaryBg} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.secondaryBgHover}`}
           >
             Next

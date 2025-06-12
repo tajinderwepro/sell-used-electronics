@@ -1,24 +1,38 @@
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, UserOut, UserUpdate
 from app.db.session import async_session
-from sqlalchemy.future import select
+# from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
+from typing import Optional
+from sqlalchemy import select, asc, desc, or_, func
+from app.utils.db_helpers import paginate_query
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserService:
 
     @staticmethod
-    async def get_all_users():
-        async with async_session() as session:
-            result = await session.execute(select(User))
-            users = result.scalars().all()
-            return {
-                "users": [UserOut.from_orm(user) for user in users],
-                "message": "Users fetched successfully",
-                "success": True
-            }
+    async def get_all_users(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "name",
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: int = 10
+    ):
+        return await paginate_query(
+            db=db,
+            model=User,
+            schema=UserOut,
+            search=search,
+            search_fields=[User.name, User.email],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=limit
+        )
+
 
     @staticmethod
     async def get_user_by_id(user_id: int):

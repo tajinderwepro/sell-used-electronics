@@ -1,9 +1,11 @@
-from fastapi import APIRouter,Depends, HTTPException, status
+from fastapi import APIRouter,Depends, HTTPException, status, Query, Body
 from typing import List
 from app.db.session import get_db
-from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate
+from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate, UserListRequest
 from app.services.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional
+
 
 router = APIRouter()
 
@@ -11,10 +13,19 @@ router = APIRouter()
 async def create_user(user: UserCreate):
     return await UserService.create_user(user)
 
-@router.get("/list", response_model=UserListResponse)
-async def list_users():
-    return await UserService.get_all_users()
-
+@router.post("/list", response_model=UserListResponse)
+async def list_users(
+    filters: UserListRequest = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+    return await UserService.get_all_users(
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit
+    )
 @router.get("/{user_id}")
 async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
     user = await UserService.get_user_by_id(user_id)

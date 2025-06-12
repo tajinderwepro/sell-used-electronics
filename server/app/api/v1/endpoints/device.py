@@ -8,7 +8,7 @@ from app.services.device_service import DeviceService
 from app.services.ebay_service import EbayService
 router = APIRouter()
 
-@router.get("/list", response_model=DeviceListResponse)
+@router.post("/list", response_model=DeviceListResponse)
 async def get_list(db: AsyncSession = Depends(get_db)):
     devices = await DeviceService.get_all_devices(db)
     return DeviceListResponse(

@@ -40,7 +40,7 @@ const axiosWrapper = (apiCall) =>
 const api = {
   admin: {
     login: (data) => axiosWrapper(axiosInstance.post('/auth/login', data)),
-    getUsers: () => axiosWrapper(axiosInstance.get('/users/list')),
+    getUsers: (data) => axiosWrapper(axiosInstance.post('/users/list',data)),
     createUser: (data) => axiosWrapper(axiosInstance.post('/auth/register', data)),
     getUser: (id) => axiosWrapper(axiosInstance.get(`/users/${id}`)),
     deleteUser: (id) => axiosWrapper(axiosInstance.delete(`/users/${id}`)),
@@ -129,7 +129,7 @@ const api = {
 
 
 
-    getDevices: () => axiosWrapper(axiosInstance.get('/devices/list')),
+    getDevices: (data) => axiosWrapper(axiosInstance.post('/devices/list',data)),
     getDevice: (id) => axiosWrapper(axiosInstance.get(`/devices/${id}`)),
     updateDevice: (id,data) => axiosWrapper(axiosInstance.put(`/devices/${id}`,data)),
     deleteDevice: (device_id) => axiosWrapper(axiosInstance.delete(`/devices/${device_id}`)),
