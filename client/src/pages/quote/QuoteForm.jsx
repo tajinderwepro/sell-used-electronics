@@ -34,7 +34,7 @@ const data = {
 export default function QuoteForm({ onClose }) {
   const COLOR_CLASSES = useColorClasses();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated,user } = useAuth();
 
   const { formState, updateForm, resetForm, categories, setCategories } = useQuoteForm();
   const { step, category, model, condition, price, brand,estimate_price } = formState;
@@ -63,7 +63,7 @@ export default function QuoteForm({ onClose }) {
           ebay_avg_price: estimate_price
         };
         setLoading(true)
-        const response = await api.public.submit(payload);
+        const response = await api.public.submit(user.id,payload);
         setLoading(false);
          if(response){
            toast.success(response.message)

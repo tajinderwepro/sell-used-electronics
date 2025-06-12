@@ -151,7 +151,8 @@ const api = {
     add: (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`, data)),
   },
   public: {
-    submit: (data) => axiosWrapper(axiosInstance.post(`/devices/submit`, data)),
+    getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/devices/estimate-price`, data)),
+    submit: (id,data) => axiosWrapper(axiosInstance.post(`/devices/submit/${id}`, data)),
   }
 };
 
