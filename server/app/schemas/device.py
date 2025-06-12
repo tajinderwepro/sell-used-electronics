@@ -16,22 +16,20 @@ class CategoryBase(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class BrandBase(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
 
 class ModelBase(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class DeviceOut(BaseModel):
     id: int
@@ -72,15 +70,21 @@ class DeviceStatusUpdate(BaseModel):
 
 class CategoryCreate(BaseModel):
     category: str
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class BrandCreate(BaseModel):
     category: str
     brand: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 class ModelCreate(BaseModel):
     category: str
     brand: str
     model: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 class DeviceResponse(BaseModel):
     id: int
@@ -92,10 +96,19 @@ class DeviceResponse(BaseModel):
     ebay_avg_price: float | None
     status: str | None
     user_id: int | None
+    category: str | None = None
+    brand: str | None = None
+    model: str | None = None
+    category_rel: CategoryBase | None = None
+    brand_rel: BrandBase | None = None
+    model_rel: ModelBase | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+
 class DeviceListResponse(BaseModel):
-    data: list[DeviceResponse]
+    data: list[DeviceOut]
     message: str
     success: bool
     
