@@ -170,9 +170,9 @@ export default function Devices() {
 
   const columns = [
     { key: "id", label: "ID", sortable: true },
-    { key: "category_name", label: "Category", sortable: true },
-    { key: "brand_name", label: "Brand", sortable: true },
-    { key: "model_name", label: "Model", sortable: true },
+    { key: "category", label: "Category", sortable: true },
+    { key: "brand", label: "Brand", sortable: true },
+    { key: "model", label: "Model", sortable: true },
     { key: "condition", label: "Condition", sortable: true },
     { key: "base_price", label: "Base Price", sortable: true },
     { key: "ebay_avg_price", label: "Ebay Avg Price", sortable: true },

@@ -14,8 +14,14 @@ async def paginate_query(
     order_by: str = "asc",
     current_page: int = 1,
     limit: int = 10,
+    options: Optional[List[Any]] = None  # <--- include this
 ) -> Dict[str, Any]:
     query = select(model)
+
+    # Apply eager loading options
+    if options:
+        for option in options:
+            query = query.options(option)
 
     # Apply search
     if search and search_fields:
@@ -29,21 +35,23 @@ async def paginate_query(
     total_result = await db.execute(count_query)
     total = total_result.scalar()
 
-    # Apply sorting
+    # Sorting
     sort_column = getattr(model, sort_by, None)
     if not sort_column:
-        sort_column = getattr(model, "id")  # fallback to id
-
+        sort_column = getattr(model, "id")
     query = query.order_by(desc(sort_column) if order_by == "desc" else asc(sort_column))
 
-    # Apply pagination
+    # Pagination
     query = query.offset((current_page - 1) * limit).limit(limit)
     result = await db.execute(query)
     records = result.scalars().all()
+
+    # ORM serialization
     if schema:
         data = [schema.from_orm(row) for row in records]
     else:
-        data = records  # return raw DB models if no schema provided
+        data = records
+
     return {
         "data": data,
         "total": total,

@@ -114,3 +114,10 @@ class DeviceListResponse(BaseModel):
     
     class Config:
         orm_mode = True
+
+class DeviceListRequest(BaseModel):
+    search: Optional[str] = None
+    sort_by: str = "name"
+    order_by: str = "asc"
+    current_page: int = 1
+    limit: int = 10

@@ -8,21 +8,35 @@ from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
 from sqlalchemy.orm import selectinload
 from sqlalchemy import cast, Integer
 from sqlalchemy.orm import joinedload
-
+from typing import Optional, List,Generic, TypeVar
+from app.utils.db_helpers import paginate_query
 class DeviceService:
 
     @staticmethod
-    async def get_all_devices(db: AsyncSession):
-        result = await db.execute(
-            select(Device)
-            .options(
+    async def get_all_devices(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "name",
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: int = 10
+    ):
+        return await paginate_query(
+            db=db,
+            model=Device,
+            schema=DeviceOut,
+            search=search,
+            search_fields=[Device.category],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=limit,
+            options=[
                 selectinload(Device.category_rel),
                 selectinload(Device.brand_rel),
                 selectinload(Device.model_rel)
-            )
+            ]
         )
-        return result.scalars().all()
-
     @staticmethod
     async def create_device(user_id: int, device_in: DeviceCreate, db: AsyncSession):
         category_name = None
