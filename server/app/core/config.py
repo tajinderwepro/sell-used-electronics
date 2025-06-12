@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
     ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60  
+    ACCESS_TOKEN_EXPIRE_HOURS: int = 24  
     class Config:
         env_file = ".env"
         case_sensitive = True
