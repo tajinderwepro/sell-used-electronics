@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate
+from app.schemas.device import DeviceListResponse, DeviceOut, DeviceCreate,DeviceUpdate,CategoryCreate,BrandCreate,ModelCreate,DeviceStatusUpdate
 from app.services.device_service import DeviceService
 from app.services.ebay_service import EbayService
 router = APIRouter()
@@ -17,9 +17,9 @@ async def get_list(db: AsyncSession = Depends(get_db)):
         success=True
     )
 
-@router.post("/submit", response_model=DeviceListResponse)
-async def create_device(device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
-    return await DeviceService.create_device(device_in, db)
+@router.post("/submit/{id}", response_model=DeviceListResponse)
+async def create_device(id: int, device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
+    return await DeviceService.create_device(id, device_in, db)
 
 @router.post("/add-category")
 async def add_category(payload: CategoryCreate, db: AsyncSession = Depends(get_db)):
@@ -89,3 +89,14 @@ async def estimate_price(request: Request):
     
     estimated_price = base_price - ((base_price * 10) / 100)
     return {"estimated_price": estimated_price}
+
+@router.put("/status/{device_id}", response_model=DeviceOut)
+async def update_device_status(
+    device_id: int,
+    status_in: DeviceStatusUpdate,
+    db: AsyncSession = Depends(get_db),
+):
+    updated_device = await DeviceService.update_status(device_id, status_in.status, db)
+    if not updated_device:
+        raise HTTPException(status_code=404, detail="Device not found")
+    return updated_device

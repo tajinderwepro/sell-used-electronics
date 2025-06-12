@@ -23,6 +23,8 @@ class DeviceOut(BaseModel):
     category_name: Optional[str] = None
     brand_name: Optional[str] = None
     model_name: Optional[str] = None
+    status: Optional[str] = None
+    user_id: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -42,6 +44,14 @@ class DeviceUpdate(BaseModel):
     condition: Optional[str]
     base_price: Optional[float]
     ebay_avg_price: Optional[float]
+    status: Optional[str]
+    user_id: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+class DeviceStatusUpdate(BaseModel):
+    status: str
 
     class Config:
         orm_mode = True

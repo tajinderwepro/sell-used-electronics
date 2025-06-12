@@ -66,15 +66,17 @@ class DeviceService:
             })
 
         return response
+
     @staticmethod
-    async def create_device(device_in: DeviceCreate, db: AsyncSession):
+    async def create_device(user_id: int, device_in: DeviceCreate, db: AsyncSession):
         device = Device(
             condition=device_in.condition,
             base_price=device_in.base_price,
             ebay_avg_price=device_in.ebay_avg_price,
             category=device_in.category,
             brand=device_in.brand,
-            model=device_in.model
+            model=device_in.model,
+            user_id=user_id,  # use the parameter here
         )
 
         db.add(device)
@@ -86,6 +88,7 @@ class DeviceService:
             "message": "Submit successfully",
             "data": [DeviceOut.from_orm(device)],
         }
+
 
     @staticmethod
     async def delete_device(device_id: int, db: AsyncSession):
@@ -204,3 +207,16 @@ class DeviceService:
     async def get_all_models(db):
         result = await db.execute(select(distinct(Device.model)))
         return [row[0] for row in result.fetchall() if row[0]]
+    
+    @staticmethod
+    async def update_status(device_id: int, status: str, db: AsyncSession):
+        result = await db.execute(select(Device).where(Device.id == device_id))
+        device = result.scalar_one_or_none()
+
+        if not device:
+            return None
+
+        device.status = status
+        await db.commit()
+        await db.refresh(device)
+        return device
