@@ -3,6 +3,7 @@ from sqlalchemy import select, func, or_, asc, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 from pydantic import BaseModel
+from sqlalchemy import and_
 
 async def paginate_query(
     db: AsyncSession,
@@ -14,21 +15,25 @@ async def paginate_query(
     order_by: str = "asc",
     current_page: int = 1,
     limit: int = 10,
-    options: Optional[List[Any]] = None  # <--- include this
+    options: Optional[List[Any]] = None,
+    user_id: Optional[int] = None  # ✅ Add this parameter
 ) -> Dict[str, Any]:
     query = select(model)
 
-    # Apply eager loading options
     if options:
         for option in options:
             query = query.options(option)
 
-    # Apply search
+    # Apply search filter
     if search and search_fields:
         term = f"%{search.lower()}%"
         query = query.where(
             or_(*[func.lower(field).like(term) for field in search_fields])
         )
+
+    # ✅ Apply user_id filter
+    if user_id is not None and hasattr(model, "user_id"):
+        query = query.where(getattr(model, "user_id") == user_id)
 
     # Total count
     count_query = select(func.count()).select_from(query.subquery())
@@ -46,11 +51,7 @@ async def paginate_query(
     result = await db.execute(query)
     records = result.scalars().all()
 
-    # ORM serialization
-    if schema:
-        data = [schema.from_orm(row) for row in records]
-    else:
-        data = records
+    data = [schema.from_orm(row) for row in records] if schema else records
 
     return {
         "data": data,

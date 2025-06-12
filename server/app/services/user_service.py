@@ -9,6 +9,7 @@ from sqlalchemy import select, asc, desc, or_, func
 from app.utils.db_helpers import paginate_query
 from app.models.device import Device
 from app.schemas.device import DeviceOut
+from sqlalchemy.orm import selectinload
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -84,11 +85,29 @@ class UserService:
         }
 
     @staticmethod
-    async def get_user_devices(user_id: int, db: AsyncSession):
-        result = await db.execute(select(Device).where(Device.user_id == user_id))
-        devices = result.scalars().all()
-        return {
-            "devices": [DeviceOut.from_orm(device) for device in devices],
-            "message": "Devices fetched successfully",
-            "success": True
-        }
+    async def get_user_devices(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "name",
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: int = 10,
+        user_id: int = None
+    ):
+        return await paginate_query(
+            db=db,
+            model=Device,
+            schema=DeviceOut,
+            search=search,
+            search_fields=[Device.category],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=limit,
+            options=[
+                selectinload(Device.category_rel),
+                selectinload(Device.brand_rel),
+                selectinload(Device.model_rel)
+            ],
+            user_id=user_id
+        )

@@ -7,19 +7,23 @@ import Button from '../../../components/ui/Button';
 import { CircleHelp } from 'lucide-react';
 import { useColorClasses } from '../../../theme/useColorClasses';
 import Popup from '../../../common/Popup';
-
+import { useFilters } from '../../../context/FilterContext';
+import { useAuth } from '../../../context/AuthContext';
 
 function Products() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [popupState, setPopupState] = useState({ open: false, deviceId: null, type: '' });
   const COLOR_CLASSES = useColorClasses();
-
+  const {filters} = useFilters();
+  const {user} = useAuth();
+  const  [totalItems, setTotalItems] = useState(0);
   const fetchDevices = async () => {
     try {
       setLoading(true);
-      const response = await api.admin.getDevices();
+      const response = await api.user.getUserDevices(user.id,filters);
       setDevices(response.data);
+      setTotalItems(response.total);
     } catch (err) {
       console.error("Failed to fetch devices:", err);
       toast.error("Failed to fetch devices");
@@ -57,13 +61,13 @@ function Products() {
   };
 
   const columns = [
-    { key: "id", label: "ID" },
-    { key: "category_name", label: "Category" },
-    { key: "brand_name", label: "Brand" },
-    { key: "model_name", label: "Model" },
-    { key: "condition", label: "Condition" },
-    { key: "base_price", label: "Base Price" },
-    { key: "ebay_avg_price", label: "Ebay Avg Price" },
+    { key: "id", label: "ID", sortable: true },
+    { key: "category", label: "Category", sortable: true  },
+    { key: "brand", label: "Brand", sortable: true  },
+    { key: "model", label: "Model", sortable: true  },
+    { key: "condition", label: "Condition", sortable: true  },
+    { key: "base_price", label: "Base Price", sortable: true  },
+    { key: "ebay_avg_price", label: "Ebay Avg Price", sortable: true  },
     { key: "status", label: "Status" },
     {
       key: "actions",
@@ -90,7 +94,9 @@ function Products() {
         loading={loading}
         pageSize={10}
         isCreate={false}
+        onFetch={fetchDevices}
         title='Product List'
+        totalItems={totalItems}
       />
 
       <Popup

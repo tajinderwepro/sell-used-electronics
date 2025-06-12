@@ -2,6 +2,7 @@ from fastapi import APIRouter,Depends, HTTPException, status, Query, Body
 from typing import List
 from app.db.session import get_db
 from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate, UserListRequest
+from app.schemas.device import DeviceListRequest
 from app.services.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
@@ -51,15 +52,27 @@ async def update_user(
     print(user.model_dump(exclude_unset=True))  
     return await UserService.update_user(user_id, user, db)
 
-@router.get("/devices/{user_id}")
-async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
-    devices = await UserService.get_user_devices(user_id,db)
-    if not devices:
-        raise HTTPException(status_code=404, detail="Devices not found")
-    return devices
+# @router.post("/devices/{user_id}")
+# async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
+#     devices = await UserService.get_user_devices(user_id,db)
+#     if not devices:
+#         raise HTTPException(status_code=404, detail="Devices not found")
+#     return devices
 
-@router.get("/user/{user_id}", response_model=DeviceListResponse)
-async def get_user_devices(user_id: int, db: AsyncSession = Depends(get_db)):
-    return await DeviceService.get_user_devices(user_id, db)
+@router.post("/devices/{user_id}")
+async def get_user_devices(
+    user_id: int, 
+    filters: DeviceListRequest = Body(...),
+    db: AsyncSession = Depends(get_db),
+):
+    return await UserService.get_user_devices(
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
+        user_id=user_id
+    )
 
 
