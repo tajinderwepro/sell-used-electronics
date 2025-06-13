@@ -16,6 +16,7 @@ export default function SelectField({
     w-full border rounded-lg p-3 transition-all duration-300
     ${COLOR_CLASSES.textHoverPrimary}
     placeholder-${COLOR_CLASSES.primaryBgHover}
+     ${COLOR_CLASSES.bgWhite}
     focus:outline-none focus:ring-2
     ${error ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' :
       `${COLOR_CLASSES.borderPrimary} focus:ring-${COLOR_CLASSES.primary} focus:border-${COLOR_CLASSES.primary}`}

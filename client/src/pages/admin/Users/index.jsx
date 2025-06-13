@@ -21,6 +21,8 @@ export default function Users() {
     password_hash: "",
     confirmPassword: "",
     role: "admin",
+    phone: ""
+
   });
   const [errors, setErrors] = useState({});
   // const errors = await validateFormData(form, userSchema, { isCreate: popupState.type === "create" });
@@ -49,6 +51,7 @@ export default function Users() {
       password_hash: "",
       confirmPassword: "",
       role: "admin",
+      phone :" ",
     });
   };
 
@@ -140,7 +143,7 @@ export default function Users() {
     e.preventDefault();
     const isCreate = popupState.type === "create";
     const validationErrors = await validateFormData(form, isCreate ? CreateuserSchema : EditUserSchema, { isCreate });
-
+    console.log(form,'form')
     if (validationErrors) {
       setErrors(validationErrors);
       toast.error("Please fix the errors");
@@ -173,6 +176,7 @@ export default function Users() {
     { key: "id", label: "ID", sortable: true  },
     { key: "name", label: "Name", sortable: true  },
     { key: "email", label: "Email", sortable: true  },
+    { key: "phone", label: "Phone Number", sortable: true  },
     { key: "role", label: "Role", sortable: true  },
     {
       key: "actions",
@@ -191,7 +195,7 @@ export default function Users() {
     },
   ];
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-2">
       <CommonTable
         columns={columns}
         data={users}
@@ -247,6 +251,16 @@ export default function Users() {
               value={form.email}
               onChange={handleChange}
             />
+             <InputField
+                  label={"Phone Number"}
+                  id="phone"
+                  name="phone"
+                  type="number"
+                  error={errors.phone}
+                  placeholder="Enter Phone Number"
+                  value={form.phone}
+                  onChange={handleChange}
+                />
 
             {popupState.type === "create" && (
               <>

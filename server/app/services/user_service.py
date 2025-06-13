@@ -10,6 +10,9 @@ from app.utils.db_helpers import paginate_query
 from app.models.device import Device
 from app.schemas.device import DeviceOut
 from sqlalchemy.orm import selectinload
+from app.models.media import Media
+from app.utils.file_utils import save_upload_file
+from app.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -63,48 +66,48 @@ class UserService:
 
     @staticmethod
     async def update_user(user_id: int, image_path: str, user_in: UserUpdate, db: AsyncSession):
-            result = await db.execute(select(User).where(User.id == user_id))
-            user = result.scalar_one_or_none()
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
 
-            if not user:
-                return {"message": "User not found", "success": False}
+        if not user:
+            return {"message": "User not found", "success": False}
 
-            update_data = user_in.model_dump(exclude_unset=True)
+        update_data = user_in.model_dump(exclude_unset=True)
 
-            for field, value in update_data.items():
-                setattr(user, field, value)
+        for field, value in update_data.items():
+            setattr(user, field, value)
 
-            db.add(user)
+        db.add(user)
 
-            if image_path:
-                # Check if media already exists for this user
-                media_result = await db.execute(
-                    select(Media).where(
-                        Media.mediable_id == user.id,
-                        Media.mediable_type == 'user'
-                    )
+        if image_path:
+            media_result = await db.execute(
+                select(Media).where(
+                    Media.mediable_id == user.id,
+                    Media.mediable_type == 'user'
                 )
-                media = media_result.scalar_one_or_none()
+            )
+            media = media_result.scalar_one_or_none()
 
-                if media:
-                    media.path = image_path  # Update existing media path
-                else:
-                    # Create new media entry
-                    media = Media(
-                        path=image_path,
-                        mediable_type='user',
-                        mediable_id=user.id
-                    )
-                    db.add(media)
+            if media:
+                media.path = image_path
+            else:
+                media = Media(
+                    path=image_path,
+                    mediable_type='user',
+                    mediable_id=user.id
+                )
+                db.add(media)
 
-            await db.commit()
-            await db.refresh(user)
+        await db.commit()
+        await db.refresh(user)
 
-            return {
-                "user": UserOut.from_orm(user),
-                "message": "User updated successfully",
-                "success": True
-            }
+        return {
+            "user": UserOut.from_orm(user),
+            "message": "User updated successfully",
+            "success": True
+        }
+
+
     @staticmethod
     async def get_user_devices(
         db: AsyncSession,

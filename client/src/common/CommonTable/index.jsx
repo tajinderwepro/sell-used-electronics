@@ -66,12 +66,12 @@ const CommonTable = ({
     <div className={`w-full font-sans ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary} overflow-x-auto`}>
       {/* Title & Button */}
         {(isCreate || title !== "") && (
-          <div className="flex justify-between items-start md:items-center mb-4 gap-2">
+          <div className="flex justify-between items-start md:items-center mb-8 gap-2">
             {title !== "" && (
-              <h2 className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{title}</h2>
+              <h2 className={`text-lg font-semibold ${COLOR_CLASSES.primary}`}>{title}</h2>
             )}
             {isCreate && (
-              <Button className="w-24 text-sm" onClick={onClick} icon={<Plus size={18} />}>
+              <Button className="w-24 px-4 py-[11px] text-sm" onClick={onClick} icon={<Plus size={18} />}>
                 Create
               </Button>
             )}

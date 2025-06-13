@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends, HTTPException, status, Query, Body
+from fastapi import APIRouter,Depends, HTTPException, status, Query, Body, Form, UploadFile, File
 from typing import List
 from app.db.session import get_db
 from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate, UserListRequest
@@ -6,10 +6,16 @@ from app.schemas.device import DeviceListRequest
 from app.services.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
-
+from uuid import uuid4
+import os
 from app.schemas.device import DeviceListResponse
+from app.utils.file_utils import save_upload_file
+from app.core.config import settings
 
 router = APIRouter()
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate):
@@ -42,15 +48,24 @@ async def delete(user_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+
 @router.put("/{user_id}")
 async def update_user(
-    user_id: int, 
-    user: UserUpdate,  
+    user_id: int,
+    name: str = Form(...),
+    email: str = Form(...),
+    phone: int = Form(...),
+    image_path: UploadFile = File(None),
     db: AsyncSession = Depends(get_db)
 ):
-    print(user_id)
-    print(user.model_dump(exclude_unset=True))  
-    return await UserService.update_user(user_id, image_path ,user, db)
+    image_full_path = None
+    if image_path:
+        saved_path = save_upload_file(image_path)  # 🟢 FIXED: add await
+        image_full_path = f"{settings.APP_URL}{saved_path}"
+
+    user_data = UserUpdate(name=name, email=email, phone=phone)
+    return await UserService.update_user(user_id, image_full_path, user_data, db)
+
 
 # @router.post("/devices/{user_id}")
 # async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):

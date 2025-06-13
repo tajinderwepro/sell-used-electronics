@@ -269,9 +269,9 @@ export default function Devices() {
   useEffect(() => {
     fetchCategories()
   }, []);
-
+ console.log(user,'ddddd')
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-2">
       <CommonTable
         columns={columns}
         data={devices}

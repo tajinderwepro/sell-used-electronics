@@ -49,7 +49,7 @@ export default function Orders() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-2">
       <CommonTable columns={columns}  data={users} loading={loading}  pageSize={10} title={"Orders List"}/>
     </div>
   );

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum as SAEnum,and_
+from sqlalchemy import Column, Integer, String, Enum as SAEnum,and_,BigInteger
 from app.db.session import Base
 from sqlalchemy.orm import relationship,backref, foreign
 import enum
@@ -16,7 +16,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
-    phone = Column(Integer, nullable=False, unique=True)
+    phone = Column(BigInteger, nullable=False, unique=True)
 
 
     devices = relationship("Device", back_populates="user_rel", cascade="all, delete-orphan")

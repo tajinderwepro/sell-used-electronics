@@ -4,6 +4,9 @@ import * as Yup from 'yup';
 export const CreateuserSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
+  phone_no: Yup.string()
+  .required("Phone number is required")
+  .matches(/^\d{10}$/, "Phone number must be 10 digits"),
   password_hash: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .when('isCreate', {
@@ -22,6 +25,9 @@ export const CreateuserSchema = Yup.object().shape({
 export const EditUserSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
+  phone_no: Yup.string()
+  .required("Phone number is required")
+  .matches(/^\d{10}$/, "Phone number must be 10 digits"),
   role: Yup.string().oneOf(["admin", "user"]).required("Role is required"),
 });
 

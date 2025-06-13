@@ -21,6 +21,7 @@ import Models from "../pages/admin/Models";
 import LoadingIndicator from "../common/LoadingIndicator";
 import Settings from "../pages/admin/Settings";
 import ShipmentAddress from "../components/common/ShipmentAddress";
+import Profile from "../pages/Profile";
 function AllRoutes() {
   const auth = useAuth();
   const {user, isAuthenticated, loading } = auth;
@@ -68,6 +69,7 @@ function AllRoutes() {
           <Route path="/admin/categories" element={<Categories/>} />
           <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
           <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />
+          <Route path="/admin/profile" element={<Profile/>} />
         </Route>
 
         {/* User Protected Routes */}
@@ -75,6 +77,7 @@ function AllRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/address" element={<ShipmentAddress/>} />
+          <Route path="/profile" element={<Profile/>} />
         </Route>
 
         {/* Catch-All 404 Route (MUST be last) */}

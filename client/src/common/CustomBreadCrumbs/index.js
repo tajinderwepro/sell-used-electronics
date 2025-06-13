@@ -10,7 +10,7 @@ const CustomBreadcrumbs = ({ items, separator = <ChevronRight size={16} /> }) =>
   const COLOR_CLASSES = useColorClasses();
 
   return (
-    <nav aria-label="breadcrumb" className="py-3 px-2">
+    <nav aria-label="breadcrumb" className="py-3 pr-2">
       <ol className="flex flex-wrap items-center gap-2 text-sm font-medium">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

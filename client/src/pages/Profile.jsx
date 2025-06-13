@@ -1,0 +1,310 @@
+import { useState, useRef, useEffect } from "react";
+import InputField from "../components/ui/InputField";
+import Button from "../components/ui/Button";
+import { CircleUser } from "lucide-react";
+import api from "../constants/api";
+import LoadingIndicator from "../common/LoadingIndicator";
+import { toast } from "react-toastify";
+
+const Profile = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
+  const [loading, setloading] = useState(false);
+
+  const [form, setForm] = useState({
+    id:"",
+    name: "",
+    email: "",
+    phone: "",
+    new_password: "",
+    confirm_password: "",
+    image_path:""
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleAvatarClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageURL = URL.createObjectURL(file);
+      setImagePreview(imageURL);
+      setForm((prev) => ({ ...prev, image_path: file }));
+
+      // Optional: Upload to backend
+      // const formData = new FormData();
+      // formData.append("avatar", file);
+      // await api.auth.uploadAvatar(formData);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value.toString(),
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleToggleEdit = async () => {
+
+    if (isEditing) {
+      const newErrors = {};
+      if (!form.name.trim()) newErrors.name = "Name is required";
+      if (!form.email.trim()) newErrors.email = "Email is required";
+      if (!form.phone || form.phone.toString().trim() === "") {
+        newErrors.phone = "Phone number is required";
+      }
+
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+        const formData = new FormData();
+        formData.append("name", form.name);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+         console.log(form.image_path,'dddd')
+        if (form.image_path instanceof File) {
+           
+            formData.append("image_path", form.image_path);
+         }
+         setloading(true);
+      try {
+        // const res = await api.auth.updateProfile({
+        //   name: form.name,
+        //   email: ,
+        //   phone: form.phone,
+        //   image_path:form.image_path
+        // });
+        const res=await api.admin.updateUser(form.id, formData);
+
+        if (res.success) {
+          // Optionally show a success toast
+          toast.success("Profile Updated Successfull")
+        }
+      } catch (error) {
+        console.error("Profile update failed:", error);
+      }
+      finally{
+        setloading(false)
+      }
+    }
+
+    setIsEditing(!isEditing);
+  };
+
+  const handleResetPasswordClick = (toggle) => {
+    setShowPasswordFields(toggle);
+    setErrors((prev) => ({
+      ...prev,
+      new_password: "",
+      confirm_password: "",
+    }));
+  };
+
+  const getMe = async () => {
+    setloading(true)
+    try {
+      const res = await api.auth.me();
+      const { email, name, phone, media,id } = res.user;
+      console.log(media[0]?.path,'sdd')
+      if (res.success) {
+        setForm((prev) => ({
+          ...prev,
+          id:id || "",
+          name: name || "",
+          email: email || "",
+          phone: phone || "",
+          image_path:media[0]?.path
+        }));
+
+        if (media && media[0]?.path) {
+          setImagePreview(media[0]?.path);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+    finally{
+        setloading(false)
+    }
+  };
+
+  useEffect(() => {
+    getMe();
+  }, []);
+
+  const handleResetPasswordSave = async () => {
+    const newErrors = {};
+
+    if (!form.new_password) newErrors.new_password = "New password is required";
+    if (!form.confirm_password) newErrors.confirm_password = "Confirm password is required";
+    if (form.new_password !== form.confirm_password) {
+      newErrors.confirm_password = "Passwords do not match";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors((prev) => ({ ...prev, ...newErrors }));
+      return;
+    }
+
+    try {
+      const res = await api.auth.updatePassword({
+        password: form.new_password,
+      });
+
+      if (res.success) {
+        setForm((prev) => ({
+          ...prev,
+          new_password: "",
+          confirm_password: "",
+        }));
+
+        setShowPasswordFields(false);
+        // Optionally show success toast
+      }
+    } catch (error) {
+      console.error("Password update failed:", error);
+    }
+  };
+   console.log(imagePreview,'form')
+  return (
+    <div className=" p-6">
+      {/* Top section */}
+      <LoadingIndicator isLoading={loading}/>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+        <div className="flex items-center space-x-4">
+          <div onClick={handleAvatarClick} className="cursor-pointer">
+            {imagePreview ? (
+              <img src={imagePreview} alt="Profile Preview" className="w-20 h-20 rounded-full object-cover" />
+            ) : (
+              <CircleUser size={80} strokeWidth={1} color="gray" />
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleImageChange}
+          />
+          <div>
+            <h2 className="text-xl font-semibold">{form.name}</h2>
+            <p className="text-gray-500 text-sm">{form.email}</p>
+          </div>
+        </div>
+        <Button onClick={handleToggleEdit} className="text-sm px-3">
+          {isEditing ? "Save Profile" : "Edit Profile"}
+        </Button>
+      </div>
+
+      {/* Edit or View Mode */}
+      {isEditing ? (
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField
+            id="name"
+            name="name"
+            label="Full Name"
+            placeholder="Enter name"
+            value={form.name}
+            onChange={handleChange}
+            error={errors.name}
+          />
+          <InputField
+            id="email"
+            name="email"
+            type="email"
+            label="Email"
+            placeholder="Enter email"
+            value={form.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <InputField
+            id="phone"
+            name="phone"
+            type="number"
+            label="Phone Number"
+            placeholder="Enter phone number"
+            value={form.phone}
+            onChange={handleChange}
+            error={errors.phone}
+          />
+        </form>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+          <div>
+            <p className="text-gray-500 mb-1">Full Name</p>
+            <p className="py-3 rounded">{form.name}</p>
+          </div>
+          <div>
+            <p className="text-gray-500 mb-1">Email</p>
+            <p className="py-3 rounded">{form.email}</p>
+          </div>
+          <div>
+            <p className="text-gray-500 mb-1">Phone Number</p>
+            <p className="py-3 rounded">{form.phone}</p>
+          </div>
+          <div>
+            <p className="text-gray-500 mb-1">Password</p>
+            {showPasswordFields ? (
+              <div className="py-3 rounded space-y-4">
+                <InputField
+                  id="new_password"
+                  name="new_password"
+                  type="password"
+                  label="New Password"
+                  placeholder="Enter new password"
+                  value={form.new_password}
+                  onChange={handleChange}
+                  error={errors.new_password}
+                />
+                <InputField
+                  id="confirm_password"
+                  name="confirm_password"
+                  type="password"
+                  label="Confirm Password"
+                  placeholder="Confirm new password"
+                  value={form.confirm_password}
+                  onChange={handleChange}
+                  error={errors.confirm_password}
+                />
+                <div className="flex gap-2">
+                  <Button onClick={handleResetPasswordSave} className="text-sm px-3">
+                    Save
+                  </Button>
+                  <Button onClick={() => handleResetPasswordClick(false)} className="text-sm px-3">
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <p className="py-3 rounded flex gap-5 items-center">
+                <span>********</span>
+                <span
+                  onClick={() => handleResetPasswordClick(true)}
+                  className="text-blue-600 cursor-pointer hover:underline text-sm"
+                >
+                  Reset Password
+                </span>
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Profile;
