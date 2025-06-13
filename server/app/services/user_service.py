@@ -62,28 +62,49 @@ class UserService:
             return {"message": "User not found", "success": False}
 
     @staticmethod
-    async def update_user(user_id: int, user_in: UserUpdate, db: AsyncSession):
-        result = await db.execute(select(User).where(User.id == user_id))
-        user = result.scalar_one_or_none()
+    async def update_user(user_id: int, image_path: str, user_in: UserUpdate, db: AsyncSession):
+            result = await db.execute(select(User).where(User.id == user_id))
+            user = result.scalar_one_or_none()
 
-        if not user:
-            return {"message": "User not found", "success": False}
+            if not user:
+                return {"message": "User not found", "success": False}
 
-        update_data = user_in.model_dump(exclude_unset=True)
+            update_data = user_in.model_dump(exclude_unset=True)
 
-        for field, value in update_data.items():
-            setattr(user, field, value)
+            for field, value in update_data.items():
+                setattr(user, field, value)
 
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
+            db.add(user)
 
-        return {
-            "user": UserOut.from_orm(user),
-            "message": "User updated successfully",
-            "success": True
-        }
+            if image_path:
+                # Check if media already exists for this user
+                media_result = await db.execute(
+                    select(Media).where(
+                        Media.mediable_id == user.id,
+                        Media.mediable_type == 'user'
+                    )
+                )
+                media = media_result.scalar_one_or_none()
 
+                if media:
+                    media.path = image_path  # Update existing media path
+                else:
+                    # Create new media entry
+                    media = Media(
+                        path=image_path,
+                        mediable_type='user',
+                        mediable_id=user.id
+                    )
+                    db.add(media)
+
+            await db.commit()
+            await db.refresh(user)
+
+            return {
+                "user": UserOut.from_orm(user),
+                "message": "User updated successfully",
+                "success": True
+            }
     @staticmethod
     async def get_user_devices(
         db: AsyncSession,

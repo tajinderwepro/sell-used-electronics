@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Enum
 from app.db.session import Base
 from typing import Optional ,List
+from .media import MediaOut
+
 import enum
 
 class RoleEnum(str, enum.Enum):
@@ -18,17 +20,18 @@ class UserCreate(BaseModel):
     email: str
     password_hash: str
     role: str
-
+    phone:Optional[int] = None
 
 class UserOut(BaseModel):
     id: int
     name: str
     email: str
     role: str
+    phone: Optional[int] = None
+    # media: Optional[MediaOut] = None
 
     class Config:
         from_attributes = True  
-
 
 class UserResponse(BaseModel):
     user: UserOut
@@ -62,6 +65,7 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
     role: Optional[str] = None  
+    phone: Optional[int] = None  
 
     class Config:
         from_attributes = True

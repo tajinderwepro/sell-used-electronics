@@ -13,6 +13,7 @@ from app.schemas.user import UserCreate,RegisterUserResponse,UserResponse,UserOu
 import os
 from app.core.config import settings  
 from sqlalchemy import and_
+from sqlalchemy.orm import selectinload
 
 SECRET_KEY = settings.JWT_SECRET
 ACCESS_TOKEN_EXPIRE_HOURS = settings.ACCESS_TOKEN_EXPIRE_HOURS
@@ -52,7 +53,7 @@ class AuthService:
         return TokenResponse(
             access_token=access_token,
             token_type="bearer",
-            user=user  # Ensure response schema hides password
+            user=user  
         )
     @staticmethod
     async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:
@@ -85,13 +86,16 @@ class AuthService:
 
     @staticmethod
     async def get_me(user_id: int, db: AsyncSession) -> UserOut:
-        result = await db.execute(select(User).where(User.id == user_id))
+        result = await db.execute(select(User)
+            .options(
+                selectinload(User.media),
+            ).
+        where(User.id == user_id))
         user = result.scalars().first()
-
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
 
-        return UserOut.from_orm(user)
+        return {"success" : True, "user":user}

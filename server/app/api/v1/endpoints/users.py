@@ -50,7 +50,7 @@ async def update_user(
 ):
     print(user_id)
     print(user.model_dump(exclude_unset=True))  
-    return await UserService.update_user(user_id, user, db)
+    return await UserService.update_user(user_id, image_path ,user, db)
 
 # @router.post("/devices/{user_id}")
 # async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
