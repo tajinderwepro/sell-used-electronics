@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List,Generic, TypeVar
 from .media import MediaOut
 from pydantic.generics import GenericModel
+from pydantic.config import ConfigDict
 
 
 T = TypeVar("T")
@@ -17,8 +18,12 @@ class ModelBase(BaseModel):
     category_id: int
     # base_price: Optional[float] = None 
 
-class ModelCreate(ModelBase):
-    pass
+class ModelCreate(BaseModel):
+    category: str
+    brand: str
+    model: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 class ModelListRequest(BaseModel):
     limit: int = 10
@@ -50,14 +55,12 @@ class ModelUpdate(BaseModel):
     brand_id: Optional[int] = None
     category_id: Optional[int] = None
 
-
 class ModelOut(BaseModel):
     id: int
     name: str
     media_id: Optional[int]
     brand_id: int
     category_id: int
-    media: List[MediaOut] = []
 
     model_config = {
     "from_attributes": True

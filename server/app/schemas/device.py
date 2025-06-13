@@ -47,6 +47,7 @@ class DeviceOut(BaseModel):
     category_rel: Optional[CategoryBase]
     brand_rel: Optional[BrandBase]
     model_rel: Optional[ModelBase]
+
     model_config = ConfigDict(from_attributes=True)
 
 class DeviceUpdate(BaseModel):
@@ -64,6 +65,8 @@ class DeviceUpdate(BaseModel):
 
 class DeviceStatusUpdate(BaseModel):
     status: str
+    user_id: Optional[int]
+
 
     class Config:
         orm_mode = True
@@ -79,12 +82,6 @@ class BrandCreate(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-class ModelCreate(BaseModel):
-    category: str
-    brand: str
-    model: str
-
-    model_config = ConfigDict(from_attributes=True)
 
 class DeviceResponse(BaseModel):
     id: int
@@ -121,3 +118,21 @@ class DeviceListRequest(BaseModel):
     order_by: str = "asc"
     current_page: int = 1
     limit: int = 10
+
+    
+class DeviceSingleResponse(BaseModel):
+    data: Optional[DeviceOut] = None
+    message: Optional[str] = None
+    success: Optional[bool] = None
+
+    model_config = {
+        "from_attributes": True
+    }
+
+class DeviceApprove(BaseModel):
+    message: Optional[str] = None
+    success: Optional[bool] = None
+
+    model_config = {
+        "from_attributes": True
+    }

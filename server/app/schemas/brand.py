@@ -67,9 +67,8 @@ class BrandUpdate(BrandBase):
 class BrandOut(BaseModel):
     id: int
     name: str
+    media_id: Optional[int]
     category_id: int
-    media: List[MediaOut] = []
-    models: List[ModelOut] = []
 
     model_config = {
     "from_attributes": True
