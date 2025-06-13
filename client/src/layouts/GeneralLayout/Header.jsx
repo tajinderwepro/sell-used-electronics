@@ -61,7 +61,7 @@ function Header() {
 
   return (
     <header className={`fixed top-0 left-0 w-full border-b  ${COLOR_CLASSES.borderGray200} shadow-sm backdrop-blur-md`}>
-      <div className="max-w-7xl mx-auto py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center">
         <a
           href="/"
           className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary}`}

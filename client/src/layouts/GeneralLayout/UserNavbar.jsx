@@ -24,21 +24,23 @@ export default function UserNavbar() {
   const COLOR_CLASSES = useColorClasses();
 
   return (
-    <nav className={`border-b ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.borderPrimary} py-5 flex gap-6`}>
-      {navLinks.map((link) => (
-        <NavLink
-          key={link.name}
-          to={link.to}
-          className={({ isActive }) =>
-            `flex items-center gap-2 text-sm font-medium transition-colors ${
-              isActive ? COLOR_CLASSES.primary : COLOR_CLASSES.textSecondary
-            } hover:${COLOR_CLASSES.primary}`
-          }
-        >
-          <link.icon className="h-4 w-4" />
-          {link.name}
-        </NavLink>
-      ))}
+    <nav className={`border-b ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.borderPrimary} py-5`}>
+      <div className='mx-auto px-4 sm:px-6 lg:px-8 xl:px-2 flex items-center justify-start w-full gap-6'>
+        {navLinks.map((link) => (
+          <NavLink
+            key={link.name}
+            to={link.to}
+            className={({ isActive }) =>
+              `flex items-center gap-2 text-sm font-medium transition-colors ${
+                isActive ? COLOR_CLASSES.primary : COLOR_CLASSES.textSecondary
+              } hover:${COLOR_CLASSES.primary}`
+            }
+          >
+            <link.icon className="h-4 w-4" />
+            {link.name}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   );
 }

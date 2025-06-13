@@ -21,7 +21,7 @@ export default function AdminLayout() {
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
       />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col max-w-full overflow-hidden">
         <Header setMobileMenuOpen={setMobileMenuOpen} />
         <main className={`flex-1 p-2 ${COLOR_CLASSES.bgWhite}`}>
           <div

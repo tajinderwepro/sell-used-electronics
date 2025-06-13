@@ -21,7 +21,7 @@ const Stepper = ({
             {index + 1}
           </div>
           <div
-            className={`mt-2 ${
+            className={`hidden md:block mt-2 ${
               currentStep === index
                 ? `${COLOR_CLASSES.primaryDark} ${FONT_WEIGHTS.semibold}`
                 : ""
