@@ -9,6 +9,7 @@ from app.models.brand import Brand
 from app.models.model import Model
 from app.schemas.category import CategoryOut
 from app.schemas.category import ListResponse
+from sqlalchemy import and_
 
 
 class CategoryService:
@@ -88,11 +89,16 @@ class CategoryService:
     async def update_category(category_id: int, name: str, image_path: str, db: AsyncSession):
         result = await db.execute(select(Category).where(Category.id == category_id))
         category = result.scalar_one_or_none()
-
-        res = await db.execute(select(Category).where(Category.name == name))
+        res = await db.execute(
+            select(Category).where(
+                and_(Category.name == name, Category.id != category_id)
+            )
+        )
         existing = res.scalar_one_or_none()
+
         if existing:
             return {"success": False, "message": "Category already exists"}
+
 
         if not category:
             raise HTTPException(status_code=404, detail="Category not found")
