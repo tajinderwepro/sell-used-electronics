@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useFilters } from "../../../context/FilterContext";
 import api from "../../../constants/api";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer
-} from "recharts";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   CartesianGrid,
+//   ResponsiveContainer
+// } from "recharts";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -99,6 +99,7 @@ export default function Dashboard() {
               <th className="py-2 px-4">Date</th>
             </tr>
           </thead>
+          {recentOrders.length > 0 ? (
           <tbody>
             {recentOrders.map((order) => (
               <tr key={order.id} className="border-t">
@@ -112,6 +113,15 @@ export default function Dashboard() {
               </tr>
             ))}
           </tbody>
+        ) : (
+          <tbody>
+            <tr>
+              <td colSpan="5">
+                <p className="text-center py-6 text-gray-500 mt-2">No order found!</p>
+              </td>
+            </tr>
+          </tbody>
+        )}
         </table>
       </div>
     </div>

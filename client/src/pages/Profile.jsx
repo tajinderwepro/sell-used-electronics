@@ -185,32 +185,44 @@ const Profile = () => {
       <LoadingIndicator isLoading={loading}/>
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
-          <div onClick={handleAvatarClick} className="cursor-pointer">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Profile Preview" className="w-20 h-20 rounded-full object-cover" />
-            ) : (
-              <CircleUser size={80} strokeWidth={1} color="gray" />
-            )}
-          </div>
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleImageChange}
-          />
-          <div>
-            <h2 className="text-xl font-semibold">{form.name}</h2>
-            <p className="text-gray-500 text-sm">{form.email}</p>
-          </div>
+            <div
+                onClick={() => isEditing && handleAvatarClick()}
+                className={isEditing ? "cursor-pointer" : "cursor-default"}
+            >
+                {imagePreview ? (
+                <img
+                    src={imagePreview}
+                    alt="Profile Preview"
+                    className="w-20 h-20 rounded-full object-cover"
+                />
+                ) : (
+                <CircleUser size={80} strokeWidth={1} color="gray" />
+                )}
+            </div>
+
+            {/* Always include input, but hide it */}
+            <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleImageChange}
+            />
+
+            <div>
+                <h2 className="text-xl font-semibold">{form.name}</h2>
+                <p className="text-gray-500 text-sm">{form.email}</p>
+            </div>
         </div>
-        <Button onClick={handleToggleEdit} className="text-sm px-3">
-          {isEditing ? "Save Profile" : "Edit Profile"}
-        </Button>
+
+        {!isEditing && <Button onClick={handleToggleEdit} className="text-sm px-3">
+           Edit Profile
+        </Button>}
       </div>
 
       {/* Edit or View Mode */}
       {isEditing ? (
+        <>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField
             id="name"
@@ -241,7 +253,19 @@ const Profile = () => {
             onChange={handleChange}
             error={errors.phone}
           />
+         
         </form>
+        
+        <div className="flex gap-2 justify-center mt-3">
+                  <Button onClick={handleToggleEdit} className="text-sm px-3">
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditing(!isEditing)} className="text-sm px-3" variant="warning">
+                    Cancel
+                  </Button>
+                </div>
+        
+        </>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
           <div>
