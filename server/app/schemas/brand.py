@@ -69,6 +69,7 @@ class BrandOut(BaseModel):
     name: str
     media_id: Optional[int]
     category_id: int
+    media: List[MediaOut] = []
 
     model_config = {
     "from_attributes": True

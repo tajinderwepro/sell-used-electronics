@@ -61,7 +61,8 @@ class ModelOut(BaseModel):
     media_id: Optional[int]
     brand_id: int
     category_id: int
-
+    media: List[MediaOut] = []
+    
     model_config = {
     "from_attributes": True
     }

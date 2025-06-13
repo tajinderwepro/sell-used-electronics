@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional, List,Generic, TypeVar
-from .brand import BrandOut
-from .model import ModelOut
 from .media import MediaOut
 from pydantic.generics import GenericModel
 
@@ -23,15 +21,26 @@ class CategoryCreate(BaseModel):
         arbitrary_types_allowed = True
 
 
-# class BrandOut(BaseModel):
-#     id: int
-#     name: str
-#     media_id: Optional[int]
-#     category_id: int
+class BrandOut(BaseModel):
+    id: int
+    name: str
+    media_id: Optional[int]
+    category_id: int
 
-#     model_config = {
-#     "from_attributes": True
-#     }
+    model_config = {
+    "from_attributes": True
+    }
+
+class ModelOut(BaseModel):
+    id: int
+    name: str
+    media_id: Optional[int]
+    brand_id: int
+    category_id: int
+
+    model_config = {
+    "from_attributes": True
+    }
 
 class CategoryUpdate(BaseModel):
     name: str
@@ -58,3 +67,4 @@ class ListResponse(GenericModel, Generic[T]):
     success: bool
     status_code: int
     data: List[T]
+
