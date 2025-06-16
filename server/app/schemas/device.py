@@ -110,6 +110,12 @@ class DeviceResponse(BaseModel):
     user: UserBase | None = None
     model_config = ConfigDict(from_attributes=True)
 
+class DeviceSubmitResponse(BaseModel):
+    condition: str
+    images: List[str]
+
+    class Config:
+        from_attributes = True
 
 
 class DeviceListResponse(BaseModel):

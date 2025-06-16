@@ -9,12 +9,58 @@ from app.core.config import settings
 from app.schemas.category import CategoryUpdate 
 from app.schemas.category import ListResponse
 from app.core.security import require_roles
-from app.schemas.device import DeviceListResponse, DeviceCreate
+from app.schemas.device import DeviceListResponse, DeviceCreate,DeviceSubmitResponse
 from app.services.device_service import DeviceService
 from app.core.security import require_roles
+import shutil
+import os
+import uuid
+from app.utils.file_utils import save_upload_file
 
 
 router = APIRouter()
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@router.post(
+    "/devices/submit/{user_id}",
+    dependencies=[Depends(require_roles(["admin", "user"]))]
+)
+async def create_device(
+    user_id: int,
+    category: str = Form(...),
+    brand: str = Form(...),
+    model: str = Form(...),
+    condition: str = Form(...),
+    base_price: float = Form(...),
+    ebay_avg_price: float = Form(...),
+    files: list[UploadFile] = File(...),
+    db: AsyncSession = Depends(get_db),
+):
+    image_urls = []
+    for file in files:
+        path = save_upload_file(file)
+        image_urls.append(f"{settings.APP_URL}{path}")
+    
+    payload = DeviceCreate(
+        category=category,
+        brand=brand,
+        model=model,
+        condition=condition,
+        base_price=base_price,
+        ebay_avg_price=ebay_avg_price,
+    )
+
+    return await DeviceService.create_device(
+        user_id=user_id,
+        device_in=payload,
+        image_urls=image_urls,
+        db=db
+    )
+
+
+
 
 @router.post("/category/list", response_model=ListResponse[CategoryOut])
 async def get_categories(
@@ -26,10 +72,6 @@ async def get_categories(
         offset=request.offset,
         db=db
     )
-
-@router.post("/devices/submit/{id}", response_model=DeviceListResponse, dependencies=[Depends(require_roles(["admin","user"]))])
-async def create_device(id: int, device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
-    return await DeviceService.create_device(id, device_in, db)
 
 @router.post("/estimate-price")
 async def estimate_price(request: Request):

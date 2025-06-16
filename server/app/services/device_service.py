@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from app.models.device import Device
 from app.models.model import Model
 from app.models.brand import Brand
+from app.models.media import Media
 from app.models.category import Category
 from app.schemas.device import DeviceCreate, DeviceUpdate, DeviceOut
 from sqlalchemy.orm import selectinload
@@ -40,7 +41,12 @@ class DeviceService:
             ]
         )
     @staticmethod
-    async def create_device(user_id: int, device_in: DeviceCreate, db: AsyncSession):
+    async def create_device(
+        user_id: int,
+        device_in: DeviceCreate,
+        image_urls: list[str],
+        db: AsyncSession
+    ):
         category_name = None
         brand_name = None
         model_name = None
@@ -88,24 +94,22 @@ class DeviceService:
         db.add(device)
         await db.commit()
         await db.refresh(device)
-        # Re-fetch with relations loaded to avoid MissingGreenlet
-        result = await db.execute(
-            select(Device)
-            .options(
-                selectinload(Device.category_rel),
-                selectinload(Device.brand_rel),
-                selectinload(Device.model_rel),
-                selectinload(Device.user)
-            )
-            .where(Device.id == device.id)
-        )
-        device = result.scalar_one()
 
+        # handle multiple images
+        media_objs = []
+        for url in image_urls:
+            media = Media(
+                path=url,
+                mediable_type="device",
+                mediable_id=device.id
+            )
+            db.add(media)
+            media_objs.append(media)
+        await db.commit()
 
         return {
             "success": True,
             "message": "Submit successfully",
-            "data": [DeviceOut.from_orm(device)],
         }
 
     @staticmethod

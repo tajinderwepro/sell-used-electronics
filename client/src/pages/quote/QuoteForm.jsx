@@ -44,15 +44,17 @@ export default function QuoteForm({ onClose }) {
   try {
     const formData = new FormData();
 
-    formData.append("category", category);
-    formData.append("brand", brand);
-    formData.append("model", model);
-    formData.append("base_price", Number(price));
-    formData.append("ebay_avg_price", estimate_price);
-    formData.append("conditions[condition]", conditions.condition);
-    conditions.images.forEach((img, idx) => {
-      formData.append(`conditions[images][${idx}]`, img);
-    });
+
+formData.append("category", category);
+formData.append("brand", brand);
+formData.append("model", model);
+formData.append("base_price", Number(price));
+formData.append("ebay_avg_price", estimate_price);
+formData.append("condition", conditions.condition); 
+
+conditions.images.forEach((img) => {
+  formData.append("files", img); 
+});
     setLoading(true);
 
     const response = await api.public.submit(user.id, formData);
