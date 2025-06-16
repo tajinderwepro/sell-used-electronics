@@ -72,7 +72,7 @@ const imageList =
           </p>
         </div>
 
-        {device.status === 'approved' && (
+        {device.status === 'approved' ? 
           <div className="mt-4">
             <Button
               onClick={() => onRequestShipment(device.id)}
@@ -82,7 +82,18 @@ const imageList =
               Request Shipment
             </Button>
           </div>
-        )}
+          :
+          <div className="mt-4">
+            <Button
+              // onClick={() => onRequestShipment(device.id)}
+              disabled={true}
+              className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
+            >
+              <PackageCheck className="inline-block mr-2 w-4 h-4" />
+              Waiting for approval
+            </Button>
+          </div>
+        }
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const GeneralLayout = ({ children }) => {
         className={`max-w-7xl mx-auto w-full pt-[72px]`}
       >
         {user && isAuthenticated && paths.includes(location.pathname) &&  <UserNavbar />}
-        <div className=" my-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2">
+        <div className="min-h-screen my-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2">
             {children}
         </div>
       </div>

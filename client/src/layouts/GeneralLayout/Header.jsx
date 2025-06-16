@@ -60,7 +60,7 @@ function Header() {
 
 
   return (
-    <header className={`fixed top-0 left-0 w-full border-b  ${COLOR_CLASSES.borderGray200} shadow-sm backdrop-blur-md`}>
+    <header className={`fixed top-0 left-0 w-full border-b z-[3]  ${COLOR_CLASSES.borderGray200} shadow-sm ${COLOR_CLASSES.bgWhite}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center">
         <a
           href="/"
