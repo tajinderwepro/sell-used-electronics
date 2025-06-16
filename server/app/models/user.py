@@ -19,7 +19,7 @@ class User(Base):
     phone = Column(BigInteger, nullable=False, unique=True)
 
 
-    devices = relationship("Device", back_populates="user_rel", cascade="all, delete-orphan")
+    devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
     media = relationship(
         "Media",
         primaryjoin=and_(

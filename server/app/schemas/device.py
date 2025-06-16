@@ -31,6 +31,14 @@ class ModelBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class UserBase(BaseModel):
+    id: int
+    name: str
+    email: str
+    phone: Optional[int]
+    role: Optional[str]
+    model_config = ConfigDict(from_attributes=True)
+
 class DeviceOut(BaseModel):
     id: int
     category: Optional[str]
@@ -47,7 +55,7 @@ class DeviceOut(BaseModel):
     category_rel: Optional[CategoryBase]
     brand_rel: Optional[BrandBase]
     model_rel: Optional[ModelBase]
-
+    user: Optional[UserBase]
     model_config = ConfigDict(from_attributes=True)
 
 class DeviceUpdate(BaseModel):
@@ -99,6 +107,7 @@ class DeviceResponse(BaseModel):
     category_rel: CategoryBase | None = None
     brand_rel: BrandBase | None = None
     model_rel: ModelBase | None = None
+    user: UserBase | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

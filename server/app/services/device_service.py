@@ -34,7 +34,8 @@ class DeviceService:
             options=[
                 selectinload(Device.category_rel),
                 selectinload(Device.brand_rel),
-                selectinload(Device.model_rel)
+                selectinload(Device.model_rel),
+                selectinload(Device.user)
             ]
         )
     @staticmethod
