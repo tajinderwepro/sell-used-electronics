@@ -196,12 +196,19 @@ export default function Devices() {
 
   const columns = [
     { key: "id", label: "ID", sortable: true },
+    {
+      key: "user",
+      label: "User",
+      sortable: true,
+      render: (row) =>  row.user?.name.charAt(0).toUpperCase() + row.user?.name.slice(1) || "-"
+    },
     { key: "category", label: "Category", sortable: true },
     { key: "brand", label: "Brand", sortable: true },
     { key: "model", label: "Model", sortable: true },
     { key: "condition", label: "Condition", sortable: true },
     { key: "base_price", label: "Base Price", sortable: true },
     { key: "ebay_avg_price", label: "Ebay Avg Price", sortable: true },
+    // { key: "risk", label: "Risk", sortable: true },
     { key: "status", label: "Status", sortable: true },
     {
       key: "actions",
@@ -269,7 +276,7 @@ export default function Devices() {
   useEffect(() => {
     fetchCategories()
   }, []);
- console.log(user,'ddddd')
+
   return (
     <div className="min-h-screen mt-2">
       <CommonTable
@@ -381,9 +388,11 @@ export default function Devices() {
               value={form.condition}
               onChange={handleChange}
               options={[
-                { label: "Good", value: "good" },
-                { label: "Bad", value: "bad" },
                 { label: "Excellent", value: "excellent" },
+                { label: "Good", value: "good" },
+                { label: "Fair", value: "fair" },
+                { label: "Bad", value: "bad" },
+                
               ]}
             />
             <InputField

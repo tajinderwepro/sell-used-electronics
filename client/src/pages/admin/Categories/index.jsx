@@ -259,7 +259,7 @@ console.log(categories,'ssss')
                 <img
                   src={preview}
                   alt="Category Preview"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <span className="text-sm text-gray-500">Upload Image</span>

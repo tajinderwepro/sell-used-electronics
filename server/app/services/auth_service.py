@@ -63,7 +63,8 @@ class AuthService:
                 email=data.email,
                 name=data.name,
                 password_hash=hashed_pw,
-                role=data.role
+                role=data.role,
+                phone=data.phone
             )
             db.add(db_user)
             await db.commit()

@@ -10,6 +10,7 @@ import { validateFormData } from "../../../utils/validateUtils";
 import { toast } from "react-toastify";
 import { CreateuserSchema, EditUserSchema } from "../../../common/Schema";
 import { useFilters } from "../../../context/FilterContext";
+import validatePhone from "../../../components/ui/ValidPhoneFormat";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -70,6 +71,7 @@ export default function Users() {
           password_hash: "",
           confirmPassword: "",
           role: response.user.role || "admin",
+          phone:validatePhone(response.user.phone || ""),
         });
         setPopupState({ open: true, type: "edit", id });
       }
@@ -108,14 +110,22 @@ export default function Users() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
+    if(name=='phone'){
+       const formatted = validatePhone(value);
+       setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: formatted,
     }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: '',
-    }));
+    }else{
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    } 
   };
 
   const handleSubmit = async (e) => {
@@ -153,7 +163,11 @@ export default function Users() {
 
     try {
       setLoading(true);
-      const payload = { ...form };
+
+      const payload = { 
+        ...form,
+        phone: form.phone.replace(/\D/g, '')  
+      };
 
       if (popupState.type === "edit") {
         delete payload.password_hash;
@@ -174,9 +188,11 @@ export default function Users() {
 
   const columns = [
     { key: "id", label: "ID", sortable: true  },
-    { key: "name", label: "Name", sortable: true  },
+    { key: "name", label: "Name", sortable: true,render: (row) =>  row?.name.charAt(0).toUpperCase() + row?.name.slice(1) || "-" },
+    
     { key: "email", label: "Email", sortable: true  },
-    { key: "phone", label: "Phone Number", sortable: true  },
+    { key: "phone", label: "Phone Number", sortable: true ,render: (row) =>  validatePhone(row.phone) },
+    
     { key: "role", label: "Role", sortable: true  },
     {
       key: "actions",
@@ -255,7 +271,7 @@ export default function Users() {
                   label={"Phone Number"}
                   id="phone"
                   name="phone"
-                  type="number"
+                  type="text"
                   error={errors.phone}
                   placeholder="Enter Phone Number"
                   value={form.phone}
