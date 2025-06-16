@@ -4,7 +4,6 @@ import UserNavbar from "../../../layouts/GeneralLayout/UserNavbar";
 
 export default function Dashboard() {
   const { user } = useAuth();
-  console.log("useruseruseruseruseruser",user);
   return (
     <div className="py-6">
         <Heading className='text-start'>Welcome {user?.name}</Heading>
