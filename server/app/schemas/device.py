@@ -31,6 +31,13 @@ class ModelBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class MediaBase(BaseModel):
+    id: int
+    path: str
+    mediable_type: str
+    mediable_id: int
+
+    model_config = ConfigDict(from_attributes=True)
 class UserBase(BaseModel):
     id: int
     name: str
@@ -56,6 +63,7 @@ class DeviceOut(BaseModel):
     brand_rel: Optional[BrandBase]
     model_rel: Optional[ModelBase]
     user: Optional[UserBase]
+    media: List[MediaBase] = []  
     model_config = ConfigDict(from_attributes=True)
 
 class DeviceUpdate(BaseModel):

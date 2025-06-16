@@ -26,4 +26,9 @@ class Device(Base,TimestampMixin):
     model_rel = relationship("Model", back_populates="devices")
     user = relationship("User", back_populates="devices")
 
-
+    media = relationship(
+        "Media",
+        primaryjoin="and_(foreign(Media.mediable_id)==Device.id, Media.mediable_type=='device')",
+        viewonly=True,
+        uselist=True
+    )

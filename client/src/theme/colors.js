@@ -2,61 +2,83 @@
 
 // 🎨 LIGHT THEME
 export const COLOR_CLASSES_LIGHT = {
-  primary: "text-[#1e3a8a]",
-  primaryDark: "text-[#1e293b]",
-  primaryLightBg: "bg-[#e0e7ff]",
-  primaryBg: "bg-[#1e3a8a]",
-  primaryBgHover: "hover:bg-[#1e40af]",
-  primaryRing: "ring-[#c7d2fe]",
+  // Primary Colors (updated to gradient-inspired blues/purples)
+  primary: "text-indigo-600",
+  primaryDark: "text-purple-700",
+  primaryLightBg: "bg-indigo-50",
+  primaryBg: "bg-gradient-to-r from-indigo-500 to-purple-500",
+  primaryBgHover: "hover:from-purple-600 hover:to-indigo-600",
+  primaryRing: "ring-indigo-300",
 
-  secondary: "text-[#4b5563]",
-  secondaryDark: "text-[#374151]",
-  secondaryBg: "bg-[#9ca3af]",
-  secondaryBgHover: "hover:bg-[#c5cad3]",
+  // Secondary (toned to complement gradient)
+  secondary: "text-gray-600",
+  secondaryDark: "text-gray-800",
+  secondaryBg: "bg-gray-300",
+  secondaryBgHover: "hover:bg-gray-400",
 
-  textPrimary: "text-[#111827]",
-  textSecondary: "text-[#6b7280]",
-  textLight: "text-[#9ca3af]",
-  textHoverPrimary: "hover:text-[#1e3a8a]",
+  // Text Colors
+  textPrimary: "text-gray-900",
+  textSecondary: "text-gray-600",
+  textLight: "text-gray-400",
+  textHoverPrimary: "hover:text-indigo-600",
 
-  borderPrimary: "border-[#1e3a8a]",
-  borderGray100: "border-[#f3f4f6]",
-  borderGray200: "border-[#e5e7eb]",
-  borderHoverPrimary: "hover:border-[#1e3a8a]",  
+  // Borders
+  borderPrimary: "border-indigo-500",
+  borderGray100: "border-gray-100",
+  borderGray200: "border-gray-200",
+  borderHoverPrimary: "hover:border-purple-500",
 
+  // Backgrounds
   bgWhite: "bg-white",
-  bgGradient: "bg-gradient-to-br from-white via-gray-50 to-gray-100",
+  bgGradient: "bg-gradient-to-br from-white via-indigo-50 to-purple-100",
 
+  // Gradient button (used everywhere for primary actions)
+  gradientBtn:
+    "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-600 hover:to-indigo-600 text-white",
+
+  // Shadows
   shadowMd: "shadow-md",
   shadowLg: "hover:shadow-lg transition-shadow duration-300 ease-in-out",
 };
+
+// 🌙 DARK THEME
 export const COLOR_CLASSES_DARK = {
-  primary: "text-[#b6d4fe]",               // Faded pastel blue
-  primaryDark: "text-[#e2ecf9]",           // Almost off-white blue
-  primaryLightBg: "bg-[#202734]",          // Muted dark slate
-  primaryBg: "bg-[#252f3f]",               // Soft dark base
-  primaryBgHover: "hover:bg-[#303a4c]",    // Very mild hover shift
-  primaryRing: "ring-[#5b8cd8]",            // Washed-out blue ring
-            
-  secondary: "text-[#bfc9d6]",             // Muted grayish-blue
-  secondaryDark: "text-[#aab4c3]",         // Slightly lighter gray-blue
-  secondaryBg: "bg-[#313b4b]",             // Gentle dark background
-  secondaryBgHover: "hover:bg-[#3e495a]",  // Soft hover
+  // Primary Colors
+  primary: "text-indigo-300",
+  primaryDark: "text-purple-300",
+  primaryLightBg: "bg-[#1f2733]",
+  primaryBg: "bg-gradient-to-r from-indigo-700 to-purple-700",
+  primaryBgHover: "hover:from-purple-600 hover:to-indigo-600",
+  primaryRing: "ring-indigo-400",
 
-  textPrimary: "text-[#d9e1ec]",           // Soft off-white
-  textSecondary: "text-[#a9b4c2]",         // Desaturated blue-grey
-  textLight: "text-[#7c8a99]",             // Light muted text
-  textHoverPrimary: "hover:text-[#c2dcfa]",// Gentle hover blue
+  // Secondary
+  secondary: "text-gray-400",
+  secondaryDark: "text-gray-300",
+  secondaryBg: "bg-gray-600",
+  secondaryBgHover: "hover:bg-gray-500",
 
-  borderPrimary: "border-[#e5e7eb29]",       // Soft slate border
-  borderGray100: "border-[#3b4654]",       // Light border
-  borderGray200: "border-[#2e3845]",
-  borderHoverPrimary: "hover:border-[#e5e7eb29]",  
+  // Text
+  textPrimary: "text-gray-100",
+  textSecondary: "text-gray-400",
+  textLight: "text-gray-500",
+  textHoverPrimary: "hover:text-indigo-300",
 
-  bgWhite: "bg-[#151d27]",                 // Slightly lifted black
+  // Borders
+  borderPrimary: "border-indigo-400",
+  borderGray100: "border-gray-600",
+  borderGray200: "border-gray-600",
+  borderHoverPrimary: "hover:border-purple-400",
+
+  // Backgrounds
+  bgWhite: "bg-[#151d27]",
   bgGradient: "bg-gradient-to-br from-[#151d27] via-[#1f2733] to-[#232b38]",
 
-  shadowMd: "shadow shadow-slate-900/30",  // Subtle shadow
-  shadowLg: "hover:shadow-xl shadow-slate-800/20 transition-shadow duration-300 ease-in-out",
-};
+  // Gradient button
+  gradientBtn:
+    "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-600 hover:to-indigo-600 text-white",
 
+  // Shadows
+  shadowMd: "shadow shadow-slate-900/30",
+  shadowLg:
+    "hover:shadow-xl shadow-slate-800/20 transition-shadow duration-300 ease-in-out",
+};

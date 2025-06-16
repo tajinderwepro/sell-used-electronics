@@ -1,4 +1,4 @@
-export const Chip = (status) => {
+export const Chip = ({status}) => {
 
   const statusConfig = {
     admin: { label: "Admin", className: "bg-blue-300 text-blue-800" },
