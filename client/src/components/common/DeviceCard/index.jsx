@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Smartphone,
   Tag,
@@ -14,34 +14,33 @@ import Button from '../../../components/ui/Button';
 import { useColorClasses } from '../../../theme/useColorClasses';
 import './style.css';
 import { Chip } from '../../ui/Chip';
+import { formatCurrency } from '../../ui/CurrencyFormatter';
 const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-4930-a203-f7bf1788414a.jpg';
 
 function DeviceCard({ device, onRequestShipment }) {
-  const COLOR_CLASSES = useColorClasses();
-
+const COLOR_CLASSES = useColorClasses();
 const imageList =
   Array.isArray(device.media) && device.media.length > 0
     ? device.media.map((m) => m.path)
     : [device.image].filter(Boolean).length > 0
     ? [device.image, device.model_image, device.category_image].filter(Boolean)
     : [placeholderImage, placeholderImage, placeholderImage];
-  console.log("imageListimageList",imageList,  Array.isArray(device.media) && device.media.length > 0)
   return (
     <div
-      className={`${COLOR_CLASSES.bgWhite} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.shadowLg} flex flex-col`}
+      className={`${COLOR_CLASSES.bgWhite} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden cursor-pointer ${COLOR_CLASSES.shadowLg} flex flex-col`}
     >
       <Swiper
         modules={[Navigation, Pagination]}
         navigation
         pagination={{ clickable: true }}
-        className="product-swiper w-full h-40 rounded-t-2xl"
+        className="product-swiper w-full h-60 rounded-t-2xl"
       >
         {imageList.map((img, idx) => (
           <SwiperSlide key={idx}>
             <img
               src={img}
               alt={`Device image ${idx + 1}`}
-              className="w-full h-40 object-contain rounded-t-2xl"
+              className="w-full h-60 scale-75 object-contain rounded-t-2xl"
             />
           </SwiperSlide>
         ))}
@@ -66,9 +65,11 @@ const imageList =
           </p>
           <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
             <BadgeDollarSign className="w-4 h-4 text-gray-400" />
-            <strong>Base</strong> ${device.base_price}
-            <span className="mx-1">|</span>
-            <strong>Calculated Price</strong> ${device.ebay_avg_price}
+            <strong>Base</strong> {formatCurrency(device.base_price)}
+          </p>
+          <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
+            <BadgeDollarSign className="w-4 h-4 text-gray-400" />
+            <strong>Calculated Price</strong> {formatCurrency (device.ebay_avg_price)}
           </p>
         </div>
 

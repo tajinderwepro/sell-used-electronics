@@ -1,18 +1,25 @@
-
 .product-swiper .swiper-button-next,
 .product-swiper .swiper-button-prev {
   color: white;
   background-color: rgba(99, 102, 241, 0.7);
   padding: 8px;
   border-radius: 9999px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
   width: 32px;
   height: 32px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.product-swiper:hover .swiper-button-next,
+.product-swiper:hover .swiper-button-prev {
+  /* opacity: 1; */
+  pointer-events: auto;
 }
 
 .product-swiper .swiper-button-next:hover,
 .product-swiper .swiper-button-prev:hover {
-  background-color: rgba(139, 92, 246, 0.9); 
+  background-color: rgba(139, 92, 246, 0.9);
 }
 
 .product-swiper .swiper-button-next::after,
