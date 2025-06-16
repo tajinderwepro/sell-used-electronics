@@ -61,7 +61,7 @@ const api = {
     createCategory: (data) =>
       axiosWrapper(
         axiosInstance.post(
-          `/category/add-category`,
+          `admin/category/add-category`,
           data,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -71,7 +71,7 @@ const api = {
     editCategory: (id, data) =>
       axiosWrapper(
         axiosInstance.put(
-          `/category/update-category/${id}`,
+          `admin/category/update-category/${id}`,
           data,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -88,7 +88,7 @@ const api = {
 
     addBrand: (id, data) => axiosWrapper(
       axiosInstance.post(
-        `/brand/add-brand/${id}`,
+        `admin/brand/add-brand/${id}`,
         data,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -98,7 +98,7 @@ const api = {
 
     editBrand: (id, data) => axiosWrapper(
       axiosInstance.put(
-        `/brand/update-brand/${id}`,
+        `admin/brand/update-brand/${id}`,
         data,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -106,12 +106,12 @@ const api = {
       )
     ),
 
-    deleteBrand: (id) => axiosWrapper(axiosInstance.delete(`/brand/delete-brand/${id}`)),
-    getBrand: (id, limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`/brand/list/${id}`, { limit, offset })),
+    deleteBrand: (id) => axiosWrapper(axiosInstance.delete(`admin/brand/delete-brand/${id}`)),
+    getBrand: (id, limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`admin/brand/list/${id}`, { limit, offset })),
 
     getModel: (id, limit = 10, offset = 0) =>
       axiosWrapper(
-        axiosInstance.post(`/model/list/${id}`, {
+        axiosInstance.post(`admin/model/list/${id}`, {
           limit,
           offset
         })
@@ -119,7 +119,7 @@ const api = {
 
     createModel: (id, data) => axiosWrapper(
       axiosInstance.post(
-        `/model/add-model/${id}`,
+        `admin/model/add-model/${id}`,
         data,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -129,7 +129,7 @@ const api = {
 
     editModel: (id, data) => axiosWrapper(
       axiosInstance.put(
-        `/model/update-model/${id}`,
+        `admin/model/update-model/${id}`,
         data,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -140,14 +140,14 @@ const api = {
 
 
 
-    getDevices: (data) => axiosWrapper(axiosInstance.post('/devices/list',data)),
-    getDevice: (id) => axiosWrapper(axiosInstance.get(`/devices/${id}`)),
-    updateDevice: (id,data) => axiosWrapper(axiosInstance.put(`/devices/${id}`,data)),
-    deleteDevice: (device_id) => axiosWrapper(axiosInstance.delete(`/devices/${device_id}`)),
-    createDevice: (data) => axiosWrapper(axiosInstance.post('/devices/submit', data)),
-    updateDeviceStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`/devices/status/${device_id}`,data)),
-    submit: (id,data) => axiosWrapper(axiosInstance.post(`/devices/submit/${id}`, data)),
-    getOrders: () => axiosWrapper(axiosInstance.get('/orders/list')),
+    getDevices: (data) => axiosWrapper(axiosInstance.post('admin/devices/list',data)),
+    getDevice: (id) => axiosWrapper(axiosInstance.get(`admin/devices/${id}`)),
+    updateDevice: (id,data) => axiosWrapper(axiosInstance.put(`admin/devices/${id}`,data)),
+    deleteDevice: (device_id) => axiosWrapper(axiosInstance.delete(`admin/devices/${device_id}`)),
+    createDevice: (data) => axiosWrapper(axiosInstance.post('admin/devices/submit', data)),
+    updateDeviceStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`admin/devices/status/${device_id}`,data)),
+    submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/devices/submit/${id}`, data)),
+    getOrders: () => axiosWrapper(axiosInstance.get('admin/orders/list')),
   },
   getCategories: (limit = 10, offset = 0) => axiosWrapper(
     axiosInstance.post(`/category/list`, {
@@ -155,7 +155,7 @@ const api = {
       offset,
     
     })),
-  getDevices: () => axiosWrapper(axiosInstance.get('/devices/list')),  
+  getDevices: () => axiosWrapper(axiosInstance.get('admin/devices/list')),  
   auth: {
     me: () => axiosWrapper(axiosInstance.get(`/auth/me`)),
   },
@@ -164,7 +164,7 @@ const api = {
     add: (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`, data)),
   },
   public: {
-    getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/devices/estimate-price`, data)),
+    getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/estimate-price`, data)),
     submit: (id,data) => axiosWrapper(axiosInstance.post(`/devices/submit/${id}`, data)),
   },
   user: {

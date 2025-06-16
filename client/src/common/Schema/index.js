@@ -34,7 +34,7 @@ export const deviceSchema = Yup.object().shape({
   category: Yup.string().required("Category is required"),
   brand: Yup.string().required("Brand is required"),
   model: Yup.string().required("Model is required"),
-  condition: Yup.string().oneOf(["good", "bad", "excellent"]).required("Condition is required"),
+  condition: Yup.string().oneOf(["good", "bad", "excellent","fair"]).required("Condition is required"),
   base_price: Yup.string()
     .required("Base price is required")
     .test(

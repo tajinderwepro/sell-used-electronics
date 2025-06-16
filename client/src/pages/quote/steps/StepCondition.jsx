@@ -6,9 +6,10 @@ export default function StepCondition({ condition, setCondition }) {
   };
 
   const conditionOptions = [
-    { value: "good", label: "Good" },
-    { value: "bad", label: "Bad" },
-    { value: "excellent", label: "Excellent" },
+    { label: "Excellent", value: "excellent" },
+    { label: "Good", value: "good" },
+    { label: "Fair", value: "fair" },
+    { label: "Bad", value: "bad" },           
   ];
 
   return (

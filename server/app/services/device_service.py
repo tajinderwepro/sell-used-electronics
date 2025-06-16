@@ -93,7 +93,8 @@ class DeviceService:
             .options(
                 selectinload(Device.category_rel),
                 selectinload(Device.brand_rel),
-                selectinload(Device.model_rel)
+                selectinload(Device.model_rel),
+                selectinload(Device.user)
             )
             .where(Device.id == device.id)
         )
@@ -174,7 +175,6 @@ class DeviceService:
             return None
 
         device.status = status
-        device.user_id = user_id
         await db.commit()
         await db.refresh(device)
         return {

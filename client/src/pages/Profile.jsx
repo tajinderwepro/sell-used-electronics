@@ -5,6 +5,7 @@ import { CircleUser } from "lucide-react";
 import api from "../constants/api";
 import LoadingIndicator from "../common/LoadingIndicator";
 import { toast } from "react-toastify";
+import validatePhone from "../components/ui/ValidPhoneFormat";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -45,14 +46,23 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
+    if(name=='phone'){
+       const formatted = validatePhone(value);
+
+       setForm((prev) => ({
       ...prev,
-      [name]: value.toString(),
+      [name]: formatted,
     }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    }else{
+      setForm((prev) => ({
+        ...prev,
+        [name]: value.toString(),
+      }));
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    } 
   };
 
   const handleToggleEdit = async () => {
@@ -73,20 +83,15 @@ const Profile = () => {
         const formData = new FormData();
         formData.append("name", form.name);
         formData.append("email", form.email);
-        formData.append("phone", form.phone);
-         console.log(form.image_path,'dddd')
+        formData.append("phone", form.phone.replace(/\D/g, ''));
+
         if (form.image_path instanceof File) {
            
             formData.append("image_path", form.image_path);
          }
          setloading(true);
       try {
-        // const res = await api.auth.updateProfile({
-        //   name: form.name,
-        //   email: ,
-        //   phone: form.phone,
-        //   image_path:form.image_path
-        // });
+      
         const res=await api.admin.updateUser(form.id, formData);
 
         if (res.success) {
@@ -125,7 +130,7 @@ const Profile = () => {
           id:id || "",
           name: name || "",
           email: email || "",
-          phone: phone || "",
+          phone: validatePhone(phone || ""),
           image_path:media[0]?.path
         }));
 
@@ -246,7 +251,7 @@ const Profile = () => {
           <InputField
             id="phone"
             name="phone"
-            type="number"
+            type="text"
             label="Phone Number"
             placeholder="Enter phone number"
             value={form.phone}
@@ -260,7 +265,7 @@ const Profile = () => {
                   <Button onClick={handleToggleEdit} className="text-sm px-3">
                     Save
                   </Button>
-                  <Button onClick={() => setIsEditing(!isEditing)} className="text-sm px-3" variant="warning">
+                  <Button onClick={() => setIsEditing(!isEditing)} className="text-sm px-3" variant="secondary">
                     Cancel
                   </Button>
                 </div>
@@ -278,7 +283,7 @@ const Profile = () => {
           </div>
           <div>
             <p className="text-gray-500 mb-1">Phone Number</p>
-            <p className="py-3 rounded">{form.phone}</p>
+            <p className="py-3 rounded">{validatePhone(form.phone)}</p>
           </div>
           <div>
             <p className="text-gray-500 mb-1">Password</p>
@@ -308,7 +313,7 @@ const Profile = () => {
                   <Button onClick={handleResetPasswordSave} className="text-sm px-3">
                     Save
                   </Button>
-                  <Button onClick={() => handleResetPasswordClick(false)} className="text-sm px-3">
+                  <Button onClick={() => handleResetPasswordClick(false)} className="text-sm px-3" variant="secondary">
                     Cancel
                   </Button>
                 </div>

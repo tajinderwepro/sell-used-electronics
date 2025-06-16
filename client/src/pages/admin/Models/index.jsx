@@ -266,8 +266,8 @@ export default function Models() {
                 {preview ? (
                   <img
                     src={preview}
-                    alt="Category Preview"
-                    className="w-full h-full object-cover"
+                    alt="Model Preview"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <span className="text-sm text-gray-500">Upload Image</span>

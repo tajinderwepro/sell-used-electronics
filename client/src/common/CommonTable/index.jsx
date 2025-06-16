@@ -8,6 +8,7 @@ import { FONT_FAMILIES } from '../../constants/theme';
 import { useFilters } from '../../context/FilterContext';
 import { Chip } from '../../components/ui/Chip';
 import { formatCurrency } from '../../components/ui/CurrencyFormatter';
+import { RiskChip } from '../../components/ui/RiskChip';
 
 const CommonTable = ({
   columns,
@@ -122,9 +123,10 @@ const CommonTable = ({
                     <td
                       key={col.key}
                       className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
-                    >
-
-                      {['role','status'].includes(col.key) ?  Chip(row[col.key]) : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
+                    > 
+                    {console.log(row[col.key],'row[col.key]')}
+                   
+                      {['role','status','condition'].includes(col.key) ? Chip(row[col.key]) : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
                     </td>
                   ))}
                 </tr>

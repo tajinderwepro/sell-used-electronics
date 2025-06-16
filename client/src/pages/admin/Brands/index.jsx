@@ -268,7 +268,7 @@ export default function Brands() {
                   <img
                     src={preview}
                     alt="Brand Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <span className="text-sm text-gray-500">Upload Image</span>

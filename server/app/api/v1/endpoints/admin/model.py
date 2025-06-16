@@ -35,8 +35,6 @@ async def upload_model(
     )
     return await ModelService.add_model(brand_id, payload, f"{app_url}{file_path}", db)
 
-
-
 @router.post("/list/{brand_id}", response_model=ListResponse[ModelOut])
 async def list_models(
     brand_id: int,

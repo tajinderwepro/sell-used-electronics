@@ -30,7 +30,7 @@ class AuthService:
     def create_access_token(data: dict) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
-        to_encode.update({"exp": expire})  # Keep 'sub' from input data
+        to_encode.update({"exp": expire})  
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     @staticmethod
@@ -63,7 +63,8 @@ class AuthService:
                 email=data.email,
                 name=data.name,
                 password_hash=hashed_pw,
-                role=data.role
+                role=data.role,
+                phone=data.phone
             )
             db.add(db_user)
             await db.commit()
@@ -85,17 +86,14 @@ class AuthService:
             )
 
     @staticmethod
-    async def get_me(user_id: int, db: AsyncSession) -> UserOut:
-        result = await db.execute(select(User)
-            .options(
-                selectinload(User.media),
-            ).
-        where(User.id == user_id))
+    async def get_me(current_user: User, db: AsyncSession):
+        result = await db.execute(
+            select(User).options(selectinload(User.media)).where(User.id == current_user.id)
+        )
         user = result.scalars().first()
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
 
-        return {"success" : True, "user":user}
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"success": True, "user": user}
+
