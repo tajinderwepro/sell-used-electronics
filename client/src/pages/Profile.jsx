@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
-import { CircleUser } from "lucide-react";
+import { CircleUser, SquarePen } from "lucide-react";
 import api from "../constants/api";
 import LoadingIndicator from "../common/LoadingIndicator";
 import { toast } from "react-toastify";
@@ -190,19 +190,20 @@ const Profile = () => {
       <LoadingIndicator isLoading={loading}/>
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
-            <div
-                onClick={() => isEditing && handleAvatarClick()}
-                className={isEditing ? "cursor-pointer" : "cursor-default"}
-            >
+            <div>
                 {imagePreview ? (
+                  <div className="flex flex-row-reverse">
+                   {isEditing && (<span className="cursor-pointer"><SquarePen size={20} onClick={() => isEditing && handleAvatarClick()} /></span>)}
                 <img
                     src={imagePreview}
                     alt="Profile Preview"
                     className="w-20 h-20 rounded-full object-cover"
                 />
+                </div>
                 ) : (
                 <CircleUser size={80} strokeWidth={1} color="gray" />
                 )}
+
             </div>
 
             {/* Always include input, but hide it */}
