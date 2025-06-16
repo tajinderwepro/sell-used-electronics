@@ -1,12 +1,11 @@
 import * as Yup from 'yup';
 
-
 export const CreateuserSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phone_no: Yup.string()
-  .required("Phone number is required")
-  .matches(/^\d{10}$/, "Phone number must be 10 digits"),
+    .required("Phone number is required")
+    .matches(/^\d{10}$/, "Phone number must be 10 digits"),
   password_hash: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .when('isCreate', {
@@ -26,8 +25,8 @@ export const EditUserSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   phone_no: Yup.string()
-  .required("Phone number is required")
-  .matches(/^\d{10}$/, "Phone number must be 10 digits"),
+    .required("Phone number is required")
+    .matches(/^\d{10}$/, "Phone number must be 10 digits"),
   role: Yup.string().oneOf(["admin", "user"]).required("Role is required"),
 });
 
@@ -36,6 +35,22 @@ export const deviceSchema = Yup.object().shape({
   brand: Yup.string().required("Brand is required"),
   model: Yup.string().required("Model is required"),
   condition: Yup.string().oneOf(["good", "bad", "excellent"]).required("Condition is required"),
-  base_price: Yup.string().required("Base price is required"),
+  base_price: Yup.string()
+    .required("Base price is required")
+    .test(
+      "is-greater-than-zero",
+      "Base price must be greater than zero",
+      (value) => parseFloat((value || "").replace(/[^\d]/g, "")) > 0
+    ), 
   ebay_avg_price: Yup.string().required("eBay average price is required"),
+});
+
+export const QuoteFormSchema = Yup.object().shape({
+  base_price: Yup.string()
+    .required("Base price is required")
+    .test(
+      "is-greater-than-zero",
+      "Base price must be greater than zero",
+      (value) => parseFloat((value || "").replace(/[^\d]/g, "")) > 0
+    )
 });

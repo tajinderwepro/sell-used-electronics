@@ -1,7 +1,7 @@
 import {  FONT_SIZES, FONT_WEIGHTS } from '../../constants/theme';
 import { useColorClasses } from '../../theme/useColorClasses';
 
-export default function Modal({ title, children, onClose }) {
+export default function Modal({ title, children, onClose,customWidth=false }) {
     const COLOR_CLASSES = useColorClasses();
   
   return (
@@ -10,7 +10,7 @@ export default function Modal({ title, children, onClose }) {
       onClick={onClose}
     >
       <div
-        className={` border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgGradient} p-6 w-full max-w-3xl min-h-[400px] relative`}
+        className={` w-full ${customWidth ? 'w-[95%]' : ''} border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgGradient} p-6 max-w-3xl min-h-[400px] relative`}
         onClick={(e) => e.stopPropagation()}
       >
         <button

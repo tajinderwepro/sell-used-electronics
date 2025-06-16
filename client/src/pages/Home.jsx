@@ -138,7 +138,7 @@ export default function Home() {
 
         {/* Quote Modal */}
         {showQuoteForm && (
-          <Modal onClose={() =>{setShowQuoteForm(false);resetForm()}} title={"Get a Quote"}>
+          <Modal customWidth={true} onClose={() =>{setShowQuoteForm(false);resetForm()}} title={"Get a Quote"}>
             <QuoteForm onClose={() => setShowQuoteForm(false)} />
           </Modal>
         )}
