@@ -63,7 +63,7 @@ class DeviceOut(BaseModel):
     brand_rel: Optional[BrandBase]
     model_rel: Optional[ModelBase]
     user: Optional[UserBase]
-    media: List[MediaBase] = []  
+    media: List[MediaBase] = [] 
     model_config = ConfigDict(from_attributes=True)
 
 class DeviceUpdate(BaseModel):

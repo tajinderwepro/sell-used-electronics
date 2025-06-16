@@ -22,6 +22,8 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import Settings from "../pages/admin/Settings";
 import ShipmentAddress from "../components/common/ShipmentAddress";
 import Profile from "../pages/Profile";
+import ViewDevice from "../pages/admin/Devices/viewDevice";
+
 function AllRoutes() {
   const auth = useAuth();
   const {user, isAuthenticated, loading } = auth;
@@ -64,6 +66,7 @@ function AllRoutes() {
           <Route path="/admin/settings" element={<Settings />} />
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/devices" element={<Devices />} />
+          <Route path="/admin/devices/:deviceId" element={<ViewDevice />} />
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/quotes" element={<Quotes />} />
           <Route path="/admin/categories" element={<Categories/>} />

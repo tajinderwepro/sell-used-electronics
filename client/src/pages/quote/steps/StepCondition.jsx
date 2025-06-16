@@ -1,10 +1,11 @@
 import React, { useRef } from "react";
 import SelectField from "../../../components/ui/SelectField";
-import { SquarePen, Trash2, X } from "lucide-react";
-import Button from "../../../components/ui/Button";
+import { X } from "lucide-react";
 import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function StepCondition({ condition, setCondition }) {
+  const fileInputRef = useRef(null);
+
   const handleChange = (e) => {
     setCondition({
       ...condition,
@@ -38,56 +39,50 @@ export default function StepCondition({ condition, setCondition }) {
 
   return (
     <div>
-      {/* Condition Dropdown */}
-      <select
+      <SelectField
+        label="Select Condition"
         id="condition"
         value={condition.condition}
         onChange={handleChange}
-        className="border p-2 rounded w-full"
-      >
-        <option value="">Select Condition</option>
-        {conditionOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+        options={conditionOptions}
+      />
 
-      {/* Upload Images */}
-      <div className="mt-4">
-        <label className="block font-medium mb-1">Upload Images</label>
+      {/* Upload Images Section */}
+      <div className="mt-6">
+        <label
+          htmlFor="condition-image"
+          className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden mx-auto"
+          onClick={() => fileInputRef.current.click()}
+        >
+          <span className="text-sm text-gray-500">Upload Images</span>
+        </label>
         <input
           type="file"
-          multiple
           accept="image/*"
+          multiple
+          ref={fileInputRef}
           onChange={handleImageChange}
+          className="hidden"
         />
 
-        {/* Image Previews with Edit/Delete */}
-        <div className="mt-4 grid grid-cols-3 gap-4">
+        {/* Image Previews */}
+        <div className="mt-6 grid grid-cols-3 gap-4 max-h-[200px] overflow-y-auto">
           {condition.images.map((img, idx) => (
             <div
               key={idx}
-              className="relative group border rounded overflow-hidden"
+              className="relative group w-full h-full rounded-lg border border-gray-200 overflow-hidden"
             >
               <img
                 src={URL.createObjectURL(img)}
                 alt={`upload-${idx}`}
-                className="w-full h-24 object-cover"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 bg-white rounded-full p-1">
-                <button onClick={() => handleRemoveImage(idx)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+              <button
+                onClick={() => handleRemoveImage(idx)}
+                className="absolute top-0 right-0 m-1 p-1 rounded-full bg-white shadow group-hover:opacity-100 opacity-0 transition-opacity"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
             </div>
           ))}
         </div>
@@ -95,4 +90,3 @@ export default function StepCondition({ condition, setCondition }) {
     </div>
   );
 }
-

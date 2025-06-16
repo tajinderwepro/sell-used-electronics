@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2, SquarePen, CircleHelp, CircleCheckBig } from "lucide-react";
+import { Trash2, SquarePen, CircleHelp, CircleCheckBig, Eye } from "lucide-react";
 import CommonTable from "../../../common/CommonTable";
 import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
@@ -14,6 +14,7 @@ import { deviceSchema } from "../../../common/Schema";
 import { useFilters } from "../../../context/FilterContext";
 import { useAuth } from "../../../context/AuthContext";
 import { formatCurrency } from "../../../components/ui/CurrencyFormatter";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -40,6 +41,7 @@ export default function Devices() {
   const [message, setMessage] = useState("");
   const [totalItems, setTotalItems] = useState(0);
   const {filters} = useFilters();
+  const navigate = useNavigate();
   const fetchDevices = async () => {
     try {
       setLoading(true);
@@ -68,27 +70,27 @@ export default function Devices() {
   };
 
 
-  const getDevice = async (id) => {
-      try {
-        setLoading(true);
-        const device = await api.admin.getDevice(id);
-        setForm({
-          category: device.data.category?.toString() || "",
-          brand: device.data.brand?.toString() || "",
-          model: device.data.model?.toString() || "",
-          condition: device.data.condition || "new",
-          base_price: formatCurrency(device.data.base_price?.toString() || ""),
-          ebay_avg_price:formatCurrency(device.data.ebay_avg_price?.toString() || ""),
-          status:device.data.status?.toString() || "",
-          user_id:device.data.user_id
-        });
-        setPopupState({ open: true, isEdit: true, id });
-      } catch (err) {
-        console.error("Failed to fetch device:", err);
-      } finally {
-        setLoading(false);
-      }
-  };
+  // const getDevice = async (id) => {
+  //     try {
+  //       setLoading(true);
+  //       const device = await api.admin.getDevice(id);
+  //       setForm({
+  //         category: device.data.category?.toString() || "",
+  //         brand: device.data.brand?.toString() || "",
+  //         model: device.data.model?.toString() || "",
+  //         condition: device.data.condition || "new",
+  //         base_price: formatCurrency(device.data.base_price?.toString() || ""),
+  //         ebay_avg_price:formatCurrency(device.data.ebay_avg_price?.toString() || ""),
+  //         status:device.data.status?.toString() || "",
+  //         user_id:device.data.user_id
+  //       });
+  //       setPopupState({ open: true, isEdit: true, id });
+  //     } catch (err) {
+  //       console.error("Failed to fetch device:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  // };
 
 
   const handleOpen = () => {
@@ -215,9 +217,10 @@ export default function Devices() {
       label: "Actions",
       render: (device) => (
         <div className="flex gap-2">
-          <button onClick={() => getDevice(device.id)}>
-            <SquarePen size={18} color="gray" />
+          <button onClick={() => navigate(`/admin/devices/${device.id}`)}>
+            <Eye size={18} color="gray" />
           </button>
+
           <button onClick={() => handleDeletePopup(device.id)}>
             <Trash2 size={18} color="gray" />
           </button>
