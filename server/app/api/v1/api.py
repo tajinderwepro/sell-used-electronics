@@ -1,54 +1,41 @@
 from fastapi import APIRouter, Depends
-from app.api.v1.endpoints import users, auth, device, order, category, brand, model, address
-from app.core.security import get_current_user_id  
+from app.api.v1.endpoints import auth
+from app.api.v1.endpoints.admin import device, order, category, brand, model
+from app.api.v1.endpoints.public import common
+from app.api.v1.endpoints.user import users
+from app.api.v1.endpoints.public import address
+from app.core.security import get_current_user
+from app.core.security import require_roles
 
+# Main API router
 api_router = APIRouter()
 
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 
-api_router.include_router(
-    users.router, 
-    prefix="/users", 
-    tags=["users"],
-    dependencies=[Depends(get_current_user_id)]
-)
-api_router.include_router(
-    device.router, 
-    prefix="/devices", 
-    tags=["devices"],
-    # dependencies=[Depends(get_current_user_id)]
-)
-api_router.include_router(
-    order.router, 
-    prefix="/orders", 
-    tags=["orders"],
-    dependencies=[Depends(get_current_user_id)]
-)
+# User routes group
+user_router = APIRouter(prefix="/users", dependencies=[Depends(require_roles(["user","admin"]))])
+user_router.include_router(users.router, tags=["users"])
+api_router.include_router(user_router)
 
-api_router.include_router(
-    category.router, 
-    prefix="/category", 
+# Admin routes group
+admin_router = APIRouter(prefix="/admin")
+admin_router.include_router(device.router, prefix="/devices", tags=["devices"])
+admin_router.include_router(order.router, prefix="/orders", tags=["orders"], dependencies=[Depends(require_roles(["admin"]))])
+admin_router.include_router(brand.router, prefix="/brand", tags=["brand"], dependencies=[Depends(require_roles(["admin"]))])
+admin_router.include_router(model.router, prefix="/model", tags=["model"], dependencies=[Depends(require_roles(["admin"]))])
+admin_router.include_router(
+    category.router,
+    prefix="/category",
     tags=["category"],
-    # dependencies=[Depends(get_current_user_id)]
+)
+api_router.include_router(admin_router)
+
+# common routes
+api_router.include_router(
+    common.router,
 )
 
-api_router.include_router(
-    brand.router, 
-    prefix="/brand", 
-    tags=["brand"],
-    dependencies=[Depends(get_current_user_id)]
-)
+# Public routes group
+api_router.include_router(address.router, prefix="/addresses", tags=["addresses"],dependencies=[Depends(require_roles(["user","admin"]))])
 
-api_router.include_router(
-    model.router, 
-    prefix="/model", 
-    tags=["model"],
-    dependencies=[Depends(get_current_user_id)]
-)
 
-api_router.include_router(
-    address.router, 
-    prefix="/addresses", 
-    tags=["addresses"],
-    dependencies=[Depends(get_current_user_id)]
-)
