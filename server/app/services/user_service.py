@@ -131,7 +131,8 @@ class UserService:
             options=[
                 selectinload(Device.category_rel),
                 selectinload(Device.brand_rel),
-                selectinload(Device.model_rel)
+                selectinload(Device.model_rel),
+                selectinload(Device.user)
             ],
             user_id=user_id
         )
