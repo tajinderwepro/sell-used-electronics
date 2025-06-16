@@ -25,7 +25,6 @@ class ModelService:
             if existing:
                 raise HTTPException(status_code=400, detail="Model already exists")
 
-            # 1. Create model without media_id
             new_model = Model(
                 name=payload.name,
                 brand_id=brand_id,
@@ -35,7 +34,6 @@ class ModelService:
             await db.commit()
             await db.refresh(new_model)
 
-            # 2. Create media linked to model
             media = Media(
                 path=path,
                 mediable_type="model",
@@ -45,7 +43,6 @@ class ModelService:
             await db.commit()
             await db.refresh(media)
 
-            # 3. Update model with media_id
             new_model.media_id = media.id
             await db.commit()
             await db.refresh(new_model)
