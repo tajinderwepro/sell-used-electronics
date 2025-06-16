@@ -24,7 +24,7 @@ export default function QuoteForm({ onClose }) {
   const { isAuthenticated, user } = useAuth();
 
   const { formState, updateForm, resetForm, categories, setCategories } = useQuoteForm();
-  const { step, category, model, condition, price, brand, estimate_price } = formState;
+  const { step, category, model, conditions, price, brand, estimate_price } = formState;
   const selectedCategoryObj = categories.find(cat => cat.id === Number(category));
   const brands = selectedCategoryObj?.brands || [];
   const [loading, setLoading] = useState(false);
@@ -36,33 +36,41 @@ export default function QuoteForm({ onClose }) {
   const stepConstant = ['Category', 'Brand', 'Model', 'Condition', 'Base Prize', 'Price'];
 
   const handleSubmit = async () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else {
-      try {
-        const payload = {
-          category,
-          brand,
-          model,
-          condition,
-          base_price: Number(price),
-          ebay_avg_price: estimate_price
-        };
-        setLoading(true)
-        const response = await api.public.submit(user.id, payload);
-        setLoading(false);
-        if (response) {
-          toast.success(response.message)
-          resetForm();
-        }
-      } catch (err) {
-        setLoading(false)
-        toast.error(err?.response?.data?.message);
-        return;
-      }
+  if (!isAuthenticated) {
+    navigate("/login");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append("category", category);
+    formData.append("brand", brand);
+    formData.append("model", model);
+    formData.append("base_price", Number(price));
+    formData.append("ebay_avg_price", estimate_price);
+    formData.append("conditions[condition]", conditions.condition);
+    conditions.images.forEach((img, idx) => {
+      formData.append(`conditions[images][${idx}]`, img);
+    });
+    setLoading(true);
+
+    const response = await api.public.submit(user.id, formData);
+
+    setLoading(false);
+
+    if (response) {
+      toast.success(response.message);
+      resetForm();
     }
-    if (onClose) { onClose(); };
-  };
+  } catch (err) {
+    setLoading(false);
+    toast.error(err?.response?.data?.message || "Something went wrong.");
+  }
+
+  if (onClose) onClose();
+};
+
 
   const fetchCategories = async (currentOffset = 0, append = false) => {
     try {
@@ -103,8 +111,8 @@ export default function QuoteForm({ onClose }) {
       categories={categories}
     />,
     <StepCondition
-      condition={condition}
-      setCondition={(val) => updateForm({ condition: val })}
+      condition={conditions}
+      setCondition={(val) => updateForm({ conditions: val })}
       setPrice={(val) => updateForm({ price: val })}
       category={category}
       model={model}
@@ -158,7 +166,7 @@ export default function QuoteForm({ onClose }) {
     if (step === 0) return !category;
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
-    if (step === 2) return !condition;
+    if (step === 2) return !conditions;
     return false;
   };
 

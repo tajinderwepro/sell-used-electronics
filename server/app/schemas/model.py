@@ -19,9 +19,9 @@ class ModelBase(BaseModel):
     # base_price: Optional[float] = None 
 
 class ModelCreate(BaseModel):
-    category: str
-    brand: str
-    model: str
+    name: str
+    brand_id: int
+    category_id: int
 
     model_config = ConfigDict(from_attributes=True)
 

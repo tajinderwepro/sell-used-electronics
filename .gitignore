@@ -16,3 +16,6 @@ server/app/core/__pycache__
 server/app/utils/__pycache__
 server/uploads/
 server/app/static/uploads
+server/app/api/v1/endpoints/admin/__pycache__
+server/app/api/v1/endpoints/public/__pycache__
+server/app/api/v1/endpoints/user/__pycache__

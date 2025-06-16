@@ -165,7 +165,15 @@ const api = {
   },
   public: {
     getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/estimate-price`, data)),
-    submit: (id,data) => axiosWrapper(axiosInstance.post(`/devices/submit/${id}`, data)),
+    submit: (id, data) => axiosWrapper(
+      axiosInstance.post(
+        `/devices/submit/${id}`,
+        data,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      )
+    ),
   },
   user: {
     getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),

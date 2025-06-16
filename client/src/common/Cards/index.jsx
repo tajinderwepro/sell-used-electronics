@@ -13,7 +13,7 @@ const Cards = ({ brand, onClick=()=>{},handleEdit=()=>{},handleDelete=()=>{} }) 
     <div
       key={brand.id}
       onClick={() => onClick(brand)}
-      className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 ${COLOR_CLASSES.borderHoverPrimary} flex flex-col items-center p-4 cursor-pointer group`}
+      className={`rounded-md  shadow-sm hover:shadow-md transition-all duration-200 border ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.borderHoverPrimary} flex flex-col items-center p-4 cursor-pointer group`}
     >
             <div className="flex gap-2 justify-end w-full opacity-0 group-hover:opacity-100 transition-opacity duration-200" onClick={(e)=>e.stopPropagation()}>
                 <button onClick={(e) => { e.stopPropagation(); handleEdit(brand); }}>
@@ -31,7 +31,7 @@ const Cards = ({ brand, onClick=()=>{},handleEdit=()=>{},handleDelete=()=>{} }) 
           className="object-contain w-full h-full"
         />
       </div>
-      <h3 className={`text-sm font-semibold text-gray-800 text-center ${COLOR_CLASSES.textHoverPrimary}  
+      <h3 className={`text-sm font-semibold ${COLOR_CLASSES.textPrimary}text-center ${COLOR_CLASSES.textHoverPrimary}  
         ${FONT_FAMILIES.primary}`}>
         {brand.name}
       </h3>

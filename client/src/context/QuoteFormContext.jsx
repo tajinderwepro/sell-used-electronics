@@ -8,13 +8,16 @@ export const QuoteFormProvider = ({ children }) => {
     category: "",
     brand: "",
     model: "",
-    condition: "",
+    conditions: {
+      condition:"",
+      images:[],
+    },
     price: 0,
     estimate_price:''
   });
 
   const [showQuoteForm, setShowQuoteForm] = useState(false);
-  const [categories, setCategories] = useState([]); // ✅ stores categories with embedded brands
+  const [categories, setCategories] = useState([]); 
 
   const updateForm = (updates) => {
     setFormState((prev) => ({ ...prev, ...updates }));
@@ -26,7 +29,10 @@ export const QuoteFormProvider = ({ children }) => {
       category: "",
       brand: "",
       model: "",
-      condition: "",
+      conditions: {
+        condition:"",
+        images:[],
+      },
       price: 0,
     });
     setCategories([]);
