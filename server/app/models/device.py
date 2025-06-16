@@ -24,6 +24,6 @@ class Device(Base,TimestampMixin):
     category_rel = relationship("Category", back_populates="devices")
     brand_rel = relationship("Brand", back_populates="devices")
     model_rel = relationship("Model", back_populates="devices")
-    user_rel = relationship("User", back_populates="devices")
+    user = relationship("User", back_populates="devices")
 
 
