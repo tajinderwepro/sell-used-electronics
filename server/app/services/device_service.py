@@ -175,7 +175,6 @@ class DeviceService:
             return None
 
         device.status = status
-        device.user_id = user_id
         await db.commit()
         await db.refresh(device)
         return {

@@ -108,7 +108,6 @@ class DeviceResponse(BaseModel):
     brand_rel: BrandBase | None = None
     model_rel: ModelBase | None = None
     user: UserBase | None = None
-
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -117,7 +116,7 @@ class DeviceListResponse(BaseModel):
     data: list[DeviceOut]
     message: str
     success: bool
-    
+    total: int | None = None
     class Config:
         orm_mode = True
 
