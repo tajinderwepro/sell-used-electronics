@@ -73,14 +73,14 @@ export default function Devices() {
         setLoading(true);
         const device = await api.admin.getDevice(id);
         setForm({
-          category: device.category?.toString() || "",
-          brand: device.brand?.toString() || "",
-          model: device.model?.toString() || "",
-          condition: device.condition || "new",
-          base_price: formatCurrency(device.base_price?.toString() || ""),
-          ebay_avg_price:formatCurrency(device.ebay_avg_price?.toString() || ""),
-          status:device.status?.toString() || "",
-          user_id:device.user_id
+          category: device.data.category?.toString() || "",
+          brand: device.data.brand?.toString() || "",
+          model: device.data.model?.toString() || "",
+          condition: device.data.condition || "new",
+          base_price: formatCurrency(device.data.base_price?.toString() || ""),
+          ebay_avg_price:formatCurrency(device.data.ebay_avg_price?.toString() || ""),
+          status:device.data.status?.toString() || "",
+          user_id:device.data.user_id
         });
         setPopupState({ open: true, isEdit: true, id });
       } catch (err) {

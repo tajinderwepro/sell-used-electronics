@@ -14,6 +14,7 @@ import Cards from "../../../common/Cards";
 import { toast } from "react-toastify";
 import LoadingIndicator from "../../../common/LoadingIndicator";
 import { useColorClasses } from "../../../theme/useColorClasses";
+import { categorySchema } from "../../../common/Schema";
 
 export default function Brands() {
   const { categoryId } = useParams();
@@ -32,7 +33,7 @@ export default function Brands() {
 
   const breadcrumbItems = [
     { label: 'Category', path: '/admin/categories' },
-    { label: 'Brands', path: `/admin/categories/${categoryId}/brand` }, 
+    { label: 'Brands', path: `/admin/categories/${categoryId}/brand` },
   ];
 
   const fetchBrands = async (currentOffset = 0, append = false) => {
@@ -107,12 +108,19 @@ export default function Brands() {
     setErrors((prev) => ({ ...prev, image: null }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Brand name is required";
-    if (!form.image) newErrors.image = "Image is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validateForm = async () => {
+    try {
+      await categorySchema.validate(form, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (validationError) {
+      const newErrors = {};
+      validationError.inner.forEach((err) => {
+        newErrors[err.path] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
+    }
   };
 
   const handleSubmit = async () => {
@@ -135,8 +143,9 @@ export default function Brands() {
       return;
     }
 
-    if (!validateForm()) return;
-    
+    if (!(await validateForm())) return;
+
+    console.log(validateForm(),"validateForm()")
     const formData = new FormData();
     formData.append("name", form.name);
     if (form.image instanceof File) {
@@ -152,7 +161,7 @@ export default function Brands() {
       } else {
         res = await api.admin.addBrand(categoryId, formData);
       }
-      
+
       if (res.success) {
         toast.success(res.message);
         fetchBrands();
@@ -174,9 +183,9 @@ export default function Brands() {
 
   return (
     <div className="min-h-screen">
-      <LoadingIndicator isLoading={loading}/>
+      <LoadingIndicator isLoading={loading} />
       <div className="flex justify-between items-center mb-6">
-        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/> }/>
+        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{ fontSize: "12px" }} />} />
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search brand..."
@@ -197,9 +206,9 @@ export default function Brands() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredBrands.map((brand) => (
-          <Cards 
-            key={brand.id} 
-            brand={brand} 
+          <Cards
+            key={brand.id}
+            brand={brand}
             onClick={handleBrandClick}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
@@ -218,7 +227,7 @@ export default function Brands() {
           </Button>
         </div>
       )}
-      {(brands.length == 0  && !loading) &&  <div className="flex justify-center items-center h-[50vh]">No Brands Available!</div>}
+      {(brands.length == 0 && !loading) && <div className="flex justify-center items-center h-[50vh]">No Brands Available!</div>}
 
       <Popup
         open={popupOpen.open}
@@ -228,15 +237,13 @@ export default function Brands() {
           popupOpen.type === "edit"
             ? "Edit Brand"
             : popupOpen.type === "delete"
-            ? "Delete Brand"
-            : "Create Brand"
+              ? "Delete Brand"
+              : "Create Brand"
         }
         btnCancel="Cancel"
-        btnSubmit={
-          popupOpen.type === "delete" ? "Delete" : "Submit"
-        }
-        isbtnCancel={true}
-        isbtnSubmit={true}
+        btnSubmit={popupOpen.type === "delete" ? "Delete" : "Submit"}
+        isbtnCancel
+        isbtnSubmit
         loading={loading}
       >
         {popupOpen.type === "delete" ? (
@@ -251,7 +258,11 @@ export default function Brands() {
             <div className="flex flex-col items-center mb-4">
               <label
                 htmlFor="brand-image"
-                className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
+                className={`w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300
+            ${errors.image
+                    ? "border border-red-500 ring-1 ring-red-300"
+                    : "border border-gray-300 hover:ring-2 hover:ring-blue-200"
+                  }`}
               >
                 {preview ? (
                   <img
@@ -283,15 +294,12 @@ export default function Brands() {
               placeholder="Brand name"
               value={form.name}
               onChange={handleChange}
+              error={errors.name}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm text-left" style={{marginTop:"5px"}}>
-                {errors.name}
-              </p>
-            )}
           </div>
         )}
       </Popup>
+
     </div>
   );
 }

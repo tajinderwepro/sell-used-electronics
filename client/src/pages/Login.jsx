@@ -41,8 +41,16 @@ export default function Login() {
   }
 
   return (
+    // <div
+    //   // className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}
+    // >
     <div
-      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.bgWhite}  ${FONT_FAMILIES.primary}`}
+      className={` 
+      min-h-[70vh] md:min-h-[80vh]
+      flex items-center justify-center
+      md:px-4 sm:px-0
+      ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}
+    `}
     >
       <form
         onSubmit={handleLogin}

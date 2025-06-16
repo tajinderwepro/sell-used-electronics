@@ -13,37 +13,41 @@ import { toast } from "react-toastify";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import Cards from "../../../common/Cards";
 import LoadingIndicator from "../../../common/LoadingIndicator";
-  const breadcrumbItems = [
-    { label: 'Category', path: '/admin/categories' },
-  ];
+import * as Yup from "yup";
+import { useColorClasses } from "../../../theme/useColorClasses";
+import { categorySchema } from "../../../common/Schema";
+
+const breadcrumbItems = [{ label: "Category", path: "/admin/categories" }];
+
 export default function Categories() {
   const [categories, setCategories] = useState([]);
-  const [popupOpen, setPopupOpen] = useState({open:false,type:" ",id: " "});
-  const [form, setForm] = useState({ name: "", image: null , });
+  const [popupOpen, setPopupOpen] = useState({ open: false, type: "", id: "" });
+  const [form, setForm] = useState({ name: "", image: null });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate= useNavigate();
-  const [limit] = useState(10); // constant limit
+  const navigate = useNavigate();
+  const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const COLOR_CLASSES = useColorClasses();
+    const inputBaseClasses = `
+    ${errors.image ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' : COLOR_CLASSES.borderPrimary + ' focus:ring-' + COLOR_CLASSES.primaryBg + ' focus:border-' + COLOR_CLASSES.primary}
+  `;
+
 
   const fetchCategories = async (currentOffset = 0, append = false) => {
     setLoading(true);
-
     try {
       const res = await api.getCategories(limit, currentOffset);
-      console.log(res,'res')
       if (res.success) {
-        setCategories((prev) => append ? [...prev, ...res.data] : res.data);
-        setHasMore(res.data.length  === limit );
+        setCategories((prev) => (append ? [...prev, ...res.data] : res.data));
+        setHasMore(res.data.length === limit);
       } else {
         setHasMore(false);
       }
-
     } catch (err) {
-      console.error("Failed to fetch categories:", err);
       toast.error(err.message);
     } finally {
       setLoading(false);
@@ -60,21 +64,16 @@ export default function Categories() {
     fetchCategories(newOffset, true);
   };
 
-  // const handleOpen = () => {
-  //   setForm({ name: "", image: null });
-  //   setPreview(null);
-  //   setPopupOpen(true);
-  // };
-
   const handleClose = () => {
-    setPopupOpen(false);
+    setPopupOpen({ open: false, type: "", id: "" });
     setErrors({});
   };
+
   const handleOpen = () => {
     setForm({ name: "", image: null });
     setPreview(null);
     setErrors({});
-    setPopupOpen({ open: true, type: "create" });
+    setPopupOpen({ open: true, type: "create", id: "" });
   };
 
   const handleEdit = (cat) => {
@@ -88,12 +87,11 @@ export default function Categories() {
     setPopupOpen({ open: true, type: "delete", id: cat.id });
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    if (name === "name" && value.trim()) {
-      setErrors((prev) => ({ ...prev, name: null }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -102,15 +100,24 @@ export default function Categories() {
     if (!file) return;
     setForm((prev) => ({ ...prev, image: file }));
     setPreview(URL.createObjectURL(file));
-    setErrors((prev) => ({ ...prev, image: null }));
+    if (errors.image) {
+      setErrors((prev) => ({ ...prev, image: "" }));
+    }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Category name is required";
-    if (!form.image) newErrors.image = "Image is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validateForm = async () => {
+    try {
+      await categorySchema.validate(form, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (validationError) {
+      const newErrors = {};
+      validationError.inner.forEach((err) => {
+        newErrors[err.path] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
+    }
   };
 
   const handleSubmit = async () => {
@@ -133,8 +140,8 @@ export default function Categories() {
       return;
     }
 
-    // Create or Edit
-    if (!validateForm()) return;
+    if (!(await validateForm())) return;
+
     const formData = new FormData();
     formData.append("name", form.name);
     if (form.image instanceof File) {
@@ -146,25 +153,17 @@ export default function Categories() {
       let res;
       if (popupOpen.type === "edit") {
         res = await api.admin.editCategory(popupOpen.id, formData);
-        if (res.success) {
-          toast.success(res.message);
-          fetchCategories();
-          handleClose();
-        } else {
-          toast.error(res.message);
-        }
       } else {
         res = await api.admin.createCategory(formData);
-        if (res.success) {
-          toast.success(res.message);
-          fetchCategories();
-          handleClose();
-        } else {
-          toast.error(res.message);
-        }
       }
 
-      
+      if (res.success) {
+        toast.success(res.message);
+        fetchCategories();
+        handleClose();
+      } else {
+        toast.error(res.message);
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -175,127 +174,121 @@ export default function Categories() {
   const filteredCategories = categories.filter((cat) =>
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   const handleCategoryClick = (cat) => {
     navigate(`/admin/categories/${cat.id}/brand`);
   };
-console.log(categories,'ssss')
+
   return (
     <div className="min-h-screen">
-      <LoadingIndicator isLoading={loading}/>
+      <LoadingIndicator isLoading={loading} />
       <div className="flex justify-between items-center mb-6">
-        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{fontSize:"12px"}}/>} key={""}/>
+        <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight size={14} />} />
         <div className="flex gap-3">
           <SearchInput
             placeholder="Search categories..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button
-            className="px-4 py-2 text-white text-sm"
-            onClick={handleOpen}
-            icon={<Plus size={16} />}
-          >
+          <Button onClick={handleOpen} className="px-4 py-2 text-white text-sm" icon={<Plus size={16} />}>
             Create Category
           </Button>
         </div>
       </div>
 
-      {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredCategories.map((cat) => (
-           <Cards key={cat.id} brand={cat} onClick={handleCategoryClick} handleEdit={handleEdit} handleDelete={handleDelete}/>
+          <Cards
+            key={cat.id}
+            brand={cat}
+            onClick={handleCategoryClick}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
 
       {hasMore && categories.length > 0 && (
         <div className="flex justify-center mt-6">
-          <Button
-            onClick={handleLoadMore}
-            className="px-6 py-2 text-sm"
-            disabled={loading}
-          >
+          <Button onClick={handleLoadMore} className="px-6 py-2 text-sm" disabled={loading}>
             {loading ? "Loading..." : "Load More"}
           </Button>
         </div>
       )}
-       {(categories.length == 0 && loading==false) && <div className="flex justify-center items-center h-[50vh]">No Categories Available!</div>}
 
-      {/* Popup */}
-     <Popup
-      open={popupOpen.open}
-      onClose={handleClose}
-      onSubmit={handleSubmit}
-      title={
-        popupOpen.type === "edit"
-          ? "Edit Category"
-          : popupOpen.type === "delete"
-          ? "Delete Category"
-          : "Create Category"
-      }
-      btnCancel="Cancel"
-      btnSubmit={
-        popupOpen.type === "delete" ? "Delete" : "Submit"
-      }
-      isbtnCancel={true}
-      isbtnSubmit={true}
-      loading={loading}
-    >
-      {popupOpen.type === "delete" ? (
-        <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
-          <CircleHelp className="w-28 h-28" />
-          <p className="text-gray-700 text-sm font-medium">
-            Are you sure you want to delete this category?
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {/* Image Upload */}
-          <div className="flex flex-col items-center mb-4">
-            <label
-              htmlFor="category-image"
-              className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
-            >
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Category Preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-sm text-gray-500">Upload Image</span>
-              )}
-              <input
-                type="file"
-                id="category-image"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-            {errors.image && (
-              <p className="text-red-500 text-sm text-center mt-1">
-                {errors.image}
-              </p>
-            )}
-          </div>
-
-          {/* Name Input */}
-          <InputField
-            id="name"
-            name="name"
-            placeholder="Category name"
-            value={form.name}
-            onChange={handleChange}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm text-left mt-1">
-              {errors.name}
-            </p>
-          )}
-        </div>
+      {categories.length === 0 && !loading && (
+        <div className="flex justify-center items-center h-[50vh]">No Categories Available!</div>
       )}
-     </Popup>
 
+      <Popup
+        open={popupOpen.open}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        title={
+          popupOpen.type === "edit"
+            ? "Edit Category"
+            : popupOpen.type === "delete"
+            ? "Delete Category"
+            : "Create Category"
+        }
+        btnCancel="Cancel"
+        btnSubmit={popupOpen.type === "delete" ? "Delete" : "Submit"}
+        isbtnCancel
+        isbtnSubmit
+        loading={loading}
+      >
+        {popupOpen.type === "delete" ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className="w-28 h-28" />
+            <p className="text-gray-700 text-sm font-medium">
+              Are you sure you want to delete this category?
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-col items-center mb-4">
+              <label
+                htmlFor="category-image"
+                className={`${inputBaseClasses} w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden`}
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Category Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-500">Upload Image</span>
+                )}
+                <input
+                  type="file"
+                  id="category-image"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </label>
+              {errors.image && (
+                <p className="text-red-500 text-sm text-center mt-1">
+                  {errors.image}
+                </p>
+              )}
+            </div>
+
+            <InputField
+              id="name"
+              name="name"
+              placeholder="Category name"
+              value={form.name}
+              onChange={handleChange}
+              error={errors.name}
+            />
+            {/* {errors.name && (
+              <p className="text-red-500 text-sm text-left mt-1">{errors.name}</p>
+            )} */}
+          </div>
+        )}
+      </Popup>
     </div>
   );
 }

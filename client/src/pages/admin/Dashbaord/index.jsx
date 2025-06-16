@@ -2,24 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useFilters } from "../../../context/FilterContext";
 import api from "../../../constants/api";
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   CartesianGrid,
-//   ResponsiveContainer
-// } from "recharts";
+import CommonTable from "../../../common/CommonTable";
+import { useColorClasses } from "../../../theme/useColorClasses";
+
+
+const columns = [
+  { key: "order_id", label: "Order Id" },
+  { key: "user", label: "User" },
+  { key: "device", label: "Device" },
+  { key: "status", label: "Status" },
+  { key: "date", label: "Date", render: (order) => { new Date(order.created_at).toLocaleDateString() } },
+];
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { filters } = useFilters();
-
   const [users, setUsers] = useState([]);
   const [device, setDevice] = useState([]);
   const [brands, setBrand] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const COLOR_CLASSES = useColorClasses();
+  
 
   useEffect(() => {
     fetchSummary();
@@ -56,7 +59,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className={`md:p-6 sm:px-0  min-h-screen  ${COLOR_CLASSES.bgWhite}`}>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       {/* Summary Cards */}
@@ -87,42 +90,15 @@ export default function Dashboard() {
       </div> */}
 
       {/* Recent Orders */}
-      <div className="bg-white shadow rounded-lg p-4">
-        <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="py-2 px-4">Order ID</th>
-              <th className="py-2 px-4">User</th>
-              <th className="py-2 px-4">Device</th>
-              <th className="py-2 px-4">Status</th>
-              <th className="py-2 px-4">Date</th>
-            </tr>
-          </thead>
-          {recentOrders.length > 0 ? (
-          <tbody>
-            {recentOrders.map((order) => (
-              <tr key={order.id} className="border-t">
-                <td className="py-2 px-4">{order.id}</td>
-                <td className="py-2 px-4">{order.user_id}</td>
-                <td className="py-2 px-4">{order.device_id}</td>
-                <td className="py-2 px-4">{order.status}</td>
-                <td className="py-2 px-4">
-                  {new Date(order.created_at).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        ) : (
-          <tbody>
-            <tr>
-              <td colSpan="5">
-                <p className="text-center py-6 text-gray-500 mt-2">No order found!</p>
-              </td>
-            </tr>
-          </tbody>
-        )}
-        </table>
+      <div className="min-h-screen mt-2">
+        <CommonTable
+          columns={columns}
+          data={recentOrders}
+          searchable={false}
+          isCreate={false}
+          pageSize={10}
+          title={"Recent Orders"}
+        />
       </div>
     </div>
   );

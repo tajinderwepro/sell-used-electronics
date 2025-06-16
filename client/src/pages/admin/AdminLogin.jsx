@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom"; 
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 import Button from "../../components/ui/Button";
@@ -15,11 +15,12 @@ import {
 import { useColorClasses } from "../../theme/useColorClasses";
 import { toast } from "react-toastify";
 
+
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "", role: "admin" });
   const [error, setError] = useState("");
-  const navigate = useNavigate(); 
-  const { login,userRole ,isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+  const { login, userRole, isAuthenticated } = useAuth();
   const COLOR_CLASSES = useColorClasses();
 
   const handleChange = (e) => {
@@ -32,27 +33,37 @@ export default function AdminLogin() {
       await login(form.email, form.password, form.role);
       setError("");
       navigate("/admin/dashboard");
-      toast.success("logged in successfully")
+      toast.success("Logged in successfully");
     } catch (error) {
       setError("Login failed. Please check your credentials.");
-      toast.error("Login failed. Please check your credentials.")
+      toast.error("Login failed. Please check your credentials.");
     }
   };
-  if (userRole=="admin" && isAuthenticated) {
+
+  if (userRole === "admin" && isAuthenticated) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-6 ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}`}
+      className={` 
+      min-h-[70vh] md:min-h-[80vh]
+      flex items-center justify-center
+      md:px-4 sm:px-0
+      ${COLOR_CLASSES.bgWhite} ${COLOR_CLASSES.bgGradient} ${FONT_FAMILIES.primary}
+    `}
     >
       <form
         onSubmit={handleLogin}
-        className={`${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md p-10 rounded-xl shadow-2xl w-full max-w-md`}
+        className={`
+          ${COLOR_CLASSES.bgWhite} bg-opacity-90 backdrop-blur-md 
+          p-6 sm:p-10 rounded-xl shadow-2xl 
+          w-full max-w-md
+        `}
         autoComplete="off"
       >
         <Heading
-          className={`mb-6 ${FONT_SIZES["3xl"]} ${FONT_WEIGHTS.extrabold} ${COLOR_CLASSES.primaryDark} ${FONT_FAMILIES.heading}`}
+          className={`mb-6 text-center ${FONT_SIZES["3xl"]} ${FONT_WEIGHTS.extrabold} ${COLOR_CLASSES.primaryDark} ${FONT_FAMILIES.heading}`}
         >
           Admin Login
         </Heading>
@@ -79,10 +90,7 @@ export default function AdminLogin() {
 
         <ErrorMessage message={error} />
 
-        <Button
-          type="submit"
-          className="w-full"
-        >
+        <Button type="submit" className="w-full mt-4">
           Sign In
         </Button>
 

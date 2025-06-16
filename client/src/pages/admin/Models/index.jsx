@@ -13,14 +13,16 @@ import Cards from "../../../common/Cards";
 import { toast } from "react-toastify";
 import LoadingIndicator from "../../../common/LoadingIndicator";
 import { useColorClasses } from "../../../theme/useColorClasses";
+import { categorySchema } from "../../../common/Schema";
 
 export default function Models() {
   const { categoryId, brand, brandId } = useParams();
   const navigate = useNavigate();
 
+
   const [models, setModels] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [popupOpen, setPopupOpen] = useState({open: false, type: "", id: ""});
+  const [popupOpen, setPopupOpen] = useState({ open: false, type: "", id: "" });
   const [form, setForm] = useState({ name: "", image: null });
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,11 @@ export default function Models() {
   const [limit] = useState(10); // constant limit
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const COLOR_CLASSES = useColorClasses();
 
+  const inputBaseClasses = `
+    ${errors.image ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' : COLOR_CLASSES.borderPrimary + ' focus:ring-' + COLOR_CLASSES.primaryBg + ' focus:border-' + COLOR_CLASSES.primary}
+  `;
   const breadcrumbItems = [
     { label: 'Device', path: '/admin/categories' },
     { label: 'Brands', path: `/admin/categories/${categoryId}/brand` },
@@ -82,7 +88,7 @@ export default function Models() {
   };
 
   const handleClose = () => {
-    setPopupOpen({open: false, type: "", id: ""});
+    setPopupOpen({ open: false, type: "", id: "" });
     setErrors({});
   };
 
@@ -104,12 +110,19 @@ export default function Models() {
     setErrors((prev) => ({ ...prev, image: null }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Model name is required";
-    if (!form.image) newErrors.image = "Image is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const validateForm = async () => {
+    try {
+      await categorySchema.validate(form, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (validationError) {
+      const newErrors = {}
+      validationError.inner.forEach((err) => {
+        newErrors[err.path] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
+    }
   };
 
   const handleSubmit = async () => {
@@ -132,8 +145,8 @@ export default function Models() {
       return;
     }
 
-    if (!validateForm()) return;
-    
+    if (!(await validateForm())) return;
+
     const formData = new FormData();
     formData.append("name", form.name);
     if (form.image instanceof File) {
@@ -150,7 +163,7 @@ export default function Models() {
       } else {
         res = await api.admin.createModel(brandId, formData);
       }
-      
+
       if (res.success) {
         toast.success(res.message);
         fetchModels();
@@ -171,11 +184,11 @@ export default function Models() {
 
   return (
     <div className="min-h-screen">
-      <LoadingIndicator isLoading={loading}/>
+      <LoadingIndicator isLoading={loading} />
       <div className="flex justify-between items-center mb-6">
-        <CustomBreadcrumbs 
-          items={breadcrumbItems} 
-          separator={<ChevronRight style={{ fontSize: "12px" }} />} 
+        <CustomBreadcrumbs
+          items={breadcrumbItems}
+          separator={<ChevronRight style={{ fontSize: "12px" }} />}
         />
         <div className="flex gap-3">
           <SearchInput
@@ -195,9 +208,9 @@ export default function Models() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mx-auto">
         {filteredModels.map((model) => (
-          <Cards 
-            key={model.id} 
-            brand={model} 
+          <Cards
+            key={model.id}
+            brand={model}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />
@@ -215,7 +228,7 @@ export default function Models() {
           </Button>
         </div>
       )}
-      {(models.length == 0  && !loading) &&  <div className="flex justify-center items-center h-[50vh]">No Models Available!</div>}
+      {(models.length == 0 && !loading) && <div className="flex justify-center items-center h-[50vh]">No Models Available!</div>}
 
       <Popup
         open={popupOpen.open}
@@ -225,8 +238,8 @@ export default function Models() {
           popupOpen.type === "edit"
             ? "Edit Model"
             : popupOpen.type === "delete"
-            ? "Delete Model"
-            : "Create Model"
+              ? "Delete Model"
+              : "Create Model"
         }
         btnCancel="Cancel"
         btnSubmit={
@@ -247,13 +260,13 @@ export default function Models() {
           <div className="space-y-4">
             <div className="flex flex-col items-center mb-4">
               <label
-                htmlFor="model-image"
-                className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden"
+                htmlFor="category-image"
+                className={`${inputBaseClasses} w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden`}
               >
                 {preview ? (
                   <img
                     src={preview}
-                    alt="Model Preview"
+                    alt="Category Preview"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -261,7 +274,7 @@ export default function Models() {
                 )}
                 <input
                   type="file"
-                  id="model-image"
+                  id="category-image"
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageChange}
@@ -277,15 +290,14 @@ export default function Models() {
             <InputField
               id="name"
               name="name"
-              placeholder="Model name"
+              placeholder="Category name"
               value={form.name}
               onChange={handleChange}
+              error={errors.name}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm text-left" style={{ marginTop: "5px" }}>
-                {errors.name}
-              </p>
-            )}
+            {/* {errors.name && (
+                        <p className="text-red-500 text-sm text-left mt-1">{errors.name}</p>
+                      )} */}
           </div>
         )}
       </Popup>
