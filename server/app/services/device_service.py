@@ -10,6 +10,7 @@ from sqlalchemy import cast, Integer
 from sqlalchemy.orm import joinedload
 from typing import Optional, List,Generic, TypeVar
 from app.utils.db_helpers import paginate_query
+
 class DeviceService:
 
     @staticmethod
@@ -182,6 +183,21 @@ class DeviceService:
             "message": "Updated successfully",
         }
 
+    @staticmethod
+    async def get_device(device_id: int,db: AsyncSession):
+        result = await db.execute(
+            select(Device).where(Device.user_id == device_id)
+        )
+        device = result.scalars().all()
 
+        if not device:
+            return None
+
+        await db.commit()
+        return {
+        "success": True,
+        "message": "Device fetched successfully",
+        "data": device,
+        }
     
     

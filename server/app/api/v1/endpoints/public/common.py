@@ -48,4 +48,6 @@ async def estimate_price(request: Request):
     return {"estimated_price": estimated_price}
 
 
-
+@router.get("/devices/{id}",dependencies=[Depends(require_roles(["admin","user"]))])
+async def getDevice(id: int, db: AsyncSession = Depends(get_db)):
+    return await DeviceService.get_device(id , db)
