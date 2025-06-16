@@ -6,7 +6,7 @@ export const Chip = (status) => {
     pending:  { label: "Pending", className: "bg-gray-300 text-gray-800" },
     approved: { label: "Approved", className: "bg-green-300 text-green-800" },
     excellent: { label: "Excellent", className: "bg-green-300 text-green-800" },
-    good:      { label: "Good",      className: "bg-yellow-300 text-yellow-800" },
+    good:      { label: "Good",      className: "bg-yellow-200 text-yellow-800" },
     fair:      { label: "Fair",      className: "bg-orange-300 text-orange-800" },
     bad:       { label: "Bad",       className: "bg-red-400 text-red-800" },
   };
