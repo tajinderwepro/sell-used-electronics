@@ -21,6 +21,22 @@ async def get_list(
             current_page=filters.current_page,
             limit=filters.limit
     )
+
+@router.post("/all-list", response_model=DeviceListResponse)
+async def get_list(
+    filters: DeviceListRequest = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+        return await DeviceService.get_all_devices(
+            db=db,
+            search=filters.search,
+            sort_by=filters.sort_by,
+            order_by=filters.order_by,
+            current_page=filters.current_page,
+            limit=filters.limit,
+            get_all=True
+    )
+
 @router.post("/submit/{id}", response_model=DeviceListResponse)
 async def create_device(id: int, device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
     return await DeviceService.create_device(id, device_in, db)

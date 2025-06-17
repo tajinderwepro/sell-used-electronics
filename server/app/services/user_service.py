@@ -25,7 +25,8 @@ class UserService:
         sort_by: str = "name",
         order_by: str = "asc",
         current_page: int = 1,
-        limit: int = 10
+        limit: int = 10,
+        get_all: bool = False
     ):
         return await paginate_query(
             db=db,
@@ -36,7 +37,7 @@ class UserService:
             sort_by=sort_by,
             order_by=order_by,
             current_page=current_page,
-            limit=limit
+            limit=None if get_all else limit,  
         )
 
 

@@ -32,8 +32,24 @@ async def list_users(
         sort_by=filters.sort_by,
         order_by=filters.order_by,
         current_page=filters.current_page,
-        limit=filters.limit
+        limit=filters.limit,
     )
+
+@router.post("/all-list", response_model=UserListResponse)
+async def list_users(
+    filters: UserListRequest = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+    return await UserService.get_all_users(
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
+        get_all=True
+    )
+
 @router.get("/{user_id}")
 async def get_user(user_id: int,db: AsyncSession = Depends(get_db)):
     user = await UserService.get_user_by_id(user_id)

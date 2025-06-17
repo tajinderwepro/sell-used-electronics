@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import SelectField from "../../../components/ui/SelectField";
-import { X } from "lucide-react";
+import { CloudUpload, X } from "lucide-react";
 import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function StepCondition({ condition, setCondition }) {
   const fileInputRef = useRef(null);
-
+  const COLOR_CLASSES = useColorClasses()
   const handleChange = (e) => {
     setCondition({
       ...condition,
@@ -50,13 +50,46 @@ export default function StepCondition({ condition, setCondition }) {
       {/* Upload Images Section */}
       <div className="mt-6">
         <label
-          htmlFor="condition-image"
-          className="w-24 h-24 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center cursor-pointer overflow-hidden mx-auto"
-          onClick={() => fileInputRef.current.click()}
+          htmlFor="image"
+          className={`block mb-2 ${COLOR_CLASSES.primary} font-semibold text-left`}
         >
-          <span className="text-sm text-gray-500">Upload Images</span>
+          Images
         </label>
+
+        <div className={`mt-4 flex gap-4 flex-wrap`}>
+          {condition.images.map((img, idx) => (
+            <div
+              key={idx}
+              className="relative group w-28 h-27 rounded-lg border border-gray-200 overflow-hidden"
+            >
+              <img
+                src={URL.createObjectURL(img)}
+                alt={`upload-${idx}`}
+                className="w-full h-full object-contain"
+              />
+              <button
+                onClick={() => handleRemoveImage(idx)}
+                className="absolute top-1 right-1 p-1 rounded-full bg-white shadow group-hover:opacity-100 opacity-0 transition-opacity"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+          ))}
+
+          {/* Upload Box */}
+          <div
+            className={`w-28 h-27 border-2 border-dashed bg-gray-50 flex flex-col items-center justify-center cursor-pointer transition hover:bg-gray-100 shadow-sm rounded-lg ${COLOR_CLASSES.borderPrimary}`}
+            onClick={() => fileInputRef.current.click()}
+          >
+            <CloudUpload className="h-6 w-6 text-gray-500 mb-1" />
+            <span className={`text-xs text-gray-600 font-medium ${COLOR_CLASSES.primary}`}>
+              {condition.images.length > 0 ? 'Add More' : 'Add Image'}
+            </span>
+          </div>
+        </div>
+
         <input
+          id="condition-image"
           type="file"
           accept="image/*"
           multiple
@@ -64,28 +97,6 @@ export default function StepCondition({ condition, setCondition }) {
           onChange={handleImageChange}
           className="hidden"
         />
-
-        {/* Image Previews */}
-        <div className="mt-6 grid grid-cols-3 gap-4 max-h-[200px] overflow-y-auto">
-          {condition.images.map((img, idx) => (
-            <div
-              key={idx}
-              className="relative group w-full h-full rounded-lg border border-gray-200 overflow-hidden"
-            >
-              <img
-                src={URL.createObjectURL(img)}
-                alt={`upload-${idx}`}
-                className="w-full h-full object-cover"
-              />
-              <button
-                onClick={() => handleRemoveImage(idx)}
-                className="absolute top-0 right-0 m-1 p-1 rounded-full bg-white shadow group-hover:opacity-100 opacity-0 transition-opacity"
-              >
-                <X className="w-4 h-4 text-gray-500" />
-              </button>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

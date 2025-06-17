@@ -14,9 +14,9 @@ async def paginate_query(
     sort_by: str = "id",
     order_by: str = "asc",
     current_page: int = 1,
-    limit: int = 10,
+    limit: Optional[int] = 10,  # <-- Make limit Optional
     options: Optional[List[Any]] = None,
-    user_id: Optional[int] = None  # ✅ Add this parameter
+    user_id: Optional[int] = None
 ) -> Dict[str, Any]:
     query = select(model)
 
@@ -31,11 +31,11 @@ async def paginate_query(
             or_(*[func.lower(field).like(term) for field in search_fields])
         )
 
-    # ✅ Apply user_id filter
+    # Filter by user_id if applicable
     if user_id is not None and hasattr(model, "user_id"):
         query = query.where(getattr(model, "user_id") == user_id)
 
-    # Total count
+    # Count total results
     count_query = select(func.count()).select_from(query.subquery())
     total_result = await db.execute(count_query)
     total = total_result.scalar()
@@ -46,8 +46,10 @@ async def paginate_query(
         sort_column = getattr(model, "id")
     query = query.order_by(desc(sort_column) if order_by == "desc" else asc(sort_column))
 
-    # Pagination
-    query = query.offset((current_page - 1) * limit).limit(limit)
+    # Apply pagination only if limit is not None
+    if limit is not None:
+        query = query.offset((current_page - 1) * limit).limit(limit)
+
     result = await db.execute(query)
     records = result.scalars().all()
 

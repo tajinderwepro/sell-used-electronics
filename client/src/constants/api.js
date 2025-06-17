@@ -41,6 +41,7 @@ const api = {
   admin: {
     login: (data) => axiosWrapper(axiosInstance.post('/auth/login', data)),
     getUsers: (data) => axiosWrapper(axiosInstance.post('/users/list',data)),
+    getAllUsers: (data) => axiosWrapper(axiosInstance.post('/users/all-list',data)),
     createUser: (data) => axiosWrapper(axiosInstance.post('/auth/register', data)),
     getUser: (id) => axiosWrapper(axiosInstance.get(`/users/${id}`)),
     deleteUser: (id) => axiosWrapper(axiosInstance.delete(`/users/${id}`)),
@@ -108,6 +109,7 @@ const api = {
 
     deleteBrand: (id) => axiosWrapper(axiosInstance.delete(`admin/brand/delete-brand/${id}`)),
     getBrand: (id, limit = 10, offset = 0) => axiosWrapper(axiosInstance.post(`admin/brand/list/${id}`, { limit, offset })),
+    getAllBrand: (id, limit = 0, offset = 0) => axiosWrapper(axiosInstance.post(`admin/brand/all-list/${id}`, { limit, offset })),
 
     getModel: (id, limit = 10, offset = 0) =>
       axiosWrapper(
@@ -141,6 +143,7 @@ const api = {
 
 
     getDevices: (data) => axiosWrapper(axiosInstance.post('admin/devices/list',data)),
+    getAllDevices: (data) => axiosWrapper(axiosInstance.post('admin/devices/all-list',data)),
     getDevice: (id) => axiosWrapper(axiosInstance.get(`admin/devices/${id}`)),
     updateDevice: (id,data) => axiosWrapper(axiosInstance.put(`admin/devices/${id}`,data)),
     deleteDevice: (device_id) => axiosWrapper(axiosInstance.delete(`admin/devices/${device_id}`)),

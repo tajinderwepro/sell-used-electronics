@@ -55,22 +55,34 @@ class BrandService:
             raise HTTPException(status_code=500, detail=f"Error creating brand: {str(e)}")
 
     @staticmethod
-    async def get_all_brands(category_id: int, limit: int, offset: int, db: AsyncSession):
-        result = await db.execute(
-            select(Brand)
-            .where(Brand.category_id == category_id)
-            .options(
-                selectinload(Brand.category),
-                selectinload(Brand.models),
-                selectinload(Brand.media),
+    async def get_all_brands(category_id: int, limit: int, offset: int,flag, db: AsyncSession):
+        if flag:
+            result = await db.execute(
+                select(Brand)
+                .where(Brand.category_id == category_id)
+                .options(
+                    selectinload(Brand.category),
+                    selectinload(Brand.models),
+                    selectinload(Brand.media),
+                )
+                .limit(limit)
+                .order_by(Brand.id)
+                .offset(offset)
             )
-            .limit(limit)
-            .order_by(Brand.id)
-            .offset(offset)
-        )
+        else:
+            result = await db.execute(
+                select(Brand)
+                .where(Brand.category_id == category_id)
+                .options(
+                    selectinload(Brand.category),
+                    selectinload(Brand.models),
+                    selectinload(Brand.media),
+                )
+            )
+
         brands = result.scalars().all()
 
-        return ListResponse[BrandOut](                                                                                                                         
+        return ListResponse[BrandOut](
             success=True,
             status_code=200,
             data=[BrandOut.from_orm(brand) for brand in brands]

@@ -37,6 +37,21 @@ async def get_brands(
         category_id=category_id,
         limit=request.limit,
         offset=request.offset,
+        flag=True,
+        db=db
+    )
+
+@router.post("/all-list/{category_id}", response_model=ListResponse[BrandOut])
+async def get_brands(
+    category_id: int,
+    request: ModelListRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    return await BrandService.get_all_brands(
+        category_id=category_id,
+        limit=request.limit,
+        offset=request.offset,
+        flag=False,
         db=db
     )
 

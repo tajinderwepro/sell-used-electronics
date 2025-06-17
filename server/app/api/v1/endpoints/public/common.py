@@ -73,6 +73,8 @@ async def get_categories(
         db=db
     )
 
+
+
 @router.post("/estimate-price")
 async def estimate_price(request: Request):
     # CLIENT_ID = "YOUR_CLIENT_ID"

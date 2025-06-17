@@ -97,7 +97,7 @@ const CommonTable = ({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-6 py-5 text-left text-xs font-semibold uppercase tracking-wider cursor-pointer ${COLOR_CLASSES.textSecondary}`}
+                  className={`px-6 py-5 text-left text-xs font-semibold uppercase capitalize tracking-wider cursor-pointer ${COLOR_CLASSES.textSecondary}`}
                   onClick={() => col.sortable && handleSort(col.key)}
                 >
                   <div className="flex items-center gap-1">

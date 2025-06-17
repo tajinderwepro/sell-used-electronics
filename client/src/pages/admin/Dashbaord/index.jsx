@@ -31,13 +31,13 @@ export default function Dashboard() {
 
   const fetchSummary = async () => {
     try {
-      const usersRes = await api.admin.getUsers(filters);
+      const usersRes = await api.admin.getAllUsers(filters);
       setUsers(usersRes.data);
 
-      const devicesRes = await api.admin.getDevices(filters);
+      const devicesRes = await api.admin.getAllDevices(filters);
       setDevice(devicesRes.data);
 
-      const brandsRes = await api.admin.getBrand(user.id, 10, 0);
+      const brandsRes = await api.admin.getAllBrand(user.id, 0, 0);
       setBrand(brandsRes.data);
     } catch (error) {
       console.error("Error fetching summary data:", error);
