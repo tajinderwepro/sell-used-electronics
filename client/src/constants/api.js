@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && [403].includes(error.response.status)) {
+    if (error.response && [403, 401].includes(error.response.status)) {
       console.warn('Unauthorized or expired token. Logging out...');
       localStorage.removeItem('token');
       localStorage.removeItem('user');

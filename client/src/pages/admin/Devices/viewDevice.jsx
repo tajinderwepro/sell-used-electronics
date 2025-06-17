@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../../constants/api";
+import { Chip } from "../../../components/ui/Chip";
+import LoadingIndicator from "../../../common/LoadingIndicator";
+import { useColorClasses } from "../../../theme/useColorClasses";
+import Button from "../../../components/ui/Button";
+import { CircleCheckBig, CircleHelp } from "lucide-react";
+import SelectField from "../../../components/ui/SelectField";
+import InputField from "../../../components/ui/InputField";
+import Popup from "../../../common/Popup";
+import { toast } from "react-toastify";
+import { useAuth } from "../../../context/AuthContext";
 
 const ViewDevice = () => {
   const [loading, setLoading] = useState(false);
   const [device, setDevice] = useState(null);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState([]);
   const { deviceId } = useParams();
+  const COLOR_CLASSES = useColorClasses();
+  const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
+  const {user}=useAuth();
 
   const getDevice = async () => {
     try {
@@ -25,13 +38,38 @@ const ViewDevice = () => {
     getDevice();
   }, []);
 
-  if (loading || !device) return <p className="text-center mt-10">Loading...</p>;
+  const handleApprovedPopup = (id) => {
+    setPopupState({ open: true, type: "approved", id });
+  };
+
+  const handleClose = () => {
+    setPopupState({ open: false, type: "form", isEdit: false, id: null });
+  };
+  const handleApproved =async( )=>{
+   
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("user_id", user.id);
+      formData.append("status", "approved");
+      const res = await api.admin.updateDeviceStatus(device.id,formData);
+      toast.success(res.message);
+      await getDevice();
+      handleClose()
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+    
+  }
+  if (loading || !device) return <LoadingIndicator isLoading={loading} />;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="flex flex-col md:flex-row gap-10 bg-white p-6 rounded-2xl shadow-lg">
+    <div className="max-w-8xl mx-auto ">
+      <div className="flex flex-col md:flex-row gap-10 bg-white p-8 rounded-2xl shadow-md min-h-screen">
         {/* Image Section */}
-        <div className="flex gap-4">
+        <div className="flex flex-row gap-4 ">
           {/* Thumbnails */}
           <div className="flex md:flex-col gap-2 overflow-auto">
             {device.media.map((img) => (
@@ -48,29 +86,25 @@ const ViewDevice = () => {
           </div>
 
           {/* Main Image */}
-          <div className="flex justify-center items-center bg-gray-100 rounded-lg w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
+          <div className={`flex justify-center items-center border ${COLOR_CLASSES.borderGray200} rounded-lg w-[300px] h-[300px] md:w-[400px] md:h-[400px]`}>
             <img
               src={selectedImage}
               alt="Main Device"
-              className="max-w-full max-h-full object-contain"
+              className="max-w-full max-h-full object-contain transform transition-transform duration-200 ease-in-out hover:scale-110"
             />
           </div>
         </div>
 
         {/* Info Section */}
         <div className="flex-1">
-          <h2 className="text-2xl font-semibold mb-3">
+          <h2 className={`text-2xl font-semibold mb-3 ${COLOR_CLASSES.secondary}`}>
             {device.brand} {device.model}
           </h2>
 
           {/* Tags */}
           <div className="flex gap-2 mb-4">
-            <span className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800 capitalize">
-              {device.condition}
-            </span>
-            <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
-              {device.status}
-            </span>
+            <Chip status={device.condition} />
+            <Chip status={device.status} />
           </div>
 
           {/* Pricing */}
@@ -80,7 +114,7 @@ const ViewDevice = () => {
               <div className="text-green-600 font-medium">₹{device.base_price}</div>
             </div>
             <div>
-              <div className="text-gray-500">eBay Avg Price</div>
+              <div className="text-gray-500">Calculated Price</div>
               <div className="text-gray-800 font-medium">₹{device.ebay_avg_price}</div>
             </div>
           </div>
@@ -103,9 +137,46 @@ const ViewDevice = () => {
               <div className="text-gray-500">Submitted By</div>
               {device.user?.name} ({device.user?.email})
             </div>
+                      {/* Approve Button */}
+          <div className="mt-4">
+            <Button
+            icon={<CircleCheckBig  color={`${device.status === "approved"?"green":"white"}`} />}
+              className="px-3 py-2"
+              onClick={handleApprovedPopup}
+            >
+              Approve
+            </Button>
+          </div>
           </div>
         </div>
       </div>
+      <Popup
+        open={popupState.open}
+        onClose={handleClose}
+        onSubmit={handleApproved}
+        title={
+          popupState.type === "delete"
+            ? "Delete Confirmation"
+            : popupState.isEdit
+              ? "Edit Device"
+              :popupState.type === "approved"?"Aproved Device": "Create Device"
+        }
+        btnCancel="Cancel"
+        btnSubmit="Submit"
+        btnDelete="Delete"
+        isbtnCancel={true}
+        isbtnSubmit={popupState.type !== "delete"}
+        isbtnDelete={popupState.type === "delete"}
+        loading={loading}
+      >
+          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+            <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
+            <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
+             {` Are you sure you want to ${popupState.type === "approved" ?"approved":"delete"} this device?`}
+            </p>
+          </div>
+      
+      </Popup>
     </div>
   );
 };
