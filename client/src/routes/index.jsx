@@ -28,8 +28,7 @@ import ViewQuote from "../pages/admin/Quotes/ViewQuote";
 function AllRoutes() {
   const auth = useAuth();
   const {user, isAuthenticated, loading } = auth;
-
-  if (loading ) return <div className="text-center p-10"><LoadingIndicator isLoading={loading} /></div>;
+  if (loading) return <div className="text-center p-10"><LoadingIndicator isLoading={loading} /></div>;
 
     const commonRoutes = () => {
         return (
@@ -46,7 +45,7 @@ function AllRoutes() {
                         user && user.role == 'user' ? <Navigate to="/dashboard" /> : user && user.role == 'admin' ? <Navigate to="/admin/dashboard" /> : <Outlet />
                     }
                 >
-                    <Route path="/login" element={<GeneralLayout><Login /></GeneralLayout>} />
+                <Route path="/login" element={<GeneralLayout><Login /></GeneralLayout>} />
                 </Route>
                   <Route path="/" element={<Home />} />
                   <Route path="/register" element={<GeneralLayout><Register /></GeneralLayout>} />
@@ -58,8 +57,6 @@ function AllRoutes() {
     <Router>
       <Routes>
         {/* Public Routes */}
-      
-
         {commonRoutes()}
         {/* Admin Protected Routes */}
         <Route element={<AdminRoute user={user} isAuthenticated={isAuthenticated} />}>

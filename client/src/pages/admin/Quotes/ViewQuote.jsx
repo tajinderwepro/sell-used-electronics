@@ -5,10 +5,11 @@ import { Chip } from "../../../components/ui/Chip";
 import LoadingIndicator from "../../../common/LoadingIndicator";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import Button from "../../../components/ui/Button";
-import { CircleCheckBig, CircleHelp } from "lucide-react";
+import { ChevronRight, CircleCheckBig, CircleHelp } from "lucide-react";
 import Popup from "../../../common/Popup";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
+import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 
 const ViewQuote = () => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,13 @@ const ViewQuote = () => {
   const COLOR_CLASSES = useColorClasses();
   const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
   const {user}=useAuth();
+
+  console.log(device,"devicedevice")
+
+  const breadcrumbItems = [
+    { label: 'Quotes', path: '/admin/quotes' },
+    { label: device?.brand_name, path: `/admin/quotes/${quoteId}` },
+  ];
 
   const getDevice = async () => {
     try {
@@ -65,7 +73,8 @@ const ViewQuote = () => {
 
   return (
     <div className="max-w-8xl mx-auto ">
-      <div className="flex flex-col md:flex-row gap-10 bg-white p-8 rounded-2xl shadow-md min-h-screen">
+      <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{ fontSize: "12px" }} />} />
+      <div className={`flex flex-col md:flex-row gap-10 ${COLOR_CLASSES.bgWhite} p-8 rounded-2xl shadow-md min-h-screen`}>
         {/* Image Section */}
         <div className="flex flex-row gap-4 ">
           {/* Thumbnails */}
@@ -156,7 +165,7 @@ const ViewQuote = () => {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Device"
-              :popupState.type === "approved"?"Aproved Device": "Create Device"
+              :popupState.type === "approved"?"Approved Device": "Create Device"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"

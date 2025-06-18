@@ -176,7 +176,7 @@ function ShipmentAddress() {
 
       {editingIndex === addresses.length && (
         <div
-          className={`border rounded-xl p-6 shadow-sm ${COLOR_CLASSES.borderGray200} bg-white`}
+          className={`border rounded-xl p-6 shadow-sm ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.bgWhite}`}
         >
           <h4 className={`text-lg font-medium mb-4 ${COLOR_CLASSES.textPrimary}`}>
             Add New Address

@@ -289,6 +289,7 @@ export default function Quotes() {
         onClick={handleOpen}
         totalItems={totalItems}
         onFetch={fetchQuotes} 
+        isCreate={false}
       />
       <Popup
         open={popupState.open}
@@ -310,7 +311,7 @@ export default function Quotes() {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Quote"
-              :popupState.type === "approved"?"Aproved Quote": "Create Quote"
+              :popupState.type === "approved"?"Approved Quote": "Create Quote"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"

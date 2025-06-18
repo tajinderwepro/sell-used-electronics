@@ -5,8 +5,6 @@ import Popup from "../../../common/Popup";
 import InputField from "../../../components/ui/InputField";
 import SelectField from "../../../components/ui/SelectField";
 import api from "../../../constants/api";
-import CustomSelectField from "../../../components/ui/CustomSelectField";
-import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import { toast } from "react-toastify";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { validateFormData } from "../../../utils/validateUtils";
@@ -312,7 +310,7 @@ export default function Devices() {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Device"
-              :popupState.type === "approved"?"Aproved Device": "Create Device"
+              :popupState.type === "approved"?"approved Device": "Create Device"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"

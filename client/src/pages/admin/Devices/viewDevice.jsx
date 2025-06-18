@@ -5,12 +5,13 @@ import { Chip } from "../../../components/ui/Chip";
 import LoadingIndicator from "../../../common/LoadingIndicator";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import Button from "../../../components/ui/Button";
-import { CircleCheckBig, CircleHelp } from "lucide-react";
+import { ChevronRight, CircleCheckBig, CircleHelp } from "lucide-react";
 import SelectField from "../../../components/ui/SelectField";
 import InputField from "../../../components/ui/InputField";
 import Popup from "../../../common/Popup";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
+import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 
 const ViewDevice = () => {
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,12 @@ const ViewDevice = () => {
   const COLOR_CLASSES = useColorClasses();
   const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
   const {user}=useAuth();
+  console.log(device,"devicedevice")
 
+  const breadcrumbItems = [
+    { label: 'Devices', path: '/admin/devices' },
+    { label: device?.model, path: `/admin/devices/${deviceId}` },
+  ];
   const getDevice = async () => {
     try {
       setLoading(true);
@@ -67,9 +73,13 @@ const ViewDevice = () => {
 
   return (
     <div className="max-w-8xl mx-auto ">
-      <div className="flex flex-col md:flex-row gap-10 bg-white p-8 rounded-2xl shadow-md min-h-screen">
+      <CustomBreadcrumbs
+          items={breadcrumbItems}
+          separator={<ChevronRight style={{ fontSize: "12px" }} />}
+        />
+      <div className={`flex flex-col md:flex-row gap-10 ${COLOR_CLASSES.bgWhite} p-8 rounded-2xl shadow-md min-h-screen`}>
         {/* Image Section */}
-        <div className="flex flex-row gap-4 ">
+        <div className="flex flex-row gap-4 flex-col ">
           {/* Thumbnails */}
           <div className="flex md:flex-col gap-2 overflow-auto">
             {device.media.map((img) => (
@@ -86,12 +96,22 @@ const ViewDevice = () => {
           </div>
 
           {/* Main Image */}
-          <div className={`flex justify-center items-center border ${COLOR_CLASSES.borderGray200} rounded-lg w-[300px] h-[300px] md:w-[400px] md:h-[400px]`}>
+          <div className={`flex flex-col justify-center items-center border ${COLOR_CLASSES.borderGray200} rounded-lg w-[300px] h-[300px] md:w-[400px] md:h-[400px]`}>
             <img
               src={selectedImage}
               alt="Main Device"
               className="max-w-full max-h-full object-contain transform transition-transform duration-200 ease-in-out hover:scale-110"
             />
+          </div>
+           {/* Approve Button */}
+          <div className="mt-4">
+            <Button
+            icon={<CircleCheckBig  color={`${device.status === "approved"?"green":"white"}`} />}
+              className="px-3 py-2"
+              onClick={handleApprovedPopup}
+            >
+              Approve
+            </Button>
           </div>
         </div>
 
@@ -137,16 +157,6 @@ const ViewDevice = () => {
               <div className="text-gray-500">Submitted By</div>
               {device.user?.name} ({device.user?.email})
             </div>
-                      {/* Approve Button */}
-          <div className="mt-4">
-            <Button
-            icon={<CircleCheckBig  color={`${device.status === "approved"?"green":"white"}`} />}
-              className="px-3 py-2"
-              onClick={handleApprovedPopup}
-            >
-              Approve
-            </Button>
-          </div>
           </div>
         </div>
       </div>
@@ -159,7 +169,7 @@ const ViewDevice = () => {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Device"
-              :popupState.type === "approved"?"Aproved Device": "Create Device"
+              :popupState.type === "approved"?"approved Device": "Create Device"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"
