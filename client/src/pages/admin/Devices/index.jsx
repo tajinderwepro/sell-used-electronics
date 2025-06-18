@@ -281,6 +281,7 @@ export default function Devices() {
   return (
     <div className="min-h-screen mt-2">
       <CommonTable
+        isDownloadCSV={true}
         columns={columns}
         data={devices}
         loading={loading}
