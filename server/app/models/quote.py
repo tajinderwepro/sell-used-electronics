@@ -9,17 +9,17 @@ class Quote(Base,TimestampMixin):
     __tablename__ = 'quotes'
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
-    model_id = Column(Integer, ForeignKey('models.id'), nullable=False)
-    brand_id = Column(Integer, ForeignKey('brands.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
+    model_id = Column(Integer, ForeignKey('models.id'), nullable=True)
+    brand_id = Column(Integer, ForeignKey('brands.id'), nullable=True)
     
-    category_name = Column(String, nullable=False)
-    model_name = Column(String, nullable=False)
-    brand_name = Column(String, nullable=False)
-    condition = Column(String, nullable=False)
-    offered_price = Column(Float, nullable=False)
-    risk_score = Column(Float, nullable=False)
+    category_name = Column(String, nullable=True)
+    model_name = Column(String, nullable=True)
+    brand_name = Column(String, nullable=True)
+    condition = Column(String, nullable=True)
+    offered_price = Column(Float, nullable=True)
+    risk_score = Column(Float, nullable=True)
 
     # Relationships
     user = relationship("User", back_populates="quotes")
