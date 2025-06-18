@@ -7,8 +7,8 @@ from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy import select, asc, desc, or_, func
 from app.utils.db_helpers import paginate_query
-from app.models.device import Device
-from app.schemas.device import DeviceOut
+from app.models.quote import Quote
+from app.schemas.quote import QuoteOut
 from sqlalchemy.orm import selectinload
 from app.models.media import Media
 from app.utils.file_utils import save_upload_file
@@ -110,7 +110,7 @@ class UserService:
 
 
     @staticmethod
-    async def get_user_devices(
+    async def get_user_quotes(
         db: AsyncSession,
         search: Optional[str] = None,
         sort_by: str = "name",
@@ -121,20 +121,20 @@ class UserService:
     ):
         return await paginate_query(
             db=db,
-            model=Device,
-            schema=DeviceOut,
+            model=Quote,
+            schema=QuoteOut,
             search=search,
-            search_fields=[Device.category],
+            search_fields=[Quote.category],
             sort_by=sort_by,
             order_by=order_by,
             current_page=current_page,
             limit=limit,
             options=[
-                selectinload(Device.category_rel),
-                selectinload(Device.brand_rel),
-                selectinload(Device.model_rel),
-                selectinload(Device.user),
-                selectinload(Device.media)
+                selectinload(Quote.category),
+                selectinload(Quote.brand),
+                selectinload(Quote.model),
+                selectinload(Quote.user),
+                selectinload(Quote.media)
             ],
             user_id=user_id
         )

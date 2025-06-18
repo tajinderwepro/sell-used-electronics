@@ -21,6 +21,7 @@ class User(Base):
 
     devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
     quotes = relationship("Quote", back_populates="user", cascade="all, delete-orphan")
+    addresses = relationship("Address", back_populates="user")
     media = relationship(
         "Media",
         primaryjoin=and_(

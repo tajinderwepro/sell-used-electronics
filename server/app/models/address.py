@@ -14,4 +14,4 @@ class Address(Base,TimestampMixin):
     country = Column(String, nullable=False)
     status = Column(Boolean, nullable=False)
 
-    # user = relationship("User", back_populates="addresses")
+    user = relationship("User", back_populates="addresses")

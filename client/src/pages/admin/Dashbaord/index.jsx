@@ -36,7 +36,7 @@ export default function Dashboard() {
       const usersRes = await api.admin.getAllUsers(filters);
       setUsers(usersRes.data);
 
-      const devicesRes = await api.admin.getAllDevices(filters);
+      const devicesRes = await api.admin.quotes.getAllQuotes(filters);
       setDevice(devicesRes.data);
 
       const brandsRes = await api.admin.getAllBrand(user.id, 0, 0);
@@ -71,7 +71,7 @@ export default function Dashboard() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <SummaryCard title="Total Users" count={users?.length} color="bg-blue-500" />
-        <SummaryCard title="Total Devices" count={device?.length} color="bg-green-500" />
+        <SummaryCard title="Total Quotes" count={device?.length} color="bg-green-500" />
         <SummaryCard title="Total Brands" count={brands?.length} color="bg-purple-500" />
       </div>
 

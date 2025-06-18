@@ -23,7 +23,7 @@ const imageList =
   Array.isArray(device.media) && device.media.length > 0
     ? device.media.map((m) => m.path)
     : [device.image].filter(Boolean).length > 0
-    ? [device.image, device.model_image, device.category_image].filter(Boolean)
+    ? [device.image, device.model_image, device.category_name_image].filter(Boolean)
     : [placeholderImage, placeholderImage, placeholderImage];
   return (
     <div
@@ -49,7 +49,7 @@ const imageList =
       <div className="p-4 flex flex-col justify-between flex-1 text-sm">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <p className={`${COLOR_CLASSES.textPrimary}`}>{device.category}</p>
+            <p className={`${COLOR_CLASSES.textPrimary}`}>{device.category_name}</p>
           </div>
            <Chip status={device.status} />
         </div>
@@ -57,7 +57,7 @@ const imageList =
         <div className={`space-y-1.5 ${COLOR_CLASSES.primaryDark}`}>
           <p className={`${COLOR_CLASSES.textSecondary} flex items-center gap-1`}>
             <Smartphone className={`w-4 h-4`} />
-            <strong>Model</strong> <span className={`${COLOR_CLASSES.textPrimary}`}>{device.brand} {device.model}</span>
+            <strong>Model</strong> <span className={`${COLOR_CLASSES.textPrimary}`}>{device.brand_name} {device.model_name}</span>
           </p>
           <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
             <Tag className="w-4 h-4 text-gray-400" />
@@ -65,12 +65,12 @@ const imageList =
           </p>
           <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
             <BadgeDollarSign className="w-4 h-4 text-gray-400" />
-            <strong>Base</strong> {formatCurrency(device.base_price)}
+            <strong>Offered Price</strong> {formatCurrency(device.offered_price)}
           </p>
-          <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
+          {/* <p className={`flex items-center gap-1 ${COLOR_CLASSES.textSecondary}`}>
             <BadgeDollarSign className="w-4 h-4 text-gray-400" />
             <strong>Calculated Price</strong> {formatCurrency (device.ebay_avg_price)}
-          </p>
+          </p> */}
         </div>
 
         {device.status === 'approved' ? 

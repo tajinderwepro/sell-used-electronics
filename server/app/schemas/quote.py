@@ -54,7 +54,7 @@ class QuoteOut(BaseModel):
     condition: str
     offered_price: float
     user_id: Optional[int]
-    # status: Optional[str]
+    status: Optional[str]
     category_id: Optional[int]
     brand_id: Optional[int]
     model_id: Optional[int]
@@ -71,14 +71,14 @@ class QuoteUpdate(BaseModel):
     model: Optional[str]
     condition: Optional[str]
     offered_price: Optional[float]
-    # status: Optional[str]
+    status: Optional[str]
     user_id: Optional[int]
 
     class Config:
         orm_mode = True
 
 class QuoteStatusUpdate(BaseModel):
-    # status: str
+    status: str
     user_id: Optional[int]
 
 
@@ -104,7 +104,7 @@ class QuoteResponse(BaseModel):
     model_id: int | None
     condition: str | None
     offered_price: float | None
-    # status: str | None
+    status: str | None
     user_id: int | None
     category: str | None = None
     brand: str | None = None

@@ -19,7 +19,7 @@ api_router.include_router(user_router)
 
 # Admin routes group
 admin_router = APIRouter(prefix="/admin")
-admin_router.include_router(device.router, prefix="/devices", tags=["devices"])
+# admin_router.include_router(device.router, prefix="/devices", tags=["devices"])
 admin_router.include_router(quote.router, prefix="/quotes", tags=["quotes"])
 admin_router.include_router(order.router, prefix="/orders", tags=["orders"], dependencies=[Depends(require_roles(["admin"]))])
 admin_router.include_router(brand.router, prefix="/brand", tags=["brand"], dependencies=[Depends(require_roles(["admin"]))])

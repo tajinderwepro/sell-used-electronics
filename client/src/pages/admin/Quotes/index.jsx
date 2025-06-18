@@ -57,7 +57,7 @@ export default function Quotes() {
   const handleDelete = async (id) => {
     try {
       setLoading(true);
-      const res = await api.admin.deleteQuote(id);
+      const res = await api.admin.quotes.delete(id);
       toast.success(res.message);
       await fetchQuotes();
     } catch (err) {

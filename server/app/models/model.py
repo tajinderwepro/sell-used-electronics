@@ -26,3 +26,5 @@ class Model(Base,TimestampMixin):
         viewonly=True,
         uselist=True
     )
+    
+
