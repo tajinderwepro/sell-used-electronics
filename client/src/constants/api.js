@@ -45,6 +45,8 @@ const api = {
     createUser: (data) => axiosWrapper(axiosInstance.post('/auth/register', data)),
     getUser: (id) => axiosWrapper(axiosInstance.get(`/users/${id}`)),
     deleteUser: (id) => axiosWrapper(axiosInstance.delete(`/users/${id}`)),
+    getLatestDevice: (id) => axiosWrapper(axiosInstance.get(`/admin/orders/latest-order`)),
+
 
     // updateUser: (id, data) => axiosWrapper(axiosInstance.put(`/users/${id}`, data)),
      updateUser: (id,data) =>

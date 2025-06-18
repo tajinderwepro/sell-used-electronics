@@ -31,7 +31,6 @@ const CommonTable = ({
       onFetch(filters);
     }
   }, [filters]);
-
   const handleSearch = (value) => {
     setSearchTerm(value);
     setFilters((prev) => ({
@@ -124,9 +123,8 @@ const CommonTable = ({
                       key={col.key}
                       className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     > 
-                    {console.log(row[col.key],'row[col.key]')}
-                   
-                      {['role','status','condition'].includes(col.key) ? Chip(row[col.key]) : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
+                     
+                      {['role','status','condition'].includes(col.key) ? <Chip status={row[col.key]} /> : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
                     </td>
                   ))}
                 </tr>

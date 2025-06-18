@@ -5,13 +5,17 @@ import api from "../../../constants/api";
 import CommonTable from "../../../common/CommonTable";
 import { useColorClasses } from "../../../theme/useColorClasses";
 
-
 const columns = [
   { key: "order_id", label: "Order Id" },
-  { key: "user", label: "User" },
-  { key: "device", label: "Device" },
   { key: "status", label: "Status" },
-  { key: "date", label: "Date", render: (order) => { new Date(order.created_at).toLocaleDateString() } },
+  { key: "shipping_label_url", label: "Shipping Company Url" },
+  { key: "tracking_number", label: "Tracking Number" },
+  { key: "quote_id", label: "Quote Id" },
+  {
+    key: "created_at",
+    label: "Order Date",
+    render: (order) => new Date(order.created_at).toLocaleDateString(),
+  },
 ];
 
 export default function Dashboard() {
@@ -22,11 +26,9 @@ export default function Dashboard() {
   const [brands, setBrand] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
   const COLOR_CLASSES = useColorClasses();
-  
 
   useEffect(() => {
     fetchSummary();
-    fetchOrders();
   }, []);
 
   const fetchSummary = async () => {
@@ -39,27 +41,31 @@ export default function Dashboard() {
 
       const brandsRes = await api.admin.getAllBrand(user.id, 0, 0);
       setBrand(brandsRes.data);
+
+      const orders = await api.admin.getLatestDevice(user.id);
+
+      const latestOrder = orders.data
+        ? [
+            {
+              ...orders.data,
+              order_id: orders.data.id, // map to column key
+            },
+          ]
+        : [];
+
+      setRecentOrders(latestOrder);
     } catch (error) {
       console.error("Error fetching summary data:", error);
     }
   };
 
-  const fetchOrders = async () => {
-    try {
-      const orders = await fetch("/api/v1/orders").then((res) => res.json());
-      setRecentOrders(orders.slice(0, 5));
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
   const chartData = [
     { name: "Devices", value: device?.length || 0 },
-    { name: "Brands", value: brands?.length || 0 }
+    { name: "Brands", value: brands?.length || 0 },
   ];
 
   return (
-    <div className={`md:p-6 sm:px-0  min-h-screen  ${COLOR_CLASSES.bgWhite}`}>
+    <div className={`md:p-6 sm:px-0 min-h-screen ${COLOR_CLASSES.bgWhite}`}>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       {/* Summary Cards */}

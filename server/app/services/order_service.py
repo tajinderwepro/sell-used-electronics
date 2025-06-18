@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from fastapi import HTTPException, status
 from app.models.order import Order
 from app.schemas.orders import OrderCreate, OrderUpdate
+from sqlalchemy import desc
 
 
 class OrderService:
@@ -21,6 +22,23 @@ class OrderService:
         if not order:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
         return order
+
+    @staticmethod
+    async def get_latest_order(db: AsyncSession):
+        result = await db.execute(
+            select(Order)
+            .order_by(desc(Order.created_at))
+            .limit(1)
+        )
+        order = result.scalar_one_or_none()
+        if not order:
+            return None
+        return {
+            "success": True,
+            "message": "Order fetched successfully",
+            "data":order,
+        }
+
 
     @staticmethod
     async def create_order(db: AsyncSession, order_data: OrderCreate):
