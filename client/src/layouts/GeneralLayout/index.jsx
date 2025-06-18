@@ -20,7 +20,11 @@ const GeneralLayout = ({ children }) => {
       <div
         className={`max-w-7xl mx-auto w-full pt-[72px]`}
       >
-        {user && isAuthenticated && paths.includes(location.pathname) &&  <UserNavbar />}
+        {user && isAuthenticated && paths.includes(location.pathname) && (
+          <div className="hidden sm:block">
+            <UserNavbar />
+          </div>
+        )}
         <div className="min-h-screen my-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2">
             {children}
         </div>
