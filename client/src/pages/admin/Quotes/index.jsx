@@ -15,6 +15,7 @@ import { useFilters } from "../../../context/FilterContext";
 import { useAuth } from "../../../context/AuthContext";
 import { formatCurrency } from "../../../components/ui/CurrencyFormatter";
 import { Navigate, useNavigate } from "react-router-dom";
+import RiskScoreBadge from "../../../common/RiskScoreBadge";
 
 const breadcrumbItems = [
   { label: 'Categories', path: '/admin/categories' },
@@ -208,7 +209,9 @@ export default function Quotes() {
     { key: "model_name", label: "Model", sortable: true },
     { key: "condition", label: "Condition", sortable: true },
     { key: "offered_price", label: "Offered Price", sortable: true },
-    { key: "risk_score", label: "Risk Score", sortable: true },
+    { key: "risk_score", label: "Risk Score", sortable: true,  
+      render: (row) => <RiskScoreBadge score={row.risk_score} />
+    },
     { key: "status", label: "Status", sortable: true },
     {
       key: "actions",
