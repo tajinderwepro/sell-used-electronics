@@ -45,6 +45,20 @@ export const deviceSchema = Yup.object().shape({
   ebay_avg_price: Yup.string().required("eBay average price is required"),
 });
 
+export const quoteSchema = Yup.object().shape({
+  category: Yup.string().required("Category is required"),
+  brand: Yup.string().required("Brand is required"),
+  model: Yup.string().required("Model is required"),
+  condition: Yup.string().oneOf(["good", "bad", "excellent","fair"]).required("Condition is required"),
+  offered_price: Yup.string()
+    .required("Base price is required")
+    .test(
+      "is-greater-than-zero",
+      "Base price must be greater than zero",
+      (value) => parseFloat((value || "").replace(/[^\d]/g, "")) > 0
+    ),
+});
+
 export const QuoteFormSchema = Yup.object().shape({
   base_price: Yup.string()
     .required("Base price is required")

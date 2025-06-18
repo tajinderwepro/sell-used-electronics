@@ -153,6 +153,12 @@ const api = {
     updateDeviceStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`admin/devices/status/${device_id}`,data)),
     submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/devices/submit/${id}`, data)),
     getOrders: () => axiosWrapper(axiosInstance.get('admin/orders/list')),
+
+    quotes: {
+      getList: (data) => axiosWrapper(axiosInstance.post('admin/quotes/list',data)),
+      get: (id) => axiosWrapper(axiosInstance.get(`admin/quotes/${id}`)),
+      updateStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`admin/quote/status/${device_id}`,data)),
+    }
   },
   getCategories: (limit = 10, offset = 0) => axiosWrapper(
     axiosInstance.post(`/category/list`, {

@@ -11,6 +11,8 @@ from sqlalchemy import cast, Integer
 from sqlalchemy.orm import joinedload
 from typing import Optional, List,Generic, TypeVar
 from app.utils.db_helpers import paginate_query
+from app.services.risk_detection_service import RiskDetectionService
+from fastapi import Request
 
 class QuoteService:
 
@@ -35,9 +37,9 @@ class QuoteService:
             current_page=current_page,
             limit=None if get_all else limit,  
             options=[
-                selectinload(Quote.category_rel),
-                selectinload(Quote.brand_rel),
-                selectinload(Quote.model_rel),
+                selectinload(Quote.category),
+                selectinload(Quote.brand),
+                selectinload(Quote.model),
                 selectinload(Quote.user),
                 selectinload(Quote.media)
             ]
@@ -48,7 +50,8 @@ class QuoteService:
         user_id: int,
         quote_in: QuoteCreate,
         image_urls: list[str],
-        db: AsyncSession
+        db: AsyncSession,
+        request: Request
     ):
         category_name = None
         brand_name = None
@@ -81,9 +84,12 @@ class QuoteService:
         except (ValueError, TypeError):
             model_id = None
 
+        risk_service = RiskDetectionService(user_id=user_id,user_device=model_name, request=request, db=db)
+        risk_score = await risk_service.calculate_risk_score()
+
         quote = Quote(
             condition=quote_in.condition,
-            offered_price=quote_in.base_price,
+            offered_price=quote_in.offered_price,
             model_name=model_name,
             brand_name=brand_name,
             category_name=category_name,
@@ -91,7 +97,7 @@ class QuoteService:
             brand_id=brand_id,
             model_id=model_id,
             user_id=user_id,
-            risk_score=0
+            risk_score=risk_score
         )
 
         db.add(quote)
@@ -132,9 +138,9 @@ class QuoteService:
         result = await db.execute(
             select(Quote)
             .options(
-                selectinload(Quote.category_rel),
-                selectinload(Quote.brand_rel),
-                selectinload(Quote.model_rel),
+                selectinload(Quote.category),
+                selectinload(Quote.brand),
+                selectinload(Quote.model),
                 selectinload(Quote.media),
                 selectinload(Quote.user),
             )
@@ -166,8 +172,8 @@ class QuoteService:
             select(Quote)
             .options(
                 selectinload(Quote.category_rel),
-                selectinload(Quote.brand_rel),
-                selectinload(Quote.model_rel)
+                selectinload(Quote.brand),
+                selectinload(Quote.model)
             )
             .where(Quote.id == quote.id)
         )

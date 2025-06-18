@@ -124,7 +124,7 @@ const CommonTable = ({
                       className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     > 
                      
-                      {['role','status','condition'].includes(col.key) ? <Chip status={row[col.key]} /> : col.render ?  col.render(row) :['base_price','ebay_avg_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
+                      {['role','status','condition'].includes(col.key) ? <Chip status={row[col.key]} /> : col.render ?  col.render(row) :['base_price','ebay_avg_price','offered_price'].includes(col.key) ?formatCurrency(row[col.key]): row[col.key] }
                     </td>
                   ))}
                 </tr>

@@ -23,6 +23,7 @@ import Settings from "../pages/admin/Settings";
 import ShipmentAddress from "../components/common/ShipmentAddress";
 import Profile from "../pages/Profile";
 import ViewDevice from "../pages/admin/Devices/viewDevice";
+import ViewQuote from "../pages/admin/Quotes/ViewQuote";
 
 function AllRoutes() {
   const auth = useAuth();
@@ -65,10 +66,11 @@ function AllRoutes() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/settings" element={<Settings />} />
           <Route path="/admin/users" element={<Users />} />
-          <Route path="/admin/devices" element={<Devices />} />
+          <Route path="/admin/devices" element={<Categories />} />
           <Route path="/admin/devices/:deviceId" element={<ViewDevice />} />
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/quotes" element={<Quotes />} />
+          <Route path="/admin/quotes/:quoteId" element={<ViewQuote />} />
           <Route path="/admin/categories" element={<Categories/>} />
           <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
           <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />

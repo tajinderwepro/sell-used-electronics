@@ -22,8 +22,8 @@ const menuItems = [
   { name: "Users", icon: Users, path: "/admin/users" },
   { name: "Devices", icon: Monitor, path: "/admin/devices" },
   { name: "Orders", icon: Package, path: "/admin/orders" },
-  // { name: "Quotes", icon: FileText, path: "/admin/quotes" },
-  { name: "Categories", icon: FileText, path: "/admin/categories" },
+  { name: "Quotes", icon: FileText, path: "/admin/quotes" },
+  // { name: "Categories", icon: FileText, path: "/admin/categories" },
 ];
 
 export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {

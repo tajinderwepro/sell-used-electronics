@@ -18,7 +18,7 @@ import shutil
 import os
 import uuid
 from app.utils.file_utils import save_upload_file
-
+from app.services.risk_detection_service import RiskDetectionService
 
 router = APIRouter()
 
@@ -38,6 +38,7 @@ async def create_device(
     base_price: float = Form(...),
     ebay_avg_price: float = Form(...),
     files: list[UploadFile] = File(...),
+    request: Request = None, 
     db: AsyncSession = Depends(get_db),
 ):
     image_urls = []
@@ -50,14 +51,15 @@ async def create_device(
         brand=brand,
         model=model,
         condition=condition,
-        base_price=base_price,
+        offered_price=base_price,
     )
 
     return await QuoteService.submit_quote(
         user_id=user_id,
         quote_in=payload,
         image_urls=image_urls,
-        db=db
+        db=db,
+        request= request  
     )
 
 
@@ -74,10 +76,11 @@ async def get_categories(
         db=db
     )
 
-
-
 @router.post("/estimate-price")
-async def estimate_price(request: Request):
+async def estimate_price(request: Request, db: AsyncSession = Depends(get_db)):
+    risk_service = RiskDetectionService(user_id=1,user_device="Iphone 13", request=request, db=db)
+    risk_score = await risk_service.calculate_risk_score()
+    return {"risk_score": risk_score}
     # CLIENT_ID = "YOUR_CLIENT_ID"
     # CLIENT_SECRET = "YOUR_CLIENT_SECRET"
 

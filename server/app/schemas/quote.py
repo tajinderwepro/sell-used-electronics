@@ -9,7 +9,7 @@ class QuoteCreate(BaseModel):
     brand: str
     model: str
     condition: str
-    base_price: float
+    offered_price: float
 
 class CategoryBase(BaseModel):
     id: int
@@ -47,20 +47,20 @@ class UserBase(BaseModel):
 
 class QuoteOut(BaseModel):
     id: int
-    category: Optional[str]
-    brand: Optional[str]
-    model: Optional[str]
+    category_name: Optional[str]
+    brand_name: Optional[str]
+    model_name: Optional[str]
+    risk_score: Optional[int]
     condition: str
-    base_price: float
-    ebay_avg_price: float
+    offered_price: float
     user_id: Optional[int]
-    status: Optional[str]
+    # status: Optional[str]
     category_id: Optional[int]
     brand_id: Optional[int]
     model_id: Optional[int]
-    category_rel: Optional[CategoryBase]
-    brand_rel: Optional[BrandBase]
-    model_rel: Optional[ModelBase]
+    category: Optional[CategoryBase]
+    brand: Optional[BrandBase]
+    model: Optional[ModelBase]
     user: Optional[UserBase]
     media: List[MediaBase] = [] 
     model_config = ConfigDict(from_attributes=True)
@@ -70,16 +70,15 @@ class QuoteUpdate(BaseModel):
     brand: Optional[str]
     model: Optional[str]
     condition: Optional[str]
-    base_price: Optional[float]
-    ebay_avg_price: Optional[float]
-    status: Optional[str]
+    offered_price: Optional[float]
+    # status: Optional[str]
     user_id: Optional[int]
 
     class Config:
         orm_mode = True
 
 class QuoteStatusUpdate(BaseModel):
-    status: str
+    # status: str
     user_id: Optional[int]
 
 
@@ -104,16 +103,15 @@ class QuoteResponse(BaseModel):
     brand_id: int | None
     model_id: int | None
     condition: str | None
-    base_price: float | None
-    ebay_avg_price: float | None
-    status: str | None
+    offered_price: float | None
+    # status: str | None
     user_id: int | None
     category: str | None = None
     brand: str | None = None
     model: str | None = None
-    category_rel: CategoryBase | None = None
-    brand_rel: BrandBase | None = None
-    model_rel: ModelBase | None = None
+    category: CategoryBase | None = None
+    brand: BrandBase | None = None
+    model: ModelBase | None = None
     user: UserBase | None = None
     model_config = ConfigDict(from_attributes=True)
 

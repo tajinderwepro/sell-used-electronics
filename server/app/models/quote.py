@@ -26,3 +26,10 @@ class Quote(Base,TimestampMixin):
     category = relationship("Category")
     brand = relationship("Brand")
     model = relationship("Model")
+    
+    media = relationship(
+            "Media",
+            primaryjoin="and_(foreign(Media.mediable_id)==Quote.id, Media.mediable_type=='quote')",
+            viewonly=True,
+            uselist=True
+        )
