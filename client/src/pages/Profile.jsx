@@ -6,6 +6,8 @@ import api from "../constants/api";
 import LoadingIndicator from "../common/LoadingIndicator";
 import { toast } from "react-toastify";
 import validatePhone from "../components/ui/ValidPhoneFormat";
+import InfoField from "../components/ui/InfoField";
+import { useColorClasses } from "../theme/useColorClasses";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -13,6 +15,8 @@ const Profile = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [loading, setloading] = useState(false);
+  const COLOR_CLASSES = useColorClasses();
+  const [initialFormState, setInitialFormState] = useState({});
 
   const [form, setForm] = useState({
     id:"",
@@ -125,14 +129,24 @@ const Profile = () => {
       const { email, name, phone, media,id } = res.user;
       console.log(media[0]?.path,'sdd')
       if (res.success) {
-        setForm((prev) => ({
+        const newFormState = {
+            id: id || "",
+            name: name || "",
+            email: email || "",
+            phone: phone || "",
+            image_path: media[0]?.path || ""
+        };
+
+        setForm((prev) => ({  
           ...prev,
-          id:id || "",
-          name: name || "",
-          email: email || "",
-          phone: validatePhone(phone || ""),
-          image_path:media[0]?.path
+          id: newFormState.id,
+          name: newFormState.name,
+          email: newFormState.email,
+          phone: newFormState.phone,
+          image_path: newFormState.image_path
         }));
+
+      setInitialFormState(newFormState);
 
         if (media && media[0]?.path) {
           setImagePreview(media[0]?.path);
@@ -183,12 +197,21 @@ const Profile = () => {
       console.error("Password update failed:", error);
     }
   };
+
+  const handleCancel = () => {
+    setIsEditing(false);  
+    setForm((prev) => ({
+      ...prev,
+      ...initialFormState
+    }));
+  }
+
    console.log(imagePreview,'form')
   return (
     <div className=" p-6">
       {/* Top section */}
       <LoadingIndicator isLoading={loading}/>
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
             <div>
                 {imagePreview ? (
@@ -201,7 +224,9 @@ const Profile = () => {
                 />
                 </div>
                 ) : (
-                <CircleUser size={80} strokeWidth={1} color="gray" />
+                <div className="w-12 h-12 sm:w-15 sm:h-15 md:w-20 md:h-20">
+                    <CircleUser size="100%" strokeWidth={1} color="gray" />
+                  </div>
                 )}
 
             </div>
@@ -222,14 +247,20 @@ const Profile = () => {
         </div>
 
         {!isEditing && <Button onClick={handleToggleEdit} className="text-sm px-3">
-           Edit Profile
+              <div className="hidden md:block">
+            Edit Profile
+          </div>
+           
+          <div className="w-4 block md:hidden">
+            <SquarePen size="100%" strokeWidth={2}/>
+          </div>
         </Button>}
       </div>
 
       {/* Edit or View Mode */}
       {isEditing ? (
         <>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.shadowMd} border p-4 rounded  ${COLOR_CLASSES.borderGray200}`}>
           <InputField
             id="name"
             name="name"
@@ -266,26 +297,29 @@ const Profile = () => {
                   <Button onClick={handleToggleEdit} className="text-sm px-3">
                     Save
                   </Button>
-                  <Button onClick={() => setIsEditing(!isEditing)} className="text-sm px-3" variant="secondary">
+                  <Button onClick={() => handleCancel()} className="text-sm px-3" variant="secondary">
                     Cancel
                   </Button>
                 </div>
         
         </>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
-          <div>
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700 ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.shadowMd} border p-4 rounded-lg`}>
+          {/* <div>
             <p className="text-gray-500 mb-1">Full Name</p>
             <p className="py-3 rounded">{form.name}</p>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <p className="text-gray-500 mb-1">Email</p>
             <p className="py-3 rounded">{form.email}</p>
-          </div>
+          </div> */}
           <div>
             <p className="text-gray-500 mb-1">Phone Number</p>
             <p className="py-3 rounded">{validatePhone(form.phone)}</p>
           </div>
+          <InfoField label="Full Name" value={form.name}/>
+          <InfoField label="Email" value={form.email}/>
+          {/* <InfoField label="Phone Number" value={validatePhone(form.phone)}/> */}
           <div>
             <p className="text-gray-500 mb-1">Password</p>
             {showPasswordFields ? (
