@@ -91,7 +91,7 @@ class QuoteService:
             brand_id=brand_id,
             model_id=model_id,
             user_id=user_id,
-            risk_score=0
+            # risk_score=0
         )
 
         db.add(quote)
