@@ -150,7 +150,7 @@ const api = {
     createDevice: (data) => axiosWrapper(axiosInstance.post('admin/devices/submit', data)),
     submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/devices/submit/${id}`, data)),
     updateDeviceStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`admin/devices/status/${device_id}`,data)),
-    getOrders: () => axiosWrapper(axiosInstance.get('admin/orders/list')),
+    getOrders: (data) => axiosWrapper(axiosInstance.post('admin/orders/list',data)),
 
     quotes: {
       getList: (data) => axiosWrapper(axiosInstance.post('admin/quotes/list',data)),
@@ -161,6 +161,9 @@ const api = {
       delete: (quote_id) => axiosWrapper(axiosInstance.delete(`admin/quotes/${quote_id}`)),
       create: (data) => axiosWrapper(axiosInstance.post('admin/quotes/submit', data)),
       submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/quotes/submit/${id}`, data)),
+    },
+    orders:{
+      get: (id) => axiosWrapper(axiosInstance.get(`admin/orders/${id}`)),
     }
   },
   getCategories: (limit = 10, offset = 0) => axiosWrapper(

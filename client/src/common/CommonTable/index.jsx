@@ -154,8 +154,21 @@ const CommonTable = ({
                       key={col.key}
                       className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     >
-
-                      {['role', 'status', 'condition'].includes(col.key) ? <Chip status={row[col.key]} /> : ['risk_score'].includes(col.key) ? <RiskScoreBadge score={row[col.key]} /> : col.render ? col.render(row) : ['base_price', 'ebay_avg_price', 'offered_price'].includes(col.key) ? formatCurrency(row[col.key]) : row[col.key]}
+                        {['role', 'status', 'condition'].includes(col.key) ? (
+                          <Chip status={row[col.key]} />
+                        ) : ['risk_score'].includes(col.key) ? (
+                          <RiskScoreBadge score={row[col.key]} />
+                        ) : col.render ? (
+                          col.render(row)
+                        ) : ['base_price', 'ebay_avg_price', 'offered_price'].includes(col.key) ? (
+                          formatCurrency(row[col.key])
+                        ) : typeof row[col.key] === 'string' && /https?:\/\/[^\s]+/.test(row[col.key]) ? (
+                          <a className={`${COLOR_CLASSES.primary}`} href={row[col.key]} target="_blank" rel="noopener noreferrer">
+                            {row[col.key]}
+                          </a>
+                        ) : (
+                          row[col.key]
+                        )}
                     </td>
                   ))}
                 </tr>

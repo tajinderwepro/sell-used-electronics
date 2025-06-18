@@ -67,7 +67,7 @@ export default function Dashboard() {
       const conditionRes = await api.admin.getAllDevices(filters);
       setConditions(conditionRes.data);
 
-      const totalOrder = await api.admin.getOrders();
+      const totalOrder = await api.admin.getOrders(filters);
       setOrders(totalOrder.data);
 
       const orders = await api.admin.getLatestDevice(user.id);

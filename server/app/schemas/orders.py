@@ -3,7 +3,6 @@ from typing import Optional, Literal,List
 from pydantic.config import ConfigDict
 from datetime import datetime
 
-
 class OrderBase(BaseModel):
     quote_id: int
     status: Literal['pending', 'received', 'paid']
@@ -43,9 +42,8 @@ class OrderOut(BaseModel):
     tracking_number: str | None = None
     shipping_label_url: str | None = None
     quote: QuoteBase | None = None  # 👈 change from `dict` to `QuoteOut`
-    created_at: datetime
-    updated_at: datetime
-
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     model_config = {
         "from_attributes": True  
     }
@@ -57,3 +55,10 @@ class OrderListResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class OrderListRequest(BaseModel):
+    search: Optional[str] = None
+    sort_by: str = "name"
+    order_by: str = "asc"
+    current_page: int = 1
+    limit: int = 10

@@ -1,19 +1,27 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.orders import OrderCreate, OrderOut, OrderUpdate,OrderListResponse
+from app.schemas.orders import OrderCreate, OrderOut, OrderUpdate,OrderListResponse, OrderListRequest
 from app.services.order_service import OrderService
+# from fastapi import APIRouter,Depends, HTTPException, status, Query, Body, Form, UploadFile, File
 
 router = APIRouter()
 
-@router.get("/list", response_model=OrderListResponse)
-async def list_orders(db: AsyncSession = Depends(get_db)):
-    orders = await OrderService.get_all_orders(db)
-    return OrderListResponse(
-        data=[OrderOut.from_orm(order) for order in orders],
-        message="All orders fetched successfully",
-        success=True
+@router.post("/list", response_model=OrderListResponse)
+async def list_orders(db: AsyncSession = Depends(get_db),filters: OrderListRequest = Body(...)):
+    return await OrderService.get_all_orders(
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
     )
+    # return OrderListResponse(
+    #     data=[OrderOut.from_orm(order) for order in orders],
+    #     message="All orders fetched successfully",
+    #     success=True
+    # )
 
 @router.get("/latest-order")
 async def get_latest(

@@ -2,23 +2,46 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi import HTTPException, status
 from app.models.order import Order
-from app.schemas.orders import OrderCreate, OrderUpdate
+from app.schemas.orders import OrderCreate, OrderUpdate, OrderOut
 from sqlalchemy import desc
 from sqlalchemy.orm import selectinload
-
+from app.utils.db_helpers import paginate_query
+from typing import Optional
 
 class OrderService:
 
-    @staticmethod
-    async def get_all_orders(db: AsyncSession):
-        result = await db.execute(select(Order).options(selectinload(Order.quote)))
-        orders = result.scalars().all()
-        return orders
+    # @staticmethod
+    # async def get_all_orders(db: AsyncSession):
+    #     result = await db.execute(select(Order).options(selectinload(Order.quote)))
+    #     orders = result.scalars().all()
 
+    #     return orders
+    @staticmethod
+    async def get_all_orders(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "id",  # default should be an actual field
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: Optional[int] = 10,
+        get_all: bool = False,
+    ):
+        return await paginate_query(
+            db=db,
+            model=Order,
+            schema=OrderOut,
+            search=search,
+            search_fields=[Order.tracking_number, Order.status],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=None if get_all else limit,
+            options=[selectinload(Order.quote)],  # <-- ✅ relationship included
+        )
 
     @staticmethod
     async def get_order(db: AsyncSession, order_id: int):
-        result = await db.execute(select(Order).where(Order.id == order_id))
+        result = await db.execute(select(Order).options(selectinload(Order.quote)).where(Order.id == order_id))
         order = result.scalar_one_or_none()
         if not order:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")

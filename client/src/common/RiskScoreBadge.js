@@ -21,7 +21,7 @@ const RiskScoreBadge = ({ score }) => {
 
   return (
     <div
-      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold border ${borderColor} ${bgColor} ${textColor}`}
+      className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold border ${borderColor} ${bgColor} ${textColor}`}
     >
       {score}
     </div>

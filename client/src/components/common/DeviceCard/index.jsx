@@ -4,6 +4,7 @@ import {
   Tag,
   BadgeDollarSign,
   PackageCheck,
+  Truck,
 } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -25,6 +26,46 @@ const imageList =
     : [device.image].filter(Boolean).length > 0
     ? [device.image, device.model_image, device.category_name_image].filter(Boolean)
     : [placeholderImage, placeholderImage, placeholderImage];
+
+  const renderButton = () => {
+    switch (device.status) {
+      case 'pending':
+        return (
+          <Button
+            variant="primary"
+            disabled={true}
+            className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
+          >
+            <PackageCheck className="inline-block mr-2 w-4 h-4" />
+            Waiting for approval
+          </Button>
+        );
+      case 'approved':
+        return (
+          <Button
+            variant="primary"
+            onClick={() => onRequestShipment(device.id)}
+            className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
+          >
+            <PackageCheck className="inline-block mr-2 w-4 h-4" />
+            Request Shipment
+          </Button>
+        );
+      case 'shipped':
+        return (
+          <Button
+            variant="primary"
+            onClick={() => alert('Shipment is on the way!')}
+            className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
+          >
+            <Truck className="inline-block mr-1 w-4 h-4" />
+            Track
+          </Button>
+        );
+      default:
+        return null;
+    }
+  }
   return (
     <div
       className={`${COLOR_CLASSES.bgWhite} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden cursor-pointer ${COLOR_CLASSES.shadowLg} flex flex-col`}
@@ -72,29 +113,9 @@ const imageList =
             <strong>Calculated Price</strong> {formatCurrency (device.ebay_avg_price)}
           </p> */}
         </div>
-
-        {device.status === 'approved' ? 
-          <div className="mt-4">
-            <Button
-              onClick={() => onRequestShipment(device.id)}
-              className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
-            >
-              <PackageCheck className="inline-block mr-2 w-4 h-4" />
-              Request Shipment
-            </Button>
+          <div className="mt-4 items-center">
+                {renderButton()}
           </div>
-          :
-          <div className="mt-4">
-            <Button
-              // onClick={() => onRequestShipment(device.id)}
-              disabled={true}
-              className={`w-full py-1.5 rounded-full text-xs font-medium ${COLOR_CLASSES.gradientBtn}`}
-            >
-              <PackageCheck className="inline-block mr-2 w-4 h-4" />
-              Waiting for approval
-            </Button>
-          </div>
-        }
       </div>
     </div>
   );

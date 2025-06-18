@@ -11,6 +11,7 @@ import NotFound from "../pages/NotFound";
 import Devices from "../pages/admin/Devices";
 import Users from "../pages/admin/Users";
 import Orders from "../pages/admin/Orders";
+import ViewOrder from "../pages/admin/Orders/ViewOrder";
 import Quotes from "../pages/admin/Quotes";
 import Dashboard from "../pages/users/Dashboard";
 import GeneralLayout from "../layouts/GeneralLayout";
@@ -66,6 +67,7 @@ function AllRoutes() {
           <Route path="/admin/devices" element={<Categories />} />
           <Route path="/admin/devices/:deviceId" element={<ViewDevice />} />
           <Route path="/admin/orders" element={<Orders />} />
+          <Route path="/admin/order/:orderId" element={<ViewOrder />} />
           <Route path="/admin/quotes" element={<Quotes />} />
           <Route path="/admin/quotes/:quoteId" element={<ViewQuote />} />
           <Route path="/admin/categories" element={<Categories/>} />
