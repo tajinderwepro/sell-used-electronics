@@ -31,7 +31,7 @@ export default function UserNavbar() {
             key={link.name}
             to={link.to}
             className={({ isActive }) =>
-              `flex items-center gap-2 text-sm font-medium transition-colors ${
+              `flex items-center gap-2 text-[12.6px] sm:text-sm font-medium transition-colors ${
                 isActive ? COLOR_CLASSES.primary : COLOR_CLASSES.textSecondary
               } hover:${COLOR_CLASSES.primary}`
             }

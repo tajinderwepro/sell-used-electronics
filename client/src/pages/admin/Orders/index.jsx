@@ -31,6 +31,7 @@ export default function Orders() {
     { key: "quote_id", label: "Quote Id" },
     { key: "status", label: "Status" },
     { key: "tracking_number", label: "Tracking Number" },
+    { key: "shipping_label_urlr", label: "Shipping Label Url" },
     {
       key: "actions",
       label: "Actions",

@@ -62,3 +62,21 @@ class AddressService:
                     "success": True
                 }
             return {"message": "Address not found", "success": False}
+
+    @staticmethod
+    async def delete_address(id: int):
+        async with async_session() as session:
+            result = await session.execute(select(Address).where(Address.id == id))
+            address = result.scalars().first()
+
+            if address:
+                await session.delete(address)
+                await session.commit()
+                return {
+                    "address": address,
+                    "message": "Address deleted successfully",
+                    "success": True
+                }
+
+            return {"message": "Address not found", "success": False}
+

@@ -13,3 +13,7 @@ async def create_address(address: AddressCreate, user_id: int, db: AsyncSession 
 @router.get("/{user_id}")
 async def get_address(user_id: int, db: AsyncSession = Depends(get_db)):
     return await AddressService.get_address_by_id(user_id=user_id)
+
+@router.delete("/{id}")
+async def get_address(id: int, db: AsyncSession = Depends(get_db)):
+    return await AddressService.delete_address(id=id)

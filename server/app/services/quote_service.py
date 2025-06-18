@@ -13,6 +13,7 @@ from typing import Optional, List,Generic, TypeVar
 from app.utils.db_helpers import paginate_query
 from app.services.risk_detection_service import RiskDetectionService
 from fastapi import Request
+from app.services.quote_history_service import QuoteHistoryService
 
 class QuoteService:
 
@@ -84,7 +85,7 @@ class QuoteService:
         except (ValueError, TypeError):
             model_id = None
 
-        risk_service = RiskDetectionService(user_id=user_id,user_device=model_id, request=request, db=db)
+        risk_service = RiskDetectionService(user_id=user_id,model_id=model_id, request=request, db=db)
         risk_score = await risk_service.calculate_risk_score()
 
         quote = Quote(
@@ -99,10 +100,11 @@ class QuoteService:
             user_id=user_id,
             risk_score=risk_score
         )
-
         db.add(quote)
         await db.commit()
         await db.refresh(quote)
+
+        await QuoteHistoryService.store_quote_history(user_id=quote.user_id,model_id=quote.model_id,db=db)
 
         # handle multiple images
         media_objs = []

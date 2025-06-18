@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
     ALGORITHM = "HS256"
+    EASY_POST_API_KEY: Optional[str] = None
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24  
     class Config:
         env_file = ".env"

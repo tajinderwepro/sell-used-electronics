@@ -19,6 +19,7 @@ const Popup = ({
   isbtnDelete = false,
   children,
   width = '600px',
+  height,
 }) => {
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(200);

@@ -106,4 +106,14 @@ async def get_user_quotes(
         user_id=user_id
     )
 
+@router.post("/quotes/request-shipment/{quote_id}")
+async def request_shipment(
+    quote_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    return await UserService.request_shipment(
+        db=db,
+        quote_id=quote_id
+    )
+
 
