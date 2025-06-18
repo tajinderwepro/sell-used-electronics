@@ -90,13 +90,13 @@ async def update_user(
 #         raise HTTPException(status_code=404, detail="Devices not found")
 #     return devices
 
-@router.post("/devices/{user_id}")
-async def get_user_devices(
+@router.post("/quotes/{user_id}")
+async def get_user_quotes(
     user_id: int, 
     filters: DeviceListRequest = Body(...),
     db: AsyncSession = Depends(get_db),
 ):
-    return await UserService.get_user_devices(
+    return await UserService.get_user_quotes(
         db=db,
         search=filters.search,
         sort_by=filters.sort_by,

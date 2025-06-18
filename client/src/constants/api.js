@@ -156,9 +156,9 @@ const api = {
       getList: (data) => axiosWrapper(axiosInstance.post('admin/quotes/list',data)),
       get: (id) => axiosWrapper(axiosInstance.get(`admin/quotes/${id}`)),
       getAllQuotes: (data) => axiosWrapper(axiosInstance.post('admin/quotes/all-list',data)),
-      updateStatus: (device_id,data) => axiosWrapper(axiosInstance.put(`admin/quote/status/${device_id}`,data)),
+      updateStatus: (quote_id,data) => axiosWrapper(axiosInstance.put(`admin/quotes/status/${quote_id}`,data)),
       update: (id,data) => axiosWrapper(axiosInstance.put(`admin/quotes/${id}`,data)),
-      delete: (device_id) => axiosWrapper(axiosInstance.delete(`admin/quotes/${device_id}`)),
+      delete: (quote_id) => axiosWrapper(axiosInstance.delete(`admin/quotes/${quote_id}`)),
       create: (data) => axiosWrapper(axiosInstance.post('admin/quotes/submit', data)),
       submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/quotes/submit/${id}`, data)),
     }
@@ -190,7 +190,9 @@ const api = {
     ),
   },
   user: {
-    getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),
+    getUserQuotes: (id, data) => axiosWrapper(axiosInstance.post(`/users/quotes/${id}`,data)),
+    requestShipment: (id) => axiosWrapper(axiosInstance.post(`/users/request-shipment/${id}`)),
+    // getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),
   }
 };
 

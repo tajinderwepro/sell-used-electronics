@@ -102,7 +102,7 @@ const ViewQuote = () => {
           {/* Tags */}
           <div className="flex gap-2 mb-4">
             <Chip status={device.condition} />
-            {/* <Chip status={device.status} /> */}
+            <Chip status={device.status} />
           </div>
 
           {/* Pricing */}

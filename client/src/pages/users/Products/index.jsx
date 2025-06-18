@@ -8,33 +8,33 @@ import Popup from '../../../common/Popup';
 import { useColorClasses } from '../../../theme/useColorClasses';
 import { useFilters } from '../../../context/FilterContext';
 import { useAuth } from '../../../context/AuthContext';
-import DeviceCard from '../../../components/common/DeviceCard';
+import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
 
 
 function Products() {
-  const [devices, setDevices] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [popupState, setPopupState] = useState({ open: false, deviceId: null, type: '' });
   const COLOR_CLASSES = useColorClasses();
   const { filters } = useFilters();
   const { user } = useAuth();
 
-  const fetchDevices = async () => {
+  const fetchQuotes = async () => {
     try {
       setLoading(true);
-      const response = await api.user.getUserDevices(user.id, filters);
-      setDevices(response.data);
+      const response = await api.user.getUserQuotes(user.id, filters);
+      setQuotes(response.data);
     } catch (err) {
-      console.error('Failed to fetch devices:', err);
-      toast.error('Failed to fetch devices');
+      console.error('Failed to fetch quotes:', err);
+      toast.error('Failed to fetch quotes');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDevices();
+    fetchQuotes();
   }, []);
 
   const handleOpen = (deviceId, type = 'approved') => {
@@ -45,12 +45,12 @@ function Products() {
     setPopupState({ open: false, deviceId: null, type: '' });
   };
 
-  const handleApproved = async () => {
+  const handleRequest = async () => {
     try {
       setLoading(true);
-      await api.admin.approveDevice(popupState.deviceId);
-      toast.success('Device shipment requested successfully');
-      fetchDevices();
+      await api.user.requestShipment(popupState.deviceId);
+      toast.success('Quote shipment requested successfully');
+      fetchQuotes();
     } catch (err) {
       console.error('Failed to request shipment:', err);
       toast.error('Failed to request shipment');
@@ -67,13 +67,13 @@ function Products() {
         <div className={`flex justify-center items-center h-64 ${COLOR_CLASSES.textSecondary}`}>
           <LoadingIndicator loading={loading} />
         </div>
-      ) : devices.length === 0 ? (
+      ) : quotes.length === 0 ? (
         <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No products found.</div>
       ) : (
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {devices.map((device) => (
-            <DeviceCard
+          {quotes.map((device) => (
+            <QuoteCard
               key={device.id}
               device={device}
               onRequestShipment={(id) => handleOpen(id, 'approved')}
@@ -85,7 +85,7 @@ function Products() {
       <Popup
         open={popupState.open}
         onClose={handleClose}
-        onSubmit={popupState.type === 'approved' ? handleApproved : () => {}}
+        onSubmit={popupState.type === 'approved' ? handleRequest : () => {}}
         title={'Shipment Request'}
         btnCancel="Cancel"
         btnSubmit="Submit"
