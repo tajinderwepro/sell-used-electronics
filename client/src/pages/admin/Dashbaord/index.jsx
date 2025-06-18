@@ -4,6 +4,23 @@ import { useFilters } from "../../../context/FilterContext";
 import api from "../../../constants/api";
 import CommonTable from "../../../common/CommonTable";
 import { useColorClasses } from "../../../theme/useColorClasses";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  CartesianGrid,
+  Legend,
+} from "recharts";
+import { Chip } from "../../../components/ui/Chip";
+
+const PIE_COLORS = ["#22c55e", "#facc15", "#f97316", "#ef4444"]; // excellent, good, fair, bad
+const LINE_COLORS = ["#6366f1", "#0ea5e9", "#14b8a6"];
 
 const columns = [
   { key: "order_id", label: "Order Id" },
@@ -25,11 +42,16 @@ export default function Dashboard() {
   const [device, setDevice] = useState([]);
   const [brands, setBrand] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [conditions, setConditions] = useState([]);
+  const [order, setOrders] = useState([]);
+
   const COLOR_CLASSES = useColorClasses();
 
   useEffect(() => {
     fetchSummary();
   }, []);
+
+  console.log(brands,'brands')
 
   const fetchSummary = async () => {
     try {
@@ -41,28 +63,60 @@ export default function Dashboard() {
 
       const brandsRes = await api.admin.getAllBrand(user.id, 0, 0);
       setBrand(brandsRes.data);
+      
+      const conditionRes = await api.admin.getAllDevices(filters);
+      setConditions(conditionRes.data);
+
+      const totalOrder = await api.admin.getOrders();
+      setOrders(totalOrder.data);
 
       const orders = await api.admin.getLatestDevice(user.id);
-
       const latestOrder = orders.data
-        ? [
-            {
-              ...orders.data,
-              order_id: orders.data.id, // map to column key
-            },
-          ]
-        : [];
 
+        ? [{ ...orders.data, order_id: orders.data.id }]
+        : [];
       setRecentOrders(latestOrder);
     } catch (error) {
       console.error("Error fetching summary data:", error);
     }
   };
 
-  const chartData = [
-    { name: "Devices", value: device?.length || 0 },
-    { name: "Brands", value: brands?.length || 0 },
-  ];
+  // Prepare Pie Chart Data
+  const pieData = Object.entries(
+    conditions.reduce((acc, curr) => {
+      const cond = curr.condition?.toLowerCase() || "unknown";
+      acc[cond] = (acc[cond] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([key, value]) => ({ name: key, value }));
+
+  // Prepare Line Chart Data (example: brands grouped by creation month)
+ const grouped = {};
+
+order.forEach((or) => {
+  const date = new Date(or.created_at);
+  const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const status = or.status?.toLowerCase() || "unknown";
+
+  if (!grouped[month]) {
+    grouped[month] = { month, pending: 0, received: 0, paid: 0 };
+  }
+
+  if (grouped[month][status] !== undefined) {
+    grouped[month][status] += 1;
+  }
+}); 
+
+
+
+const orderData = Object.values(grouped).sort((a, b) => a.month.localeCompare(b.month));
+const statusColorMap = {
+  excellent: "#22c55e",  // green-500
+  good: "#eab308",       // yellow-500
+  fair: "#f97316",       // orange-500
+  bad: "#ef4444",        // red-500
+};
+
 
   return (
     <div className={`md:p-6 sm:px-0 min-h-screen ${COLOR_CLASSES.bgWhite}`}>
@@ -75,25 +129,69 @@ export default function Dashboard() {
         <SummaryCard title="Total Brands" count={brands?.length} color="bg-purple-500" />
       </div>
 
-      {/* Graph Section
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white shadow rounded-lg p-4 h-64">
-          <h2 className="text-lg font-semibold mb-2">Devices and Brands (Graph)</h2>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis allowDecimals={false} />
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Pie Chart */}
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <h2 className="text-lg font-semibold mb-4">Device Condition Distribution</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                outerRadius={100}
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={statusColorMap[entry.name.toLowerCase()] || "#ccc"} />
+                ))}
+              </Pie>
               <Tooltip />
-              <Bar dataKey="value" fill="#3B82F6" />
-            </BarChart>
+              <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)}/>
+            </PieChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white shadow rounded-lg p-4 h-64 flex items-center justify-center">
-          <span className="text-gray-500">[ Device Condition Graph Placeholder ]</span>
+        {/* Line Chart */}
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <h2 className="text-lg font-semibold mb-4">Orders Status Data By Date</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={orderData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+               <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="pending"
+                name="Pending"
+                stroke="#f59e0b"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="received"
+                name="Received"
+                stroke="#10b981"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="paid"
+                name="Paid"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+              />
+
+            </LineChart>
+          </ResponsiveContainer>
         </div>
-      </div> */}
+      </div>
 
       {/* Recent Orders */}
       <div className="min-h-screen mt-2">

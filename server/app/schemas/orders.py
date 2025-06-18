@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional, Literal,List
 from pydantic.config import ConfigDict
+from datetime import datetime
+
 
 class OrderBase(BaseModel):
     quote_id: int
@@ -41,6 +43,9 @@ class OrderOut(BaseModel):
     tracking_number: str | None = None
     shipping_label_url: str | None = None
     quote: QuoteBase | None = None  # 👈 change from `dict` to `QuoteOut`
+    created_at: datetime
+    updated_at: datetime
+
     model_config = {
         "from_attributes": True  
     }
