@@ -10,7 +10,9 @@ from app.schemas.category import CategoryUpdate
 from app.schemas.category import ListResponse
 from app.core.security import require_roles
 from app.schemas.device import DeviceListResponse, DeviceCreate,DeviceSubmitResponse
+from app.schemas.quote import QuoteCreate
 from app.services.device_service import DeviceService
+from app.services.quote_service import QuoteService
 from app.core.security import require_roles
 import shutil
 import os
@@ -43,18 +45,17 @@ async def create_device(
         path = save_upload_file(file)
         image_urls.append(f"{settings.APP_URL}{path}")
     
-    payload = DeviceCreate(
+    payload = QuoteCreate(
         category=category,
         brand=brand,
         model=model,
         condition=condition,
         base_price=base_price,
-        ebay_avg_price=ebay_avg_price,
     )
 
-    return await DeviceService.create_device(
+    return await QuoteService.submit_quote(
         user_id=user_id,
-        device_in=payload,
+        quote_in=payload,
         image_urls=image_urls,
         db=db
     )

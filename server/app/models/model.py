@@ -19,7 +19,7 @@ class Model(Base,TimestampMixin):
     brand = relationship("Brand", back_populates="models")
     category = relationship("Category", back_populates="models")
     devices = relationship("Device", back_populates="model_rel")
-
+    quotes = relationship("Quote", back_populates="model", cascade="all, delete-orphan")
     media = relationship(
         "Media",
         primaryjoin="and_(foreign(Media.mediable_id)==Model.id, Media.mediable_type=='model')",

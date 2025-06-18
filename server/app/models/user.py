@@ -20,6 +20,7 @@ class User(Base):
 
 
     devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
+    quotes = relationship("Quote", back_populates="user", cascade="all, delete-orphan")
     media = relationship(
         "Media",
         primaryjoin=and_(
