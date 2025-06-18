@@ -176,6 +176,8 @@ const api = {
   address: {
     get: (user_id) => axiosWrapper(axiosInstance.get(`/addresses/${user_id}`)),
     add: (user_id, data) => axiosWrapper(axiosInstance.post(`/addresses/${user_id}`, data)),
+    deleteAddress: (id) => axiosWrapper(axiosInstance.delete(`/addresses/${id}`)),
+
   },
   public: {
     getEstimatePrice: (data) => axiosWrapper(axiosInstance.post(`/estimate-price`, data)),
