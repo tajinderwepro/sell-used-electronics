@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FONT_SIZES, FONT_WEIGHTS } from '../../constants/theme'
 import ModeToggleButton from '../../components/common/ModeToggleButton'
 import { useColorClasses } from '../../theme/useColorClasses'
@@ -11,9 +11,12 @@ import {
   Settings,
   Sun,
   UserCircle,
+  ShoppingBag,
+  LocationEdit
 } from "lucide-react"
 import { PROJECT_NAME } from '../../constants'
 import { useMode } from '../../context/ModeContext'
+import SidebarNav from './SidebarNav'
 
 const DROPDOWN_MENU = [
   {
@@ -25,6 +28,16 @@ const DROPDOWN_MENU = [
     name: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Products",
+    href: "/products",
+    icon: ShoppingBag,
+  },
+  {
+    name: "Shipment Address",
+    href: "/address",
+    icon: LocationEdit,
   },
   {
     name: "Settings",
@@ -61,10 +74,13 @@ function Header() {
 
   return (
     <header className={`fixed top-0 left-0 w-full border-b z-[3]  ${COLOR_CLASSES.borderGray200} shadow-sm ${COLOR_CLASSES.bgWhite}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center">
+        <div className="block sm:hidden">
+          <SidebarNav />
+        </div>
         <a
           href="/"
-          className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary}`}
+          className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} hidden sm:block`}
         >
           {PROJECT_NAME}
         </a>
