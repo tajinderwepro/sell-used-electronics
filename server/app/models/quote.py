@@ -20,6 +20,8 @@ class Quote(Base,TimestampMixin):
     condition = Column(String, nullable=True)
     offered_price = Column(Float, nullable=True)
     risk_score = Column(Float, nullable=True)
+    status = Column(String(50), nullable=False, server_default="pending")
+
 
     # Relationships
     user = relationship("User", back_populates="quotes")
