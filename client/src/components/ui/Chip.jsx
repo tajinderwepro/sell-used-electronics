@@ -9,6 +9,7 @@ export const Chip = ({status}) => {
     good:      { label: "Good",      className: "bg-yellow-200 text-yellow-800" },
     fair:      { label: "Fair",      className: "bg-orange-300 text-orange-800" },
     bad:       { label: "Bad",       className: "bg-red-400 text-red-800" },
+    shipped:   { label: "Shipped",       className: "bg-[#2196F3] text-white" },
   };
   const config = statusConfig[status];
 

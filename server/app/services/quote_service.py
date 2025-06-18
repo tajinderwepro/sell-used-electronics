@@ -85,7 +85,7 @@ class QuoteService:
         except (ValueError, TypeError):
             model_id = None
 
-        risk_service = RiskDetectionService(user_id=user_id,user_device=model_id, request=request, db=db)
+        risk_service = RiskDetectionService(user_id=user_id,model_id=model_id, request=request, db=db)
         risk_score = await risk_service.calculate_risk_score()
 
         quote = Quote(

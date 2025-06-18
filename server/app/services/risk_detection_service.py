@@ -11,9 +11,9 @@ import httpx
 
 
 class RiskDetectionService:
-    def __init__(self, user_id: int, user_device: str, request: Request, db: AsyncSession):
+    def __init__(self, user_id: int, model_id: str, request: Request, db: AsyncSession):
         self.user_id = user_id
-        self.user_device = user_device
+        self.model_id = model_id
         self.request = request
         self.db = db
 
@@ -46,7 +46,7 @@ class RiskDetectionService:
         result = await self.db.execute(
             select(QuoteHistory.model_id).where(QuoteHistory.user_id == self.user_id)
         )
-        self.quote_history = [{"device": row[0]} for row in result.all()]
+        self.quote_history = [{"model_id": row[0]} for row in result.all()]
 
         # Geo location
         self.geo_location = await self.get_geo_location(self.user_ip)
@@ -75,9 +75,10 @@ class RiskDetectionService:
         if domain in self.risky_domains:
             score += 25
 
-        device_counts = Counter([h["device"] for h in self.quote_history])
-        if device_counts.get(self.user_device, 0) > 2:
+        device_counts = Counter([h["model_id"] for h in self.quote_history])
+        if device_counts.get(self.model_id, 0) > 2:
             score += 15
+
 
         country = self.geo_location.get("country")
         if country in self.high_risk_countries:

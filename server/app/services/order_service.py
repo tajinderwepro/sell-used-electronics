@@ -4,13 +4,14 @@ from fastapi import HTTPException, status
 from app.models.order import Order
 from app.schemas.orders import OrderCreate, OrderUpdate
 from sqlalchemy import desc
+from sqlalchemy.orm import selectinload
 
 
 class OrderService:
 
     @staticmethod
     async def get_all_orders(db: AsyncSession):
-        result = await db.execute(select(Order))
+        result = await db.execute(select(Order).options(selectinload(Order.quote)))
         orders = result.scalars().all()
         return orders
 
