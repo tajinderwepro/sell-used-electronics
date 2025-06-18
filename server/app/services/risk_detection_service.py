@@ -5,7 +5,7 @@ from typing import List, Dict
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-# from app.models import User, QuoteHistory
+from app.models.quote_history import QuoteHistory
 from app.models.user import User
 import httpx
 
@@ -43,10 +43,10 @@ class RiskDetectionService:
         self.user_email = result.scalar_one_or_none() or ""
 
         # Get quote history
-        # result = await self.db.execute(
-        #     select(QuoteHistory.device).where(QuoteHistory.user_id == self.user_id)
-        # )
-        # self.quote_history = [{"device": row[0]} for row in result.all()]
+        result = await self.db.execute(
+            select(QuoteHistory.model_id).where(QuoteHistory.user_id == self.user_id)
+        )
+        self.quote_history = [{"device": row[0]} for row in result.all()]
 
         # Geo location
         self.geo_location = await self.get_geo_location(self.user_ip)

@@ -78,9 +78,6 @@ async def get_categories(
 
 @router.post("/estimate-price")
 async def estimate_price(request: Request, db: AsyncSession = Depends(get_db)):
-    risk_service = RiskDetectionService(user_id=1,user_device="Iphone 13", request=request, db=db)
-    risk_score = await risk_service.calculate_risk_score()
-    return {"risk_score": risk_score}
     # CLIENT_ID = "YOUR_CLIENT_ID"
     # CLIENT_SECRET = "YOUR_CLIENT_SECRET"
 

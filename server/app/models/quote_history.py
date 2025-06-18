@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from app.db.base_class import Base
-from app.models.mixins import TimestampMixin  
+from app.db.session import Base
+# from app.models.mixins import TimestampMixin  
 from app.models.base import TimestampMixin
 
 class QuoteHistory(Base, TimestampMixin):
