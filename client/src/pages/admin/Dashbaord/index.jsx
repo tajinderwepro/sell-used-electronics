@@ -132,8 +132,8 @@ const statusColorMap = {
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Pie Chart */}
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold mb-4">Device Condition Distribution</h2>
+        <div className={`${COLOR_CLASSES.bgWhite} rounded-lg shadow-md p-4`}>
+          <h2 className={`${COLOR_CLASSES.textPrimary} font-semibold mb-4`}>Device Condition Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -154,8 +154,8 @@ const statusColorMap = {
         </div>
 
         {/* Line Chart */}
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold mb-4">Orders Status Data By Date</h2>
+        <div className={`${COLOR_CLASSES.bgWhite} rounded-lg shadow-md p-4`}>
+          <h2 className={`${COLOR_CLASSES.textPrimary} font-semibold mb-4`}>Orders Status Data By Date</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={orderData}>
               <CartesianGrid strokeDasharray="3 3" />
