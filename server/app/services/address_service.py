@@ -19,6 +19,7 @@ class AddressService:
                 address.zip = data.zip
                 address.country = data.country or 'USA'
                 await db.flush()
+                await db.commit()  # ✅ COMMIT here
                 return {
                     "address": address,
                     "message": "Address updated successfully",
@@ -37,6 +38,7 @@ class AddressService:
         db.add(new_address)
         await db.flush()
         await db.refresh(new_address)
+        await db.commit()  # ✅ COMMIT here
 
         return {
             "address": new_address,
