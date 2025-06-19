@@ -157,3 +157,14 @@ class PaymentService:
             "message": "Payments list fetched successfully",
             "success": True
         }
+
+
+    @staticmethod
+    async def get_user_payment_by_id(user_id,db: AsyncSession):
+        result = await db.execute(select(Payment).where(Payment.user_id == user_id))
+        payments = result.scalars().all()
+        return {
+            "data": payments,
+            "message": "Payments fetched successfully",
+            "success": True
+        }

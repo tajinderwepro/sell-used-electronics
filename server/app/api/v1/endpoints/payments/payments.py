@@ -5,6 +5,8 @@ from app.db.session import get_db
 from app.services.payment_service import PaymentService
 from sqlalchemy import update, select
 from app.models.payment import Payment
+from app.core.security import require_roles
+
 
 router = APIRouter()
 
@@ -24,11 +26,21 @@ async def update_and_get_status(stripe_account_id: str, db: AsyncSession = Depen
     service = PaymentService(db)
     return await service.get_connected_account_status(stripe_account_id)
 
-@router.get("/list")
+@router.get("/list",dependencies=[Depends(require_roles(["admin"]))])
 async def get_all_payments(
     db: AsyncSession = Depends(get_db)
 ):
     return await PaymentService.get_payments_list(
+        db=db
+    )
+
+@router.get("/{user_id}")
+async def get_user_payments_by_id(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    return await PaymentService.get_user_payment_by_id(
+        user_id=user_id,
         db=db
     )
 
