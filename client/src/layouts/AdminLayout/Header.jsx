@@ -93,7 +93,7 @@ export default function Header({ setMobileMenuOpen }) {
                 <LogOut className="h-4 w-4 mr-2" /> Logout
               </button>
               <div className={`border-t ${COLOR_CLASSES.borderGray200}`}>
-                <ModeToggleButton />
+                <ModeToggleButton onClick={() => setDropdownOpen(false)}/>
               </div>
             </div>
           )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Building, LocateIcon, Mail,Trash, MapPin, Pencil, PinIcon, Plus, Circle, CircleHelp } from 'lucide-react';
+import { Building, LocateIcon, Mail, Trash2, MapPin, PinIcon, Plus, Circle, CircleHelp, SquarePen } from 'lucide-react';
 import { useColorClasses } from '../../../theme/useColorClasses';
 import api from '../../../constants/api';
 import Button from '../../ui/Button';
@@ -15,12 +15,13 @@ function ShipmentAddress() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [formData, setFormData] = useState({});
   const COLOR_CLASSES = useColorClasses();
-  const [showModal, setShowModal] = useState(false);
+  const [showAddAddressModal, setshowAddAddressModal] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (editingIndex === addresses.length) {
-      setShowModal(true);
+      setshowAddAddressModal(true);
     }
   }, [editingIndex, addresses.length]);
 
@@ -40,7 +41,7 @@ function ShipmentAddress() {
   };
 
   const handleAddNew = () => {
-    setShowModal(true);
+    setshowAddAddressModal(true);
     setEditingIndex(addresses.length);
     setFormData({});
   };
@@ -51,7 +52,7 @@ function ShipmentAddress() {
   };
 
   const handleCancel = () => {
-    setShowModal(false);
+    setshowAddAddressModal(false);
     setEditingIndex(null);
     setFormData({});
   };
@@ -59,7 +60,7 @@ function ShipmentAddress() {
   const handleSave = async () => {
     const isNew = editingIndex === addresses.length;
     const payload = { ...formData };
-    console.log('data to edit',payload);
+    console.log('data to edit', payload);
     if (!isNew) payload.id = addresses[editingIndex].id;
 
     const res = await api.address.add(user.id, payload);
@@ -121,7 +122,7 @@ function ShipmentAddress() {
         value={formData.zip || ''}
         onChange={handleChange}
       />
-       <InputField
+      <InputField
         label="City"
         name="city"
         value={formData.city || ''}
@@ -133,15 +134,6 @@ function ShipmentAddress() {
         value={formData.state || ''}
         onChange={handleChange}
       />
-      
-      {!showModal && (<div className="sm:col-span-2 flex flex-wrap gap-3 mt-2">
-        <Button className="text-sm px-6" onClick={handleSave}>
-          Save
-        </Button>
-        <Button className="text-sm px-6" variant="outline" onClick={handleCancel}>
-          Cancel
-        </Button>
-      </div>)}
     </div>
   );
 
@@ -174,22 +166,14 @@ function ShipmentAddress() {
         </div>
       )}
 
-      <div>
-            {/* <Button
-          onClick={handleAddNew}
-          className="text-sm w-full sm:w-48"
-          icon={<Plus size={16} />}
-        >
-          Add New Address
-        </Button> */}
+      <div  className={`grid gap-x-4  gap-y-4 mx-auto grid-cols-1 sm:grid-cols-2  items-stretch`}>
         {addresses.map((addr, index) => (
         <div
           key={index}
-          className={`${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.shadowMd} border p-4 rounded-lg`}
-
+          className={`${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.shadowMd} border p-4 rounded-lg flex flex-col h-full`}
         >
-          <div className="flex justify-between items-center mb-2 ">
-            <span className={`font-semibold ${COLOR_CLASSES.textPrimary} lg:pl-4`}>Address {index + 1}</span>
+          <div className="flex justify-between items-center mb-2 pb-2 border-b">
+            <span className={`font-normal ${COLOR_CLASSES.primaryBg} text-sm text-white rounded-md px-2 py-1 leading-none`}>Address {index + 1}</span>
            <div className="flex items-center gap-2">
           {/* <Button
             variant="outline"
@@ -199,69 +183,73 @@ function ShipmentAddress() {
             Set as Default
           </Button> */}
 
-          <button
-            onClick={() => handleDeleteClick(addr.id)}
-            className={`${COLOR_CLASSES.textSecondary} hover:text-red-700`}
-          >
-            <Trash className="w-5 h-5" />
-            
-          </button>
+                <button
+                  onClick={() => handleDeleteClick(addr.id)}
+                  className={`${COLOR_CLASSES.textSecondary} hover:text-red-700`}
+                >
+                  <Trash2 size={18} className="w-5 h-5" />
+                  
+                </button>
 
-          <button
-            onClick={() => handleEdit(index)}
-            title="Edit"
-            className={`${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.textHoverPrimary}`}
-          >
-            <Pencil className="w-5 h-5" />
-          </button>
-        </div>
-          </div>
-
-          {editingIndex === index ? (
-              <>
-              {renderForm()}
-              </>
-          ) : (
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 lg:p-4 rounded-md`}>
-             <InfoField Icon={MapPin} label="Address" value={addr.address} />
-             <InfoField Icon={Building} label="City" value={addr.city} />
-             <InfoField Icon={LocateIcon} label="State" value={addr.state} />
-             <InfoField Icon={PinIcon} label="Zip" value={addr.zip} />
+                <button
+                  onClick={() => handleEdit(index)}
+                  title="Edit"
+                  className={`${COLOR_CLASSES.textSecondary} ${COLOR_CLASSES.textHoverPrimary}`}
+                >
+                  <SquarePen className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          )}
-        </div>
-      ))}
+           <div className='flex flex-col h-full w-full'>
+             <div className='w-full mb-4 h-[80px]'>
+                <InfoField Icon={MapPin} label="Address" value={addr.address} />
+              </div>
+            <div className={`grid grid-cols-2 gap-x-2 gap-y-4 rounded-md`}>
+              
+                <InfoField Icon={PinIcon} label="Zip" value={addr.zip} />
+              <InfoField Icon={Building} label="City" value={addr.city} />
+             
+              <InfoField Icon={LocateIcon} label="State" value={addr.state} />
+            </div>
+           </div>
+
+          </div>
+        ))}
       </div>
 
-        <Popup
-          open={editingIndex === addresses.length && showModal}
-         
-          title="Add New Address"
-          onSubmit={handleSave}
-          onClose={handleCancel}
-        >
-          {renderForm()}
-        </Popup>
-        <Popup
-          open={deleteIndex !== null}
-          title="Delete Address?"
-          onClose={cancelDelete}
-          onDelete={confirmDelete}
-          isbtnSubmit={false}
-          isbtnCancel={true}
-          isbtnDelete={true}
-          btnDelete="Delete"
-          height="10"
-       
-        >
-          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
-            <CircleHelp className="w-28 h-28" />
-            <p className="text-gray-700 text-sm font-medium">
-              Are you sure you want to delete this address?
-            </p>
-          </div>
-        </Popup>
-
+      <Popup
+        open={editingIndex === addresses.length && showAddAddressModal}
+        title="Add New Address"
+        onSubmit={handleSave}
+        onClose={handleCancel}
+      >
+        {renderForm()}
+      </Popup>
+      <Popup
+        open={deleteIndex !== null}
+        title="Delete Address?"
+        onClose={cancelDelete}
+        onDelete={confirmDelete}
+        isbtnSubmit={false}
+        isbtnCancel={true}
+        isbtnDelete={true}
+        btnDelete="Delete"
+      >
+        <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+          <CircleHelp className="w-28 h-28" />
+          <p className={`${COLOR_CLASSES.textPrimary} text-sm font-medium`}>
+            Are you sure you want to delete this address?
+          </p>
+        </div>
+      </Popup>
+      <Popup
+        open={editingIndex !== null}
+        title="Edit Address"
+        onSubmit={handleSave}
+        onClose={handleCancel}
+      >
+        {renderForm()}
+      </Popup>
     </div>
   );
 }

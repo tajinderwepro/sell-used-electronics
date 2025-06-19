@@ -313,13 +313,13 @@ const Profile = () => {
             <p className="text-gray-500 mb-1">Email</p>
             <p className="py-3 rounded">{form.email}</p>
           </div> */}
-          <div>
+          {/* <div>
             <p className="text-gray-500 mb-1">Phone Number</p>
             <p className="py-3 rounded">{validatePhone(form.phone)}</p>
-          </div>
+          </div> */}
           <InfoField label="Full Name" value={form.name}/>
           <InfoField label="Email" value={form.email}/>
-          {/* <InfoField label="Phone Number" value={validatePhone(form.phone)}/> */}
+          <InfoField label="Phone Number" value={validatePhone(form.phone)}/>
           <div>
             <p className="text-gray-500 mb-1">Password</p>
             {showPasswordFields ? (
