@@ -33,7 +33,7 @@ export default function QuoteForm({ onClose }) {
   const handleNext = () => updateForm({ step: step + 1 });
   const handleBack = () => updateForm({ step: step - 1 });
 
-  const stepConstant = ['Category', 'Brand', 'Model', 'Condition', 'Base Prize', 'Price'];
+  const stepConstant = ['Category', 'Brand', 'Model', 'Details', 'Base Prize', 'Price'];
 
   const handleSubmit = async () => {
   if (!isAuthenticated) {
@@ -49,7 +49,8 @@ export default function QuoteForm({ onClose }) {
       formData.append("base_price", Number(price));
       formData.append("ebay_avg_price", estimate_price);
       formData.append("condition", conditions.condition); 
-
+      formData.append("specifications", conditions.storage);
+      formData.append("imei", conditions.imei);
       conditions.images.forEach((img) => {
         formData.append("files", img); 
       });
@@ -166,7 +167,7 @@ export default function QuoteForm({ onClose }) {
     if (step === 0) return !category;
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
-    if (step === 3) return !(conditions.condition && conditions.images.length > 0);
+    if (step === 3) return !(conditions.condition && conditions.images.length > 0 && conditions.storage.length > 0);
     return false;
   };
 

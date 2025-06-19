@@ -255,7 +255,7 @@ export default function Categories() {
                   <img
                     src={preview}
                     alt="Category Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-container"
                   />
                 ) : (
                   <span className="text-sm text-gray-500">Upload Image</span>

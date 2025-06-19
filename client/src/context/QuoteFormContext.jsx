@@ -11,6 +11,8 @@ export const QuoteFormProvider = ({ children }) => {
     conditions: {
       condition:"",
       images:[],
+      storage: [],
+      imei:'' 
     },
     price: 0,
     estimate_price:''

@@ -18,9 +18,7 @@ const ViewQuote = () => {
   const { quoteId } = useParams();
   const COLOR_CLASSES = useColorClasses();
   const [popupState, setPopupState] = useState({ open: false, type: "form", isEdit: false, id: null });
-  const {user}=useAuth();
-
-  console.log(device,"devicedevice")
+  const { user } = useAuth();
 
   const breadcrumbItems = [
     { label: 'Quotes', path: '/admin/quotes' },
@@ -51,41 +49,42 @@ const ViewQuote = () => {
   const handleClose = () => {
     setPopupState({ open: false, type: "form", isEdit: false, id: null });
   };
-  const handleApproved =async( )=>{
-   
+
+  const handleApproved = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
       formData.append("user_id", user.id);
       formData.append("status", "approved");
-      const res = await api.admin.updateDeviceStatus(device.id,formData);
+      const res = await api.admin.updateDeviceStatus(device.id, formData);
       toast.success(res.message);
       await getDevice();
-      handleClose()
+      handleClose();
     } catch (err) {
       toast.error(err.message);
     } finally {
       setLoading(false);
     }
-    
-  }
+  };
+
   if (loading || !device) return <LoadingIndicator isLoading={loading} />;
 
   return (
-    <div className="max-w-8xl mx-auto ">
+    <div className={`max-w-8xl mx-auto `}>
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight style={{ fontSize: "12px" }} />} />
-      <div className={`flex flex-col md:flex-row gap-10 ${COLOR_CLASSES.bgWhite} p-8 rounded-2xl shadow-md min-h-screen`}>
+
+      <div className={`flex flex-col md:flex-row gap-10 ${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} p-8 rounded-2xl shadow-md min-h-screen`}>
         {/* Image Section */}
-        <div className="flex flex-row gap-4 ">
-          {/* Thumbnails */}
-          <div className="flex md:flex-col gap-2 overflow-auto">
+        <div className="flex flex-row gap-4">
+          {/* Thumbnails with Scroll */}
+          <div className="flex md:flex-col gap-2 overflow-y-auto h-[400px] pr-1 scrollbar-hidden">
             {device.media.map((img) => (
               <img
                 key={img.id}
                 src={img.path}
                 alt="Thumbnail"
                 onClick={() => setSelectedImage(img.path)}
-                className={`w-16 h-16 object-cover rounded-md cursor-pointer border ${
+                className={`w-16 h-16 object-contain rounded-md cursor-pointer border ${
                   selectedImage === img.path ? "border-blue-500" : "border-gray-200"
                 }`}
               />
@@ -105,7 +104,7 @@ const ViewQuote = () => {
         {/* Info Section */}
         <div className="flex-1">
           <h2 className={`text-2xl font-semibold mb-3 ${COLOR_CLASSES.secondary}`}>
-            {device.brand_name} {device.model_name}
+             {device.model_name}
           </h2>
 
           {/* Tags */}
@@ -119,10 +118,6 @@ const ViewQuote = () => {
             <div>
               <div className="text-gray-500">Base Price</div>
               <div className="text-green-600 font-medium">₹{device.offered_price}</div>
-            </div>
-            <div>
-              {/* <div className="text-gray-500">Calculated Price</div>
-              <div className="text-gray-800 font-medium">₹{device.ebay_avg_price}</div> */}
             </div>
           </div>
 
@@ -144,18 +139,21 @@ const ViewQuote = () => {
               <div className="text-gray-500">Submitted By</div>
               {device.user?.name} ({device.user?.email})
             </div>
+          </div>
+
           <div className="mt-4">
             <Button
-            icon={<CircleCheckBig  color={`${device.status === "approved"?"green":"white"}`} />}
-              className="px-3 py-2"
+              icon={<CircleCheckBig color={device.status === "approved" ? "green" : "white"} />}
+              className="px-2 py-1 text-sm"
               onClick={handleApprovedPopup}
             >
               Approve
             </Button>
           </div>
-          </div>
         </div>
       </div>
+
+      {/* Approval Popup */}
       <Popup
         open={popupState.open}
         onClose={handleClose}
@@ -165,7 +163,9 @@ const ViewQuote = () => {
             ? "Delete Confirmation"
             : popupState.isEdit
               ? "Edit Device"
-              :popupState.type === "approved"?"Approved Device": "Create Device"
+              : popupState.type === "approved"
+                ? "Approved Device"
+                : "Create Device"
         }
         btnCancel="Cancel"
         btnSubmit="Submit"
@@ -175,13 +175,12 @@ const ViewQuote = () => {
         isbtnDelete={popupState.type === "delete"}
         loading={loading}
       >
-          <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
-            <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
-            <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
-             {` Are you sure you want to ${popupState.type === "approved" ?"approved":"delete"} this device?`}
-            </p>
-          </div>
-      
+        <div className="flex flex-col items-center justify-center text-center space-y-4 py-2">
+          <CircleHelp className={`w-28 h-28 ${COLOR_CLASSES.primary}`} />
+          <p className={`text-sm font-medium ${COLOR_CLASSES.primary}`}>
+            {`Are you sure you want to ${popupState.type === "approved" ? "approve" : "delete"} this device?`}
+          </p>
+        </div>
       </Popup>
     </div>
   );

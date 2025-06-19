@@ -98,7 +98,10 @@ class QuoteService:
             brand_id=brand_id,
             model_id=model_id,
             user_id=user_id,
-            risk_score=risk_score
+            risk_score=risk_score,
+            specifications=quote_in.specifications,
+            imei=quote_in.imei,
+
         )
         db.add(quote)
         await db.commit()

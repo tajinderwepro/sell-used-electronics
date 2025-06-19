@@ -10,7 +10,7 @@ export default function Modal({ title, children, onClose, customWidth = false })
       // Removed onClick={onClose} here
     >
       <div
-        className={`w-full ${customWidth ? 'w-[95%]' : ''} border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgGradient} p-6 max-w-3xl min-h-[400px] relative`}
+        className={`w-full ${customWidth ? 'w-[95%]' : ''} border ${COLOR_CLASSES.borderGray200} rounded-lg ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgGradient} p-5 max-w-3xl min-h-[400px] relative overflow-auto max-h-[600px] scrollbar-hidden`}
         onClick={(e) => e.stopPropagation()} // still prevents propagation if needed
       >
         <button

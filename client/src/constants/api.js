@@ -87,7 +87,7 @@ const api = {
         offset
       })),
 
-    deleteCategory: (id) => axiosWrapper(axiosInstance.delete(`/category/delete-category/${id}`)),
+    deleteCategory: (id) => axiosWrapper(axiosInstance.delete(`admin/category/delete-category/${id}`)),
 
     addBrand: (id, data) => axiosWrapper(
       axiosInstance.post(

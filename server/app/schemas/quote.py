@@ -10,6 +10,8 @@ class QuoteCreate(BaseModel):
     model: str
     condition: str
     offered_price: float
+    imei: str
+    specifications: str
 
 class CategoryBase(BaseModel):
     id: int

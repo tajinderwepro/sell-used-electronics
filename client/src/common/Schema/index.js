@@ -66,7 +66,11 @@ export const QuoteFormSchema = Yup.object().shape({
       "is-greater-than-zero",
       "Base price must be greater than zero",
       (value) => parseFloat((value || "").replace(/[^\d]/g, "")) > 0
-    )
+    ),
+    // ram: Yup.string()
+    //   .required("RAM is required"),
+    // rom: Yup.string()
+    //   .required("ROM is required") 
 });
 
 export const categorySchema = Yup.object().shape({
