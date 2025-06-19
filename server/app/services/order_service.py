@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi import HTTPException, status
 from app.models.order import Order
+from app.models.quote import Quote
 from app.schemas.orders import OrderCreate, OrderUpdate, OrderOut
 from sqlalchemy import desc
 from sqlalchemy.orm import selectinload
@@ -36,16 +37,16 @@ class OrderService:
             order_by=order_by,
             current_page=current_page,
             limit=None if get_all else limit,
-            options=[selectinload(Order.quote)],  # <-- ✅ relationship included
+            options=[selectinload(Order.quote).selectinload(Quote.media)],  # <-- ✅ relationship included
         )
 
     @staticmethod
     async def get_order(db: AsyncSession, order_id: int):
-        result = await db.execute(select(Order).options(selectinload(Order.quote)).where(Order.id == order_id))
+        result = await db.execute(select(Order).options(selectinload(Order.quote).selectinload(Quote.media)).where(Order.id == order_id))
         order = result.scalar_one_or_none()
         if not order:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
-        return order
+        return {"data": OrderOut.from_orm(order), "message": "Order fetched successfully", "success": True}
 
     @staticmethod
     async def get_latest_order(db: AsyncSession):

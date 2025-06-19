@@ -5,17 +5,21 @@ import api from "../../../constants/api";
 import { useFilters } from "../../../context/FilterContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import QuoteCard from "../../../components/common/DeviceCard";
+import Heading from "../../../components/ui/Heading";
+import { useColorClasses } from "../../../theme/useColorClasses";
 export default function Orders() {
-  const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading,setLoading]= useState (false)
   const {filters} = useFilters();
   const navigate = useNavigate()
+  const COLOR_CLASSES = useColorClasses();
   const fetchOrders = async ( ) => {
     try {
       setLoading(true);
       const response=await api.admin.getOrders(filters);
       console.log(response,'response')
-      setUsers(response.data)
+      setOrders(response.data)
     
     } catch (err) {
       console.log(err,'err')
@@ -61,12 +65,48 @@ export default function Orders() {
   ];
 
   const handleDelete = (id) => {
-    setUsers((prev) => prev.filter((user) => user.id !== id));
+    setOrders((prev) => prev.filter((user) => user.id !== id));
   };
 
   return (
     <div className="min-h-screen mt-2">
-      <CommonTable columns={columns}  data={users} loading={loading}  pageSize={10} title={"Orders List"} isCreate={false} onFetch={fetchOrders}/>
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            {orders.map((order) => (
+              <div
+                key={order.id}
+                className={`rounded-xl border p-4 space-y-4 ${COLOR_CLASSES.bgWhite}`}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className={`text-base font-semibold ${COLOR_CLASSES.textPrimary}`}>
+                      Order #{order.id}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {new Date(order.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {order.tracking_number && (
+                      <a
+                        href={`https://track.easypost.com/${order.tracking_number}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 underline"
+                      >
+                        Track
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <QuoteCard
+                  device={{...order.quote,shipping_label_url:order.shipping_label_url}}
+                  fullView={true}
+                  onRequestShipment={(id) => console.log('Request shipment for ID:', id)}
+                />
+              </div>
+            ))}
+        </div> */}
+      <CommonTable columns={columns}  data={orders} loading={loading}  pageSize={10} title={"Orders List"} isCreate={false} onFetch={fetchOrders}/>
     </div>
   );
 }

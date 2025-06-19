@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, Literal,List
 from pydantic.config import ConfigDict
 from datetime import datetime
+from app.schemas.quote import MediaBase
 
 class OrderBase(BaseModel):
     quote_id: int
@@ -23,6 +24,7 @@ class QuoteBase(BaseModel):
     brand_id: Optional[int]
     model_id: Optional[int]
     model_config = ConfigDict(from_attributes=True)
+    media: List[MediaBase] = [] 
 
 
 class OrderCreate(OrderBase):
