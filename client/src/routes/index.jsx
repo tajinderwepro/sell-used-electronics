@@ -29,6 +29,7 @@ import ConnectStripe from "../pages/ConnectStripe";
 import OnboardingSuccess from "../pages/OnboardingSuccess";
 import OnboardingRetry from "../pages/OnboardingRetry";
 import StripeStatus from "../pages/users/StripeStatus";
+import Payments from "../pages/admin/Payments";
 
 function AllRoutes() {
   const auth = useAuth();
@@ -78,6 +79,7 @@ function AllRoutes() {
           <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
           <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />
           <Route path="/admin/profile" element={<Profile/>} />
+          <Route path="/admin/payments" element={<Payments/>} />
         </Route>
 
         {/* User Protected Routes */}

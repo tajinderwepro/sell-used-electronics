@@ -10,7 +10,6 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from app.models.quote import Quote
 from datetime import datetime
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PaymentService:
@@ -150,7 +149,7 @@ class PaymentService:
 
     @staticmethod
     async def get_payments_list(db: AsyncSession):
-        result = await db.execute(select(Payment))
+        result = await db.execute(select(Payment).options(selectinload(Payment.user)))
         payments = result.scalars().all()
         return {
             "data": [payment.__dict__ for payment in payments],

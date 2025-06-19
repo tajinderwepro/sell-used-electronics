@@ -5,6 +5,7 @@ import {
   Package,
   FileText,
   Users,
+  BadgeDollarSign
 } from "lucide-react";
 import Heading from "../../components/ui/Heading";
 import NavLinkItem from "../../components/ui/NavLinkItem";
@@ -23,6 +24,7 @@ const menuItems = [
   { name: "Devices", icon: Monitor, path: "/admin/devices" },
   { name: "Orders", icon: Package, path: "/admin/orders" },
   { name: "Quotes", icon: FileText, path: "/admin/quotes" },
+  { name: "Payments", icon: BadgeDollarSign, path: "/admin/payments" },
   // { name: "Categories", icon: FileText, path: "/admin/categories" },
 ];
 

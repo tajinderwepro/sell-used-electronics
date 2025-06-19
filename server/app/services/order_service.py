@@ -38,14 +38,26 @@ class OrderService:
             current_page=current_page,
             limit=None if get_all else limit,
             options=[
+                selectinload(Order.quote),
                 selectinload(Order.quote).selectinload(Quote.media),
+                selectinload(Order.quote).selectinload(Quote.user),
                 selectinload(Order.payment)
             ],
         )
 
     @staticmethod
     async def get_order(db: AsyncSession, order_id: int):
-        result = await db.execute(select(Order).options(selectinload(Order.quote).selectinload(Quote.media)).options(selectinload(Order.payment)).where(Order.id == order_id))
+        result = await db.execute(
+            select(Order)
+            .options(
+                selectinload(Order.quote)
+                    .selectinload(Quote.media),
+                selectinload(Order.quote)
+                    .selectinload(Quote.user),
+                selectinload(Order.payment)
+            )
+            .where(Order.id == order_id)
+        )        
         order = result.scalar_one_or_none()
         if not order:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")

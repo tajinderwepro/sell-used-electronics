@@ -10,6 +10,21 @@ class OrderBase(BaseModel):
     tracking_number: Optional[str] = None
     shipping_label_url: Optional[str] = None
 
+class UserBase(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+    phone: Optional[int] = None
+    stripe_account_id: Optional[str] = None
+    stripe_account_status: Optional[str] = None
+    charges_enabled : Optional[bool] = None
+    payouts_enabled : Optional[bool] = None
+    details_submitted : Optional[bool] = None
+    onboarding_completed_at: Optional[datetime] = None
+    # media: Optional[MediaOut] = None
+    model_config = ConfigDict(from_attributes=True)
+
 class QuoteBase(BaseModel):
     id: int
     category_name: Optional[str]
@@ -25,7 +40,7 @@ class QuoteBase(BaseModel):
     model_id: Optional[int]
     model_config = ConfigDict(from_attributes=True)
     media: List[MediaBase] = [] 
-
+    user: Optional[UserBase] = None  # ✅ Add this
 
 class OrderCreate(OrderBase):
     pass
@@ -41,7 +56,7 @@ class PaymentBase(BaseModel):
     status: str
     created_at: Optional[datetime] = None
     method: str
-    model_config = ConfigDict(from_attributes=True)  # ✅ Add this
+    model_config = ConfigDict(from_attributes=True)  
 
 class OrderOut(BaseModel):
     id: int
@@ -49,7 +64,7 @@ class OrderOut(BaseModel):
     status: str
     tracking_number: str | None = None
     shipping_label_url: str | None = None
-    quote: QuoteBase | None = None  # 👈 change from `dict` to `QuoteOut`
+    quote: QuoteBase | None = None  
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     payment: List[PaymentBase] = [] 

@@ -152,7 +152,7 @@ const CommonTable = ({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className={`px-3 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
+                      className={`px-3 py-4 whitespace-nowrap truncate max-w-[200px] border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     >
                         {['role', 'status', 'condition'].includes(col.key) ? (
                           <Chip status={row[col.key]} />

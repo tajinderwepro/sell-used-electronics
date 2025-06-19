@@ -15,8 +15,10 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 # User routes group
 user_router = APIRouter(prefix="/users", dependencies=[Depends(require_roles(["user","admin"]))])
+
 #user payment
 user_router.include_router(payments.router, prefix="/payments/stripe", tags=["stripe"],dependencies=[Depends(require_roles(["user"]))])
+
 user_router.include_router(users.router, tags=["users"])
 api_router.include_router(user_router)
 api_router.include_router(shipment.router, prefix="/shipment", tags=["webhook"])
