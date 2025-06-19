@@ -1,0 +1,25 @@
+# app/api/v1/endpoints/payments.py
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.session import get_db
+from app.services.payment_service import PaymentService
+from sqlalchemy import update, select
+from app.models.payment import Payment
+
+router = APIRouter()
+
+@router.get("/pay/{order_id}")
+async def pay_seller(order_id: int, db: AsyncSession = Depends(get_db)):
+    service = PaymentService(db)
+    return await service.pay_seller(order_id) 
+
+@router.get("/status/{order_id}")
+async def get_payment_status(order_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Payment).where(Payment.order_id == order_id))
+    payment = result.scalar_one_or_none()
+    return {"status": payment.status if payment else "unpaid"}
+
+@router.get("/connect/status/{stripe_account_id}")
+async def update_and_get_status(stripe_account_id: str, db: AsyncSession = Depends(get_db)):
+    service = PaymentService(db)
+    return await service.get_connected_account_status(stripe_account_id)
