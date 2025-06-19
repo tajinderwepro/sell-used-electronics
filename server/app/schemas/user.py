@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Enum
 from app.db.session import Base
 from typing import Optional ,List
 from .media import MediaOut
+from datetime import datetime
 
 import enum
 
@@ -28,6 +29,12 @@ class UserOut(BaseModel):
     email: str
     role: str
     phone: Optional[int] = None
+    stripe_account_id: Optional[str] = None
+    stripe_account_status: Optional[str] = None
+    charges_enabled : Optional[bool] = None
+    payouts_enabled : Optional[bool] = None
+    details_submitted : Optional[bool] = None
+    onboarding_completed_at: Optional[datetime] = None
     # media: Optional[MediaOut] = None
 
     class Config:

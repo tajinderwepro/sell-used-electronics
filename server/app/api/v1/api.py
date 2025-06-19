@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
-from app.api.v1.endpoints import auth, shipment, payments
+from app.api.v1.endpoints import auth, shipment
 from app.api.v1.endpoints.admin import device, order, category, brand, model, quote
+from app.api.v1.endpoints.payments import payments
 from app.api.v1.endpoints.public import common
 from app.api.v1.endpoints.user import users
 from app.api.v1.endpoints.public import address
@@ -21,7 +22,6 @@ api_router.include_router(shipment.router, prefix="/shipment", tags=["webhook"])
 # Admin routes group
 admin_router = APIRouter(prefix="/admin")
 admin_router.include_router(device.router, prefix="/devices", tags=["devices"])
-admin_router.include_router(payments.router, prefix="/payment", tags=["payment"])
 admin_router.include_router(quote.router, prefix="/quotes", tags=["quotes"])
 admin_router.include_router(order.router, prefix="/orders", tags=["orders"], dependencies=[Depends(require_roles(["admin"]))])
 admin_router.include_router(brand.router, prefix="/brand", tags=["brand"], dependencies=[Depends(require_roles(["admin"]))])
@@ -32,6 +32,11 @@ admin_router.include_router(
     tags=["category"],
 )
 api_router.include_router(admin_router)
+
+# Payments routes group
+payment_router = APIRouter(prefix="/payments")
+payment_router.include_router(payments.router, prefix="/stripe", tags=["stripe"])
+api_router.include_router(payment_router)
 
 # common routes
 api_router.include_router(

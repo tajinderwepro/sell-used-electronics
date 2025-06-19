@@ -18,6 +18,11 @@ const navLinks = [
     to: '/address',
     icon: LocationEdit,
   },
+  {
+    name: 'Stripe Status',
+    to: '/stripe-status',
+    icon: LocationEdit,
+  },
 ];
 
 export default function UserNavbar() {

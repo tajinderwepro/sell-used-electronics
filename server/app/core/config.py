@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     ALGORITHM = "HS256"
     EASY_POST_API_KEY: str = os.getenv("EASY_POST_API_KEY", "ep_test_...")
     STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "sk_test_...")
+    CLIENT_URL: str = os.getenv("CLIENT_URL", "sk_test_...")
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24  
     class Config:
         env_file = ".env"

@@ -25,6 +25,10 @@ import ShipmentAddress from "../components/common/ShipmentAddress";
 import Profile from "../pages/Profile";
 import ViewDevice from "../pages/admin/Devices/viewDevice";
 import ViewQuote from "../pages/admin/Quotes/ViewQuote";
+import ConnectStripe from "../pages/ConnectStripe";
+import OnboardingSuccess from "../pages/OnboardingSuccess";
+import OnboardingRetry from "../pages/OnboardingRetry";
+import StripeStatus from "../pages/users/StripeStatus";
 
 function AllRoutes() {
   const auth = useAuth();
@@ -82,6 +86,12 @@ function AllRoutes() {
           <Route path="/products" element={<Products />} />
           <Route path="/address" element={<ShipmentAddress/>} />
           <Route path="/profile" element={<Profile/>} />
+          <Route path="/connect/start" element={<ConnectStripe/>} />
+          <Route path="/stripe-status" element={<StripeStatus/>} />
+          <Route path="/connect/complete" element={<Profile/>} />
+          <Route path="/stripe/onboarding/complete" element={<OnboardingSuccess />} />
+          <Route path="/stripe/onboarding/refresh" element={<OnboardingRetry />} />
+
         </Route>
 
         {/* Catch-All 404 Route (MUST be last) */}

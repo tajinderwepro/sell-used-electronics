@@ -152,7 +152,7 @@ const CommonTable = ({
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className={`px-6 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
+                      className={`px-3 py-4 whitespace-nowrap truncate max-w-xs border-t ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.textPrimary}`}
                     >
                         {['role', 'status', 'condition'].includes(col.key) ? (
                           <Chip status={row[col.key]} />
@@ -166,7 +166,11 @@ const CommonTable = ({
                           <a className={`${COLOR_CLASSES.primary}`} href={row[col.key]} target="_blank" rel="noopener noreferrer">
                             {row[col.key]}
                           </a>
-                        ) : (
+                        ) : 
+                          col.key == 'payment_status'  ? (
+                            <Chip status={row.payment.length > 0 ? row.payment[0].status : "pending"} />
+                          ):
+                        (
                           row[col.key]
                         )}
                     </td>

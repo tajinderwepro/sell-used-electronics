@@ -63,7 +63,7 @@ useEffect(() => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, token, loading, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, token, loading, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );

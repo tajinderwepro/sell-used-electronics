@@ -10,6 +10,8 @@ import { useFilters } from '../../../context/FilterContext';
 import { useAuth } from '../../../context/AuthContext';
 import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
+import Button from '../../../components/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 
 function Products() {
@@ -19,6 +21,7 @@ function Products() {
   const COLOR_CLASSES = useColorClasses();
   const { filters } = useFilters();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const fetchQuotes = async () => {
     try {

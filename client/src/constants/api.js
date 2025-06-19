@@ -164,6 +164,11 @@ const api = {
     },
     orders:{
       get: (id) => axiosWrapper(axiosInstance.get(`admin/orders/${id}`)),
+    },
+    payments:{
+      pay: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/pay/${id}`)),
+      getStatus: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/status/${id}`)),
+      stripeStatus: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/connect/status/${id}`)),
     }
   },
   getCategories: (limit = 10, offset = 0) => axiosWrapper(

@@ -11,16 +11,14 @@ import { QuoteFormProvider } from './context/QuoteFormContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <SessionProvider>
       <AuthProvider>
          <QuoteFormProvider>
           <ToastContainer/>
-           <App />
+            <App />
          </QuoteFormProvider>
       </AuthProvider>
     </SessionProvider>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

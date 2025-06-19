@@ -14,6 +14,7 @@ from app.core.config import settings
 from app.core.security import get_current_user
 from app.models.user import User
 
+from app.services.payment_service import PaymentService
 router = APIRouter()
 
 UPLOAD_FOLDER = "uploads"
@@ -123,3 +124,7 @@ async def request_shipment(
     )
 
 
+@router.get("/connect/onboarding-link/{user_id}")
+async def get_onboarding_link(user_id: int, db: AsyncSession = Depends(get_db)):
+    service = PaymentService(db)
+    return await service.generate_onboarding_link(user_id)

@@ -36,6 +36,12 @@ class OrderUpdate(BaseModel):
     tracking_number: Optional[str] = None
     shipping_label_url: Optional[str] = None
 
+class PaymentBase(BaseModel):
+    id: int
+    status: str
+    created_at: Optional[datetime] = None
+    method: str
+    model_config = ConfigDict(from_attributes=True)  # ✅ Add this
 
 class OrderOut(BaseModel):
     id: int
@@ -46,6 +52,7 @@ class OrderOut(BaseModel):
     quote: QuoteBase | None = None  # 👈 change from `dict` to `QuoteOut`
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    payment: List[PaymentBase] = [] 
     model_config = {
         "from_attributes": True  
     }

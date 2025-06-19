@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import QuoteCard from "../../../components/common/DeviceCard";
 import Heading from "../../../components/ui/Heading";
 import { useColorClasses } from "../../../theme/useColorClasses";
+import Button from "../../../components/ui/Button";
+import axios from "axios";
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading,setLoading]= useState (false)
@@ -33,13 +35,20 @@ export default function Orders() {
       fetchOrders()
   }, []);
   
-
+  const handlePay = async(id) => {
+      const res = await api.admin.payments.pay(id);
+      if(res.success){
+        toast.success(res.message);
+        fetchOrders();
+      }
+  }
   const columns = [
     { key: "id", label: "ID",sortable: true },
     { key: "quote_id", label: "Quote Id",sortable: true },
     { key: "status", label: "Status",sortable: true },
     { key: "tracking_number", label: "Tracking Number",sortable: true },
     { key: "shipping_label_url", label: "Shipping Label Url",sortable: true },
+    { key: "payment_status", label: "Payment Status",sortable: true },
     {
       key: "created_at",
       label: "Order Date",
@@ -57,8 +66,26 @@ export default function Orders() {
         <button
           onClick={() => handleDelete(order.id)}
         >
-          <Trash2 size={18} color="grey" />
+            <Trash2 size={18} color="grey" />
         </button>
+          {order.status == "delivered" &&  order.payment.length == 0?
+              <Button
+                className="ml-2 px-1 py-1 text-xs rounded"
+                onClick={async () => {handlePay(order.id)}}
+              >
+              Pay
+            </Button>
+            :
+            (order.payment && order.payment.length > 0 && order.payment[0].status == "success") ?
+            <Button
+              className="ml-2 px-1 py-1 text-xs rounded"
+              disabled= {true}
+            >
+              Paid
+            </Button>
+            :
+            ""
+          }
         </div>
       ),
     },

@@ -15,3 +15,4 @@ class Order(Base,TimestampMixin):
 
     # Relationships
     quote = relationship("Quote")
+    payment = relationship("Payment", back_populates="order", uselist=True)

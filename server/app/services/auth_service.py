@@ -53,7 +53,7 @@ class AuthService:
         return TokenResponse(
             access_token=access_token,
             token_type="bearer",
-            user=user  
+            user=UserOut.from_orm(user)  
         )
     @staticmethod
     async def register_user(data: UserCreate, db: AsyncSession) -> RegisterUserResponse:

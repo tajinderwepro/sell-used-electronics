@@ -25,7 +25,8 @@ const Profile = () => {
     phone: "",
     new_password: "",
     confirm_password: "",
-    image_path:""
+    image_path:"",
+    stripe_account_id:""
   });
 
   const [errors, setErrors] = useState({});
@@ -126,7 +127,7 @@ const Profile = () => {
     setloading(true)
     try {
       const res = await api.auth.me();
-      const { email, name, phone, media,id } = res.user;
+      const { email, name, phone, media,id,stripe_account_id } = res.user;
       console.log(media[0]?.path,'sdd')
       if (res.success) {
         const newFormState = {
@@ -134,6 +135,7 @@ const Profile = () => {
             name: name || "",
             email: email || "",
             phone: phone || "",
+            stripe_account_id: stripe_account_id || "",
             image_path: media[0]?.path || ""
         };
 
@@ -143,7 +145,8 @@ const Profile = () => {
           name: newFormState.name,
           email: newFormState.email,
           phone: newFormState.phone,
-          image_path: newFormState.image_path
+          image_path: newFormState.image_path,
+          stripe_account_id: newFormState.stripe_account_id
         }));
 
       setInitialFormState(newFormState);
@@ -206,7 +209,7 @@ const Profile = () => {
     }));
   }
 
-   console.log(imagePreview,'form')
+   console.log(form,'formformform')
   return (
     <div className=" p-6">
       {/* Top section */}
@@ -320,8 +323,10 @@ const Profile = () => {
           <InfoField label="Full Name" value={form.name}/>
           <InfoField label="Email" value={form.email}/>
           <InfoField label="Phone Number" value={validatePhone(form.phone)}/>
+          <InfoField label="Stripe Account Id" value={form.stripe_account_id}/>
+
           <div>
-            <p className="text-gray-500 mb-1">Password</p>
+            <p className="font-[700] leading-none">Password</p>
             {showPasswordFields ? (
               <div className="py-3 rounded space-y-4">
                 <InputField

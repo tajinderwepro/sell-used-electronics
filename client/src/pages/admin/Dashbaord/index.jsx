@@ -18,6 +18,9 @@ import {
   Legend,
 } from "recharts";
 import { Chip } from "../../../components/ui/Chip";
+import Button from "../../../components/ui/Button";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const PIE_COLORS = ["#22c55e", "#facc15", "#f97316", "#ef4444"]; // excellent, good, fair, bad
 const LINE_COLORS = ["#6366f1", "#0ea5e9", "#14b8a6"];
@@ -121,7 +124,6 @@ const statusColorMap = {
   return (
     <div className={`md:p-6 sm:px-0 min-h-screen ${COLOR_CLASSES.bgWhite}`}>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <SummaryCard title="Total Users" count={users?.length} color="bg-blue-500" />

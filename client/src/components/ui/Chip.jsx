@@ -21,6 +21,12 @@ export const Chip = ({ status }) => {
     delivered: { label: "Delivered", className: "bg-green-500 text-white" },
     pre_transit: { label: "Pre Transit", className: "bg-gray-200 text-gray-700" },
     return_to_sender: { label: "Return to Sender", className: "bg-red-300 text-red-900" },
+
+    //Payment statuses
+    success: { label: "Paid", className: "bg-green-500 text-white" },
+
+    // Stripe Status
+    verified: { label: "Verified", className: "bg-green-500 text-white" },
   };
 
   const config = statusConfig[status];

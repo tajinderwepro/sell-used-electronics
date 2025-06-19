@@ -1,7 +1,10 @@
+import axios from "axios";
+import { Chip } from "../../../components/ui/Chip";
 import Heading from "../../../components/ui/Heading";
 import { useAuth } from "../../../context/AuthContext";
 import UserNavbar from "../../../layouts/GeneralLayout/UserNavbar";
 import { Mail, PlusCircle, Smartphone, Star, Users } from "lucide-react";
+import { useState } from "react";
 
 const stats = [
   { title: "Devices Listed", value: 12, icon: Smartphone, color: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300" },
@@ -33,7 +36,6 @@ const devices = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-
   return (
     <div className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen space-y-6">
       <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
