@@ -1,17 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 from typing import Literal, Optional
-from shipping_service import ShippingService
+from app.services.shipping_service import ShippingService
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import update, select
+from app.models.order import Order  
+from app.models.quote import Quote  
+from app.db.session import get_db
 
-router = APIRouter(prefix="/shipping", tags=["Shipping"])
-
-# Replace with your real keys
-API_KEYS = {
-    "easypost": "EASYPOST_API_KEY",
-    "shippo": "SHIPPO_API_KEY"
-}
-
-# ----------- Request Models -----------
+router = APIRouter()
 
 class AddressModel(BaseModel):
     name: Optional[str] = None
@@ -23,45 +20,16 @@ class AddressModel(BaseModel):
     country: str = "US"
     phone: str
 
-class ParcelModel(BaseModel):
-    length: float
-    width: float
-    height: float
-    weight: float
-
-class ShipmentRequest(BaseModel):
-    provider: Literal["easypost", "shippo"]
-    from_address: AddressModel
-    to_address: AddressModel
-    parcel: ParcelModel
-
 class AddressValidationRequest(BaseModel):
     provider: Literal["easypost", "shippo"]
     address: AddressModel
 
-# ----------- Endpoints -----------
-
 @router.post("/validate-address")
 def validate_address(request: AddressValidationRequest):
     try:
-        service = ShippingService(request.provider, API_KEYS[request.provider])
+        service = ShippingService()
         result = service.validate_address(request.address.dict())
         return {"valid": True, "address": result}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/create-shipment")
-def create_shipment(request: ShipmentRequest):
-    try:
-        service = ShippingService(request.provider, API_KEYS[request.provider])
-        shipment = service.create_shipment(
-            from_address=request.from_address.dict(),
-            to_address=request.to_address.dict(),
-            parcel=request.parcel.dict()
-        )
-        rate = service.get_lowest_rate(shipment)
-        return {"shipment": shipment, "lowest_rate": rate}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -69,8 +37,44 @@ def create_shipment(request: ShipmentRequest):
 @router.get("/track")
 def track_order(provider: Literal["easypost", "shippo"], tracking_number: str, carrier: Optional[str] = None):
     try:
-        service = ShippingService(provider, API_KEYS[provider])
+        service = ShippingService()
         tracking = service.track_order(tracking_number, carrier)
         return {"tracking_status": tracking}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/easypost-webhook")
+async def easypost_webhook(request: Request, db: AsyncSession = Depends(get_db)):
+    try:
+        payload = await request.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload")
+
+    if payload.get("object") != "Event" or "result" not in payload:
+        raise HTTPException(status_code=400, detail="Invalid EasyPost webhook")
+
+    event_type = payload.get("description")
+    tracker = payload["result"]
+    tracking_number = tracker.get("id")
+    tracking_status = tracker.get("status")
+
+    if not tracking_number:
+        raise HTTPException(status_code=400, detail="Tracking number not found")
+
+    stmt = select(Order).where(Order.tracking_number == tracking_number)
+    result = await db.execute(stmt)
+    order = result.scalar_one_or_none()
+
+    quote_stmt = select(Quote).where(Quote.id == order.quote_id)
+    quote_result = await db.execute(quote_stmt)
+    quote = quote_result.scalar_one_or_none()
+    quote.status = tracking_status
+    await db.commit()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    order.status = tracking_status
+    order.shipping_label_url = tracker.get("public_url", None)
+    await db.commit()
+
+    return {"success": True, "message": f"Order {order.id} updated to status '{tracking_status}'"}

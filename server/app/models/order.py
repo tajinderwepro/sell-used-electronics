@@ -8,8 +8,8 @@ class Order(Base,TimestampMixin):
     __tablename__ = 'orders'
 
     id = Column(Integer, primary_key=True, index=True)
-    quote_id = Column(Integer, ForeignKey('quotes.id'), nullable=False)
-    status = Column(Enum('pending', 'received', 'paid', name='order_statuses'), nullable=False)
+    quote_id = Column(Integer, ForeignKey('quotes.id'), nullable=False, default="pending")
+    status = Column(String, nullable=False)  
     tracking_number = Column(String, nullable=True)
     shipping_label_url = Column(String, nullable=True)
 

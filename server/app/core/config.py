@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
-
+import os
 class Settings(BaseSettings):
     PROJECT_NAME: str = "My Fullstack App"
     API_V1_STR: str = "/api/v1"
@@ -10,7 +10,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
     ALGORITHM = "HS256"
-    EASY_POST_API_KEY: Optional[str] = None
+    EASY_POST_API_KEY: str = os.getenv("EASY_POST_API_KEY", "ep_test_...")
+    STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "sk_test_...")
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24  
     class Config:
         env_file = ".env"

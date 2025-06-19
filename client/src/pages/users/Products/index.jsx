@@ -48,8 +48,12 @@ function Products() {
   const handleRequest = async () => {
     try {
       setLoading(true);
-      await api.user.requestShipment(popupState.deviceId);
-      toast.success('Quote shipment requested successfully');
+      const res = await api.user.requestShipment(popupState.deviceId);
+      if(res.success){
+        toast.success(res.message);
+      }else{
+        toast.error(res.message);
+      }
       fetchQuotes();
     } catch (err) {
       console.error('Failed to request shipment:', err);

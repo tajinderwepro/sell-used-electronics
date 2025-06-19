@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.api.v1.endpoints import auth
+from app.api.v1.endpoints import auth, shipment, payments
 from app.api.v1.endpoints.admin import device, order, category, brand, model, quote
 from app.api.v1.endpoints.public import common
 from app.api.v1.endpoints.user import users
@@ -16,10 +16,12 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 user_router = APIRouter(prefix="/users", dependencies=[Depends(require_roles(["user","admin"]))])
 user_router.include_router(users.router, tags=["users"])
 api_router.include_router(user_router)
+api_router.include_router(shipment.router, prefix="/shipment", tags=["webhook"])
 
 # Admin routes group
 admin_router = APIRouter(prefix="/admin")
 admin_router.include_router(device.router, prefix="/devices", tags=["devices"])
+admin_router.include_router(payments.router, prefix="/payment", tags=["payment"])
 admin_router.include_router(quote.router, prefix="/quotes", tags=["quotes"])
 admin_router.include_router(order.router, prefix="/orders", tags=["orders"], dependencies=[Depends(require_roles(["admin"]))])
 admin_router.include_router(brand.router, prefix="/brand", tags=["brand"], dependencies=[Depends(require_roles(["admin"]))])

@@ -211,20 +211,26 @@ class UserService:
                 parcel=parcel
             )
             lowest_rate = service.get_lowest_rate(shipment)
+            shipment_id = shipment["id"]
+            bought_shipment = service.buy_shipment(shipment_id, insurance=249.99)
+            if bought_shipment.get("success") is False:
+                return bought_shipment
             order = OrderCreate(
                 quote_id=quote.id,
                 status="pending",
+                shipping_label_url=bought_shipment["postage_label"]["label_url"],
+                tracking_number=bought_shipment["tracker"]["id"]
             )
             quote.status = "shipped"
+            
             await db.commit()
             await db.refresh(quote)
-            return await OrderService.create_order(db, order)
-            # shipment_id = shipment["id"]
-            # bought_shipment = service.buy_shipment(shipment_id, insurance=249.99)
+            order =  await OrderService.create_order(db, order)
             return {
-                "shipment": shipment.to_dict() if hasattr(shipment, "to_dict") else shipment,
+                "order": order.to_dict() if hasattr(order, "to_dict") else order,
                 "lowest_rate": lowest_rate,
-                "success": True
+                "success": True,
+                "message": "Ordered successfully"
             }
         except Exception as e:
             return {"message": str(e), "success": False}
