@@ -168,7 +168,7 @@ const api = {
     payments:{
       pay: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/pay/${id}`)),
       getStatus: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/status/${id}`)),
-      stripeStatus: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/connect/status/${id}`)),
+      stripeStatus: (id) => axiosWrapper(axiosInstance.get(`users/payments/stripe/connect/status/${id}`)),
       getList: (data) => axiosWrapper(axiosInstance.get('admin/payments/stripe/list',data)),
     }
   },
