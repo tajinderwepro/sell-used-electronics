@@ -30,6 +30,7 @@ import OnboardingSuccess from "../pages/OnboardingSuccess";
 import OnboardingRetry from "../pages/OnboardingRetry";
 import StripeStatus from "../pages/users/StripeStatus";
 import Payments from "../pages/admin/Payments";
+import UserPayments from "../pages/users/Payments";
 
 function AllRoutes() {
   const auth = useAuth();
@@ -86,6 +87,7 @@ function AllRoutes() {
         <Route element={<UserRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/payments" element={<UserPayments />} />
           <Route path="/address" element={<ShipmentAddress/>} />
           <Route path="/profile" element={<Profile/>} />
           <Route path="/connect/start" element={<ConnectStripe/>} />

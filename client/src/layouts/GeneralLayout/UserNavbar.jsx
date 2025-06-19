@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, LocationEdit } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, LocationEdit, BanknoteArrowDown } from 'lucide-react';
 import { useColorClasses } from '../../theme/useColorClasses';
 
 const navLinks = [
@@ -17,6 +17,11 @@ const navLinks = [
     name: 'Shipment Address',
     to: '/address',
     icon: LocationEdit,
+  },
+  {
+    name: 'Payments',
+    to: '/payments',
+    icon: BanknoteArrowDown,
   },
   {
     name: 'Stripe Status',

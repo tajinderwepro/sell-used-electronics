@@ -123,7 +123,7 @@ const CommonTable = ({
         </div>
 
         <table className="min-w-full divide-y text-sm">
-          <thead className={`${COLOR_CLASSES.primaryLightBg} sticky top-0 z-10`}>
+          <thead className={`${COLOR_CLASSES.primaryLightBg} sticky top-0`}>
             <tr>
               {columns.map((col) => (
                 <th

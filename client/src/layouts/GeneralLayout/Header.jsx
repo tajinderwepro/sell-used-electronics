@@ -12,7 +12,8 @@ import {
   Sun,
   UserCircle,
   ShoppingBag,
-  LocationEdit
+  LocationEdit,
+  BanknoteArrowDown,
 } from "lucide-react"
 import { PROJECT_NAME } from '../../constants'
 import { useMode } from '../../context/ModeContext'
@@ -38,6 +39,11 @@ const DROPDOWN_MENU = [
     name: "Shipment Address",
     href: "/address",
     icon: LocationEdit,
+  },
+  {
+    name: "Payments",
+    href: "/payments",
+    icon: BanknoteArrowDown,
   },
   {
     name: "Settings",
