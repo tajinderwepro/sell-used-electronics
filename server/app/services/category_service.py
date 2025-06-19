@@ -7,16 +7,24 @@ from app.models.category import Category
 from app.models.media import Media
 from app.models.brand import Brand
 from app.models.model import Model
+from app.models.log import Log
 from app.schemas.category import CategoryOut
 from app.schemas.category import ListResponse
 from sqlalchemy import and_
+from app.services.system_info_service import SystemInfoService
 
 
 class CategoryService:
+
     @staticmethod
-    async def add_category(name: str, path: str, db: AsyncSession):
+    async def add_category(request,name: str, path: str, db: AsyncSession,current_user):
         try:
             # Check if the category already exists
+            system_info = SystemInfoService(request)
+            os = system_info.get_os()
+            ip_address = request.client.host
+            browser = system_info.get_browser()
+
             result = await db.execute(select(Category).where(Category.name == name))
             existing = result.scalar_one_or_none()
             if existing:
@@ -42,7 +50,19 @@ class CategoryService:
             new_category.media_id = media.id
             await db.commit()
             await db.refresh(new_category)
-
+            # Add media entry
+            logs = Log(
+                user_id=current_user.id,
+                action="Add Category",
+                description=f"{current_user.name} added a category",
+                ip_address=ip_address,
+                os=os,
+                browser=browser
+            )
+            db.add(logs)
+            await db.commit()
+            await db.refresh(logs)
+            
             return {
                 "success": True,
                 "message": "Category added successfully",

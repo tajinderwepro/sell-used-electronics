@@ -30,5 +30,7 @@ class User(Base):
         ),
         backref="user"
     )
+    # logs = relationship("Log", back_populates="user")
+
 
     
