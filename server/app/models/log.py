@@ -17,5 +17,5 @@ class Log(Base,TimestampMixin):
     browser = Column(String)
 
 
-    # user = relationship("User", back_populates="logs")
+    user = relationship("User", back_populates="logs")
 

@@ -50,7 +50,7 @@ class CategoryService:
             new_category.media_id = media.id
             await db.commit()
             await db.refresh(new_category)
-            # Add media entry
+            # logs storing
             logs = Log(
                 user_id=current_user.id,
                 action="Add Category",

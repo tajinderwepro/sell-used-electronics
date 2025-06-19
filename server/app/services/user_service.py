@@ -16,6 +16,9 @@ from app.models.media import Media
 from app.utils.file_utils import save_upload_file
 from app.services.shipping_service import ShippingService
 from app.services.order_service import OrderService
+from app.models.log import Log
+from app.services.system_info_service import SystemInfoService
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -143,34 +146,42 @@ class UserService:
         )
 
     @staticmethod
-    async def request_shipment(db: AsyncSession, quote_id: int):
+    async def request_shipment(request,db: AsyncSession, quote_id: int,current_user):
+        system_info = SystemInfoService(request)
+        os = system_info.get_os()
+        ip_address = request.client.host
+        browser = system_info.get_browser()
+
         result = await db.execute(select(Quote).where(Quote.id == quote_id))
-        quote = result.scalar_one_or_none()
+        quote = result.scalars().first()
         if not quote:
             return {"message": "Quote not found", "success": False}
 
         user_result = await db.execute(select(User).where(User.id == quote.user_id))
-        user = user_result.scalar_one_or_none()
+        user = user_result.scalars().first()
         if not user:
             return {"message": "User not found", "success": False}
 
         address_result = await db.execute(
             select(Address).where(Address.user_id == quote.user_id)
         )
-        address = address_result.scalar_one_or_none()
+        address = address_result.scalars().first()
         if not address:
             return {"message": "Address not found", "success": False}
 
 
+        # admin_result = await db.execute(select(User).where(User.role == 'admin'))
+        # admin = admin_result.scalar_one_or_none()
         admin_result = await db.execute(select(User).where(User.role == 'admin'))
-        admin = admin_result.scalar_one_or_none()
+        admin = admin_result.scalars().first()
+
         if not admin:
             return {"message": "Admin not found", "success": False}
 
         admin_address_result = await db.execute(
             select(Address).where(Address.user_id == admin.id)
         )
-        admin_address = admin_address_result.scalar_one_or_none()
+        admin_address = admin_address_result.scalars().first()
         if not admin_address:
             return {"message": "admin Address not found", "success": False}
 
@@ -203,6 +214,21 @@ class UserService:
 
         provider = 'easypost'
         service = ShippingService()
+
+      #  logs storing
+
+        logs = Log(
+                user_id=current_user.id,
+                action="Shipping Request",
+                description=f"User '{current_user.name.capitalize()}' with role '{current_user.role}' initiated a shipping request for quote ID {quote.id}.",
+                ip_address=ip_address,
+                os=os,
+                browser=browser
+        )
+        db.add(logs)
+        await db.commit()
+        await db.refresh(logs)
+
 
         try:
             shipment = service.create_shipment(

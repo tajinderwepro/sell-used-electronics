@@ -22,6 +22,7 @@ class ModelCreate(BaseModel):
     name: str
     brand_id: int
     category_id: int
+    specifications: str
 
     model_config = ConfigDict(from_attributes=True)
 

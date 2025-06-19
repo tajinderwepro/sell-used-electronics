@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends, HTTPException, status, Query, Body, Form, UploadFile, File
+from fastapi import APIRouter,Depends, HTTPException, status, Query, Body, Form, UploadFile, File,Request
 from typing import List
 from app.db.session import get_db
 from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate, UserListRequest
@@ -11,6 +11,8 @@ import os
 from app.schemas.device import DeviceListResponse
 from app.utils.file_utils import save_upload_file
 from app.core.config import settings
+from app.core.security import get_current_user
+from app.models.user import User
 
 router = APIRouter()
 
@@ -108,12 +110,16 @@ async def get_user_quotes(
 
 @router.post("/quotes/request-shipment/{quote_id}")
 async def request_shipment(
+    request: Request,
     quote_id: int,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return await UserService.request_shipment(
+        request=request,
         db=db,
-        quote_id=quote_id
+        quote_id=quote_id,
+        current_user=current_user
     )
 
 

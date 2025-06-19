@@ -28,7 +28,8 @@ class ModelService:
             new_model = Model(
                 name=payload.name,
                 brand_id=brand_id,
-                category_id=payload.category_id
+                category_id=payload.category_id,
+                specifications=payload.specifications
             )
             db.add(new_model)
             await db.commit()

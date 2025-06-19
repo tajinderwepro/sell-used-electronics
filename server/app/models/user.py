@@ -17,6 +17,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
     phone = Column(BigInteger, nullable=False, unique=True)
+    stripe_account_id = Column(String, nullable=True)
 
 
     devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
@@ -30,7 +31,7 @@ class User(Base):
         ),
         backref="user"
     )
-    # logs = relationship("Log", back_populates="user")
+    logs = relationship("Log", back_populates="user")
 
 
     
