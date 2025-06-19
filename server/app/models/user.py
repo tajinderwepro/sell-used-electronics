@@ -37,7 +37,8 @@ class User(Base):
         backref="user"
     )
     logs = relationship("Log", back_populates="user")
-    # payments = relationship("Payment", back_populates="user")
+    # payments = relationship("Payment", back_populates="user", lazy="selectin")
+
 
 
     

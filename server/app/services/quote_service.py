@@ -57,7 +57,6 @@ class QuoteService:
         category_name = None
         brand_name = None
         model_name = None
-
         try:
             category_id = int(quote_in.category)
             category_result = await db.execute(select(Category).where(Category.id == category_id))
@@ -99,10 +98,12 @@ class QuoteService:
             model_id=model_id,
             user_id=user_id,
             risk_score=risk_score,
-            specifications=quote_in.specifications,
             imei=quote_in.imei,
-
+            specifications=", ".join(quote_in.specifications["value"])
+            if isinstance(quote_in.specifications, dict) and isinstance(quote_in.specifications["value"], list)
+            else str(quote_in.specifications)
         )
+
         db.add(quote)
         await db.commit()
         await db.refresh(quote)

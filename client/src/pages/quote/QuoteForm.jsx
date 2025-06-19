@@ -49,7 +49,7 @@ export default function QuoteForm({ onClose }) {
       formData.append("base_price", Number(price));
       formData.append("ebay_avg_price", estimate_price);
       formData.append("condition", conditions.condition); 
-      formData.append("specifications", conditions.storage);
+      formData.append("specifications", JSON.stringify({ value:conditions.storage}));
       formData.append("imei", conditions.imei);
       conditions.images.forEach((img) => {
         formData.append("files", img); 

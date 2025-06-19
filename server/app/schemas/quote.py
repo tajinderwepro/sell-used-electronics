@@ -10,8 +10,8 @@ class QuoteCreate(BaseModel):
     model: str
     condition: str
     offered_price: float
-    imei: Optional[str] = None
-    specifications: Optional[dict] = None
+    imei: Optional[str] | None
+    specifications: Optional[dict] | None
 
 class CategoryBase(BaseModel):
     id: int

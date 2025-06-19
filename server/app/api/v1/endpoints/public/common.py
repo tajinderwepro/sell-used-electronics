@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.schemas.category import CategoryOut,ModelListRequest
 from app.services.category_service import CategoryService
-from typing import List
+from typing import List,Optional
 from app.core.config import settings  
 from app.schemas.category import CategoryUpdate 
 from app.schemas.category import ListResponse
@@ -17,6 +17,7 @@ from app.core.security import require_roles
 import shutil
 import os
 import uuid
+import json 
 from app.utils.file_utils import save_upload_file
 from app.services.risk_detection_service import RiskDetectionService
 
@@ -37,6 +38,8 @@ async def create_device(
     condition: str = Form(...),
     base_price: float = Form(...),
     ebay_avg_price: float = Form(...),
+    imei: str = Form(...),
+    specifications: str = Form(...),
     files: list[UploadFile] = File(...),
     request: Request = None, 
     db: AsyncSession = Depends(get_db),
@@ -45,13 +48,21 @@ async def create_device(
     for file in files:
         path = save_upload_file(file)
         image_urls.append(f"{settings.APP_URL}{path}")
-    
+
+    # ✅ Convert specifications to dict
+    try:
+        spec_data = json.loads(specifications) if specifications else None
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid specifications format. Must be JSON.")
+
     payload = QuoteCreate(
         category=category,
         brand=brand,
         model=model,
         condition=condition,
         offered_price=base_price,
+        imei=imei,
+        specifications=spec_data,
     )
 
     return await QuoteService.submit_quote(
@@ -59,7 +70,7 @@ async def create_device(
         quote_in=payload,
         image_urls=image_urls,
         db=db,
-        request= request  
+        request=request  
     )
 
 

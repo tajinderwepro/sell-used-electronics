@@ -7,7 +7,7 @@ from alembic import context
 
 
 # ⬇️ Add model imports here
-from app.models import device, user, category, brand, model, media,log
+from app.models import device, user, category, brand, model, media,log,payment
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
