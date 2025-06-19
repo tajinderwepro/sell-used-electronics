@@ -38,7 +38,6 @@ const Payments = () => {
   const columns = [
     { key: "id", label: "Payment ID", sortable: true },
     { key: "order_id", label: "Order ID", sortable: true },
-    { key: "user_id", label: "User ID", sortable: true },
     { key: "method", label: "Method", sortable: true },
     {
       key: "status",

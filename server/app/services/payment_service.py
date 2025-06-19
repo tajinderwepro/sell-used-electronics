@@ -10,6 +10,8 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from app.models.quote import Quote
 from datetime import datetime
+from app.schemas.payments import PaymentOut
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PaymentService:
@@ -159,11 +161,11 @@ class PaymentService:
 
 
     @staticmethod
-    async def get_user_payment_by_id(user_id,db: AsyncSession):
+    async def get_user_payment_by_id(user_id: int, db: AsyncSession):
         result = await db.execute(select(Payment).where(Payment.user_id == user_id))
         payments = result.scalars().all()
         return {
-            "data": payments,
+            "data": [PaymentOut.from_orm(p) for p in payments],
             "message": "Payments fetched successfully",
             "success": True
         }
