@@ -54,7 +54,7 @@ class CategoryService:
             logs = Log(
                 user_id=current_user.id,
                 action="Add Category",
-                description=f"{current_user.name} added a category",
+                description=f"user : {current_user.name.capitalize()}({current_user.role}) added a category",
                 ip_address=ip_address,
                 os=os,
                 browser=browser
