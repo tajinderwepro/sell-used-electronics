@@ -23,3 +23,12 @@ async def get_payment_status(order_id: int, db: AsyncSession = Depends(get_db)):
 async def update_and_get_status(stripe_account_id: str, db: AsyncSession = Depends(get_db)):
     service = PaymentService(db)
     return await service.get_connected_account_status(stripe_account_id)
+
+@router.get("/list")
+async def get_all_payments(
+    db: AsyncSession = Depends(get_db)
+):
+    return await PaymentService.get_payments_list(
+        db=db
+    )
+

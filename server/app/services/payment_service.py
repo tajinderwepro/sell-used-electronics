@@ -147,3 +147,13 @@ class PaymentService:
                 "status" : user_status
             }
         }
+
+    @staticmethod
+    async def get_payments_list(db: AsyncSession):
+        result = await db.execute(select(Payment))
+        payments = result.scalars().all()
+        return {
+            "data": [payment.__dict__ for payment in payments],
+            "message": "Payments list fetched successfully",
+            "success": True
+        }
