@@ -14,4 +14,7 @@ class Payment(Base,TimestampMixin):
     transaction_id = Column(String, nullable=True)
 
     order = relationship("Order", back_populates="payment")
-    user = relationship("User", back_populates="payments")
+    # user = relationship("User", back_populates="payments")
+
+
+    
