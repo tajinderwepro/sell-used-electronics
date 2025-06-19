@@ -31,7 +31,7 @@ async def get_latest(
             db=db,
     )
 
-@router.get("/{order_id}", response_model=OrderOut)
+@router.get("/{order_id}")
 async def get_order(order_id: int, db: AsyncSession = Depends(get_db)):
     return await OrderService.get_order(db, order_id)
 

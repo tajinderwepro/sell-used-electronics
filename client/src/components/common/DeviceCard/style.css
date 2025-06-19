@@ -1,3 +1,4 @@
+/* Default: hide nav buttons */
 .product-swiper .swiper-button-next,
 .product-swiper .swiper-button-prev {
   color: white;
@@ -11,9 +12,10 @@
   pointer-events: none;
 }
 
-.product-swiper:hover .swiper-button-next,
-.product-swiper:hover .swiper-button-prev {
-  /* opacity: 1; */
+/* Only show on hover when .swiper-nav-enabled class is present */
+.product-swiper.swiper-nav-enabled:hover .swiper-button-next,
+.product-swiper.swiper-nav-enabled:hover .swiper-button-prev {
+  opacity: 1;
   pointer-events: auto;
 }
 
