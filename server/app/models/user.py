@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum as SAEnum,and_,BigInteger
+from sqlalchemy import Column, Integer, String, Enum as SAEnum,and_,BigInteger,Boolean, DateTime
 from app.db.session import Base
 from sqlalchemy.orm import relationship,backref, foreign
 import enum
@@ -17,8 +17,13 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
     phone = Column(BigInteger, nullable=False, unique=True)
-    stripe_account_id = Column(String, nullable=True)
 
+    stripe_account_id = Column(String, nullable=True)
+    charges_enabled = Column(Boolean, nullable=True)
+    payouts_enabled = Column(Boolean, nullable=True)
+    details_submitted = Column(Boolean, nullable=True)
+    stripe_account_status = Column(String, nullable=True)
+    onboarding_completed_at = Column(DateTime, nullable=True)
 
     devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
     quotes = relationship("Quote", back_populates="user", cascade="all, delete-orphan")
@@ -32,6 +37,7 @@ class User(Base):
         backref="user"
     )
     logs = relationship("Log", back_populates="user")
+    payments = relationship("Payment", back_populates="user")
 
 
     
