@@ -11,17 +11,16 @@ from app.core.security import require_roles
 # Main API router
 api_router = APIRouter()
 
+# Webhook routes group
+api_router.include_router(shipment.router, prefix="/shipment", tags=["webhook"])
+
+# Authentication routes group
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 # User routes group
 user_router = APIRouter(prefix="/users", dependencies=[Depends(require_roles(["user","admin"]))])
-
-#user payment
-user_router.include_router(payments.router, prefix="/payments/stripe", tags=["stripe"],dependencies=[Depends(require_roles(["user"]))])
-
+user_router.include_router(payments.router, prefix="/payments/stripe", tags=["stripe"])
 user_router.include_router(users.router, tags=["users"])
-api_router.include_router(user_router)
-api_router.include_router(shipment.router, prefix="/shipment", tags=["webhook"])
 
 # Admin routes group
 admin_router = APIRouter(prefix="/admin")
@@ -36,14 +35,9 @@ admin_router.include_router(
     prefix="/category",
     tags=["category"],
 )
+
+api_router.include_router(user_router)
 api_router.include_router(admin_router)
-
-# # Payments admin routes group
-# payment_router = APIRouter(prefix="admin")
-# payment_router.include_router(payments.router, prefix="/payments/stripe", tags=["stripe"])
-# api_router.include_router(payment_router)
-
-#user payment
 
 # common routes
 api_router.include_router(
