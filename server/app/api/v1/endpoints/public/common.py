@@ -20,6 +20,10 @@ import uuid
 import json 
 from app.utils.file_utils import save_upload_file
 from app.services.risk_detection_service import RiskDetectionService
+from app.services.ebay_service import EbayService
+import base64
+from sqlalchemy.future import select
+from app.models.model import Model
 
 router = APIRouter()
 
@@ -89,20 +93,22 @@ async def get_categories(
 
 @router.post("/estimate-price")
 async def estimate_price(request: Request, db: AsyncSession = Depends(get_db)):
-    # CLIENT_ID = "YOUR_CLIENT_ID"
-    # CLIENT_SECRET = "YOUR_CLIENT_SECRET"
-
-    # ebayService = EbayService(CLIENT_ID, CLIENT_SECRET)
-    # estimated_price = ebayService.get_estimated_price("iPhone 13 Pro Max")
     data = await request.json()
     base_price = data.get("base_price")
-    
-    if base_price is None:
-        return {"error": "base_price is required"}
-    
-    estimated_price = base_price - ((base_price * 10) / 100)
-    return {"estimated_price": estimated_price}
+    model_id = int(data.get("model_id"))
+    model_result = await db.execute(select(Model).where(Model.id == model_id))
+    model_obj = model_result.scalar_one_or_none()
+    model_name = None
+    if model_obj:
+                model_name = model_obj.name
+    else:
+        raise HTTPException(status_code=400, detail="Model not found")
 
+    ebayService = EbayService(db=db, sandbox=True)
+    estimated_price = await ebayService.get_estimated_price(model_name)
+    if estimated_price is None:
+        estimated_price = base_price - ((base_price * 10) / 100)
+    return {"estimated_price": estimated_price, "model_name": model_name}
 
 @router.get("/devices/{id}",dependencies=[Depends(require_roles(["admin","user"]))])
 async def getDevice(id: int, db: AsyncSession = Depends(get_db)):

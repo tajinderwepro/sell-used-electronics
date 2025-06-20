@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "sk_test_...")
     CLIENT_URL: str = os.getenv("CLIENT_URL", "sk_test_...")
     ACCESS_TOKEN_EXPIRE_HOURS: int = 24  
+    EBAY_CLIENT_ID: str = os.getenv("EBAY_CLIENT_ID", "your_ebay_client_id")
+    EBAY_CLIENT_SECRET: str = os.getenv("EBAY_CLIENT_SECRET", "your_ebay_client_secret")
     class Config:
         env_file = ".env"
         case_sensitive = True

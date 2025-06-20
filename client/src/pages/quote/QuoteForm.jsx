@@ -143,7 +143,7 @@ export default function QuoteForm({ onClose }) {
           const payload = {
             // category_id: category,
             // brand_id: brand,
-            // model_id: model,
+            model_id: model,
             // condition: condition,
             base_price: Number(price),
           };

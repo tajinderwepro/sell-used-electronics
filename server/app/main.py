@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
 from app.core.config import settings  
+from app import models  # this triggers all model imports
 from .middlewares.authmiddleware import authenticate_user 
 import os
 
