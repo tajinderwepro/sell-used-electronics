@@ -1,13 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import { CloudUpload, X, PlusCircle } from "lucide-react";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { toast } from "react-toastify";
 import Button from "../../../components/ui/Button";
 import InputField from "../../../components/ui/InputField";
+import { CustomStorageSchema, QuoteFormSchema } from "../../../common/Schema";
 
 export default function StepCondition({ condition, setCondition }) {
   const fileInputRef = useRef(null);
   const COLOR_CLASSES = useColorClasses();
+  const [errors,setErrors]= useState("")
 
   const [customStorage, setCustomStorage] = useState({ ram: "", rom: "" });
   const [customInputVisible, setCustomInputVisible] = useState(false);
@@ -47,34 +49,64 @@ export default function StepCondition({ condition, setCondition }) {
     setCondition({ ...condition, images: updatedImages });
   };
 
-  const addCustomStorage = () => {
-    const ram = parseInt(customStorage.ram);
-    const rom = parseInt(customStorage.rom);
+  useEffect(() => {
+    const validateLive = async () => {
+      try {
+        await CustomStorageSchema.validateAt("ram", { ram: customStorage.ram });
+        setErrors((prev) => ({ ...prev, ram: undefined }));
+      } catch (err) {
+        setErrors((prev) => ({ ...prev, ram: err.message }));
+      }
+    };
 
-    if (!allowedRAM.includes(ram)) {
-      toast.error("RAM must be one of: 4, 6, 8, 12, 16 GB");
-      return;
-    }
+    if (customStorage.ram !== "") validateLive();
+  }, [customStorage.ram]);
 
-    if (!allowedROM.includes(rom)) {
-      toast.error("ROM must be 64, 128, 256, 512, or 1024 GB");
-      return;
-    }
+  useEffect(() => {
+    const validateLive = async () => {
+      try {
+        await CustomStorageSchema.validateAt("rom", { rom: customStorage.rom });
+        setErrors((prev) => ({ ...prev, rom: undefined }));
+      } catch (err) {
+        setErrors((prev) => ({ ...prev, rom: err.message }));
+      }
+    };
 
-    const newOption = `${ram} GB / ${rom} GB`;
+    if (customStorage.rom !== "") validateLive();
+  }, [customStorage.rom]);
 
+
+  const addCustomStorage = async () => {
+  try {
+    await CustomStorageSchema.validate(customStorage, { abortEarly: false });
+
+    const newOption = `${parseInt(customStorage.ram)} GB / ${parseInt(customStorage.rom)} GB`;
     if (!storageOptions.includes(newOption)) {
       setStorageOptions((prev) => [...prev, newOption]);
     }
 
     setCondition({ ...condition, storage: [newOption] });
     setCustomStorage({ ram: "", rom: "" });
+    setErrors({});
     setCustomInputVisible(false);
-  };
+  } catch (err) {
+    const fieldErrors = {};
+    if (err.inner) {
+      err.inner.forEach((e) => {
+        fieldErrors[e.path] = e.message;
+      });
+    }
+    setErrors(fieldErrors);
+  }
+};
+
+
+
 
   const cancelCustomStorage = () => {
     setCustomStorage({ ram: "", rom: "" });
     setCustomInputVisible(false);
+    setErrors({});
   };
 
   return (
@@ -144,8 +176,9 @@ export default function StepCondition({ condition, setCondition }) {
         </div>
 
         {/* --- Custom Storage Input --- */}
-        {customInputVisible && (
-          <div className="flex gap-3 mt-3 items-center flex-wrap">
+       {customInputVisible && (
+        <div className="flex flex-wrap gap-3 mt-3 items-start">
+          <div className="flex flex-col w-32">
             <InputField
               type="number"
               placeholder="RAM"
@@ -153,8 +186,12 @@ export default function StepCondition({ condition, setCondition }) {
               onChange={(e) =>
                 setCustomStorage({ ...customStorage, ram: e.target.value })
               }
-              className={`py-[8px] px-[16px] rounded-lg w-32 border transition-all duration-300 ${COLOR_CLASSES.borderPrimary} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.bgWhite}`}
+              error={errors.ram}
+              className={`py-[8px] px-[16px] rounded-lg border transition-all duration-300 ${COLOR_CLASSES.borderPrimary} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.bgWhite}`}
             />
+          </div>
+
+          <div className="flex flex-col w-32">
             <InputField
               type="number"
               placeholder="ROM"
@@ -162,28 +199,30 @@ export default function StepCondition({ condition, setCondition }) {
               onChange={(e) =>
                 setCustomStorage({ ...customStorage, rom: e.target.value })
               }
-              className={`py-[8px]  px-[16px] rounded-lg w-32 border transition-all duration-300 ${COLOR_CLASSES.borderPrimary} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.bgWhite}`}
+              error={errors.rom}
+              className={`py-[8px] px-[16px] rounded-lg border transition-all duration-300 ${COLOR_CLASSES.borderPrimary} ${COLOR_CLASSES.textPrimary} ${COLOR_CLASSES.bgWhite}`}
             />
+          </div>
+
+          <div className="flex items-center gap-2 mt-1">
             <Button
               type="button"
               onClick={addCustomStorage}
-              
-              className="py-[8px] px-[16px] text-sm mt-[-20px]"
+              className="py-[8px] px-[16px] text-sm"
             >
               Add
             </Button>
-
             <Button
               type="button"
               onClick={cancelCustomStorage}
               variant="secondary"
-              className="py-[8px] px-[16px] text-sm mt-[-20px]"
+              className="py-[8px] px-[16px] text-sm"
             >
               Cancel
             </Button>
           </div>
-        )}
-    
+        </div>
+      )}
       </div>
 
       {/* --- IMEI Input --- */}

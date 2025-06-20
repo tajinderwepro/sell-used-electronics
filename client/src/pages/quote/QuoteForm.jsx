@@ -130,10 +130,11 @@ export default function QuoteForm({ onClose }) {
     } else {
       if (step === 4) {
         try {
-          console.log(step, "validationErrors")
-          const data = { base_price: price }
+       
+          const data = { base_price: price,
+           }
           const validationErrors = await validateFormData(data, QuoteFormSchema);
-
+          console.log(validationErrors,'validationErrors')
           if (validationErrors) {
             setErrors(validationErrors);
             toast.error("Please fix the errors.");
@@ -167,7 +168,7 @@ export default function QuoteForm({ onClose }) {
     if (step === 0) return !category;
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
-    if (step === 3) return !(conditions.condition && conditions.images.length > 0 && conditions.storage.length > 0);
+    if (step === 3) return !(conditions.condition && conditions.images.length > 0 && conditions.storage.length > 0  && conditions.imei);
     return false;
   };
 

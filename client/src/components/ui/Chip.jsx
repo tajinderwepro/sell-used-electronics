@@ -1,4 +1,4 @@
-export const Chip = ({ status }) => {
+export const Chip = ({ status,children }) => {
   const statusConfig = {
     admin: { label: "Admin", className: "bg-blue-300 text-blue-800" },
     user: { label: "User", className: "bg-gray-300 text-gray-800" },
@@ -30,10 +30,10 @@ export const Chip = ({ status }) => {
   };
 
   const config = statusConfig[status];
-
+  
   return config ? (
     <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${config.className}`}>
-      {config.label}
+         {children ?? config.label}
     </span>
   ) : (
     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-600">

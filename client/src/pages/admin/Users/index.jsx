@@ -127,30 +127,33 @@ export default function Users() {
       }));
     } 
   };
+  const handleDelete = async() =>{
+    try {
+      setLoading(true);
+      await api.admin.deleteUser(popupState.id);
+      await fetchUsers();
+      handleClose();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message);
+      // setMessage("Failed to delete user.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   const handleSubmit = async (e) => {
-
-    if (popupState.type === "delete") {
-      try {
-        setLoading(true);
-        await api.admin.deleteUser(popupState.id);
-        await fetchUsers();
-        handleClose();
-      } catch (err) {
-        console.error(err);
-        setMessage("Failed to delete user.");
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
+     e.preventDefault();
+     console.log(popupState.type,'popupState.type')
+    
 
     // const newErrors = validate();
     // if (Object.keys(newErrors).length > 0) {
     //   setErrors(newErrors);
     //   return;
     // }
-    e.preventDefault();
+   
     const isCreate = popupState.type === "create";
     const validationErrors = await validateFormData(form, isCreate ? CreateuserSchema : EditUserSchema, { isCreate });
     console.log(form,'form')
@@ -226,6 +229,10 @@ export default function Users() {
         open={popupState.open}
         onClose={handleClose}
         onSubmit={handleSubmit}
+        onDelete={() => {
+          handleDelete(popupState.id);
+          handleClose();
+        }}
         title={
           popupState.type === "edit"
             ? "Edit User"

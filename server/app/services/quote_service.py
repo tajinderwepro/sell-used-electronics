@@ -152,13 +152,15 @@ class QuoteService:
             )
             .where(Quote.id == quote_id)
         )
-        quote = result.scalar_one_or_none()
+        quote = result.scalar_one_or_none()  # ✅ fetch a single object
+
         if not quote:
             return None
+
         return {
             "success": True,
             "message": "Quote fetched successfully",
-            "data": QuoteOut.from_orm(quote),
+            "data": QuoteOut.model_validate(quote, from_attributes=True),  # ✅ correct usage
         }
 
     @staticmethod
