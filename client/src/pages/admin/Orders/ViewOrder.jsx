@@ -37,6 +37,8 @@ const ViewOrder = () => {
     getDevice();
   }, []);
 
+  
+
 
   if (loading || !order) return <LoadingIndicator isLoading={loading} />;
 
@@ -76,6 +78,9 @@ const ViewOrder = () => {
             device={{...order.quote,shipping_label_url:order.shipping_label_url}}
             fullView={true}
             onRequestShipment={(id) => console.log('Request shipment for ID:', id)}
+            order={order}
+            getDevice={getDevice}
+
           />
         </div>
     </div>

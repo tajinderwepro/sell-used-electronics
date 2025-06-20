@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum
 from app.db.session import Base
-from typing import Optional ,List
+from typing import Optional ,List,Union
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 
@@ -53,6 +53,8 @@ class QuoteOut(BaseModel):
     brand_name: Optional[str]
     model_name: Optional[str]
     risk_score: Optional[int]
+    imei: Optional[str] = None
+    specifications: Optional[Union[dict, str]] = None
     condition: str
     offered_price: float
     user_id: Optional[int]
@@ -66,7 +68,7 @@ class QuoteOut(BaseModel):
     user: Optional[UserBase]
     media: List[MediaBase] = [] 
     model_config = ConfigDict(from_attributes=True)
-
+ 
 class QuoteUpdate(BaseModel):
     category: Optional[str]
     brand: Optional[str]

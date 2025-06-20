@@ -172,7 +172,7 @@ class UserService:
 
         # admin_result = await db.execute(select(User).where(User.role == 'admin'))
         # admin = admin_result.scalar_one_or_none()
-        admin_result = await db.execute(select(User).where(User.role == 'admin'))
+        admin_result = await db.execute(select(User).where(User.role == 'admin').order_by(asc(User.id)))
         admin = admin_result.scalars().first()
 
         if not admin:

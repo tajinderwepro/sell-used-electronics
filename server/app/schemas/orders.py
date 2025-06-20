@@ -54,6 +54,7 @@ class OrderUpdate(BaseModel):
 class PaymentBase(BaseModel):
     id: int
     status: str
+    transaction_id: str
     created_at: Optional[datetime] = None
     method: str
     model_config = ConfigDict(from_attributes=True)  

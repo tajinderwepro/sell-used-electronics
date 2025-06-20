@@ -8,6 +8,7 @@ import api from "../../../constants/api";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { useFilters } from "../../../context/FilterContext";
 import { useAuth } from "../../../context/AuthContext";
+import { formatDate } from "../../../components/common/formatDate";
 
 export default function Payments() {
   const [payments, setPayments] = useState([]);
@@ -42,7 +43,7 @@ export default function Payments() {
     { key: "method", label: "Method", sortable: true },
     { key: "transaction_id", label: "Transaction Id", sortable: true },
     { key: "status", label: "Status", sortable: true },
-    { key: "created_at", label: "Payment Time", sortable: true },
+    { key: "created_at", label: "Payment Time", sortable: true, render: (row) => formatDate(row.created_at) },
   ];
 
   useEffect(() => {

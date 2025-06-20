@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Smartphone,
   Tag,
   BadgeDollarSign,
   PackageCheck,
   Truck,
+  CircleHelp,
+  ChartBar,
+  Calendar,
+  LoaderCircle,
+  ShieldAlert,
+  CircleCheckBig,
 } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -17,11 +23,39 @@ import './style.css';
 import { Chip } from '../../ui/Chip';
 import { formatCurrency } from '../../ui/CurrencyFormatter';
 import RiskScoreBadge from '../../../common/RiskScoreBadge';
+import ConfirmationPopup from '../ConfirmationPopup';
+import api from '../../../constants/api';
+import { toast } from 'react-toastify';
+import { formatDate } from '../formatDate';
 
 const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-4930-a203-f7bf1788414a.jpg';
 
-function DeviceCard({ device, onRequestShipment, fullView = false }) {
+function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevice}) {
   const COLOR_CLASSES = useColorClasses();
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  
+
+  const handlePay = async (id) => {
+    setLoading(true);
+    try {
+      const res = await api.admin.payments.pay(order.id);
+      if (res.success) {
+        toast.success(res.message);
+        getDevice()
+        setShowPaymentPopup(false);
+      } else {
+        toast.error(res.message || "Payment failed.");
+      }
+
+    } catch (error) {
+      console.error("Payment Error:", error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const imageList =
     Array.isArray(device.media) && device.media.length > 0
@@ -31,7 +65,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false }) {
         : [placeholderImage, placeholderImage, placeholderImage];
 
   const renderButton = () => {
-    switch (device.status) {
+    switch (device?.status) {
       case 'pending':
         return (
           <Button variant="primary" disabled className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}>
@@ -67,118 +101,177 @@ function DeviceCard({ device, onRequestShipment, fullView = false }) {
     }
   };
 
-  return (
-    <div
-      className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col ${
-        fullView ? 'w-full max-w-6xl p-8 gap-6 md:flex-row' : 'w-full'
-      }`}
+return (
+  <div
+    className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col ${fullView ? 'w-full max-w-6xl p-8 gap-6 md:flex-row' : 'w-full'}`}
+  >
+    {/* Swiper Image Carousel */}
+    <Swiper
+      modules={[Navigation, Pagination]}
+      navigation={fullView}
+      pagination={{ clickable: true }}
+      className={`product-swiper ${fullView ? 'md:w-1/2 h-[28rem]' : 'h-60'} w-full rounded-2xl ${fullView ? 'swiper-nav-enabled' : ''}`}
     >
-        <Swiper
-          modules={[Navigation, Pagination]}
-          navigation={fullView}
-          pagination={{ clickable: true }}
-          className={`product-swiper w-full ${fullView ? 'md:w-1/2 h-[28rem]' : 'h-60'} rounded-2xl ${fullView ? 'swiper-nav-enabled' : ''}`}
-        >
-        {imageList.map((img, idx) => (
-          <SwiperSlide key={idx}>
-            <div
-              className={`flex items-center justify-center w-full h-full overflow-hidden ${
-                fullView ? 'p-6' : 'p-4'
-              }`}
-            >
-              <img
-                src={img}
-                alt={`Device image ${idx + 1}`}
-                className={`max-h-full max-w-full object-contain transition-transform duration-300 ease-in-out hover:scale-105`}
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {imageList.map((img, idx) => (
+        <SwiperSlide key={idx}>
+          <div className={`flex items-center justify-center w-full h-full overflow-hidden ${fullView ? 'p-6' : 'p-4'}`}>
+            <img
+              src={img}
+              alt={`Device image ${idx + 1}`}
+              className="max-h-full max-w-full object-contain transition-transform duration-300 ease-in-out hover:scale-105"
+              onError={(e) => (e.target.src = placeholderImage)}
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
 
-      <div className={`${fullView ? 'md:w-1/2 px-6' : 'p-6'} flex flex-col justify-between flex-1 text-sm`}>
-        <div className="flex justify-between items-start mb-4">
-          <p className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{device.category_name}</p>
-          <Chip status={device.status} />
-        </div>
+    {/* Device Details Section */}
+    <div className={`${fullView ? 'md:w-1/2 px-6' : 'p-6'} flex flex-col justify-between flex-1 text-sm`}>
+      <div className="flex justify-between items-start mb-4">
+        <p className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{device.category_name}</p>
+        <Chip status={device.status} />
+      </div>
 
-        <div className={`space-y-3 ${COLOR_CLASSES.primaryDark}`}>
-          <div className="flex justify-between">
-            <div className="space-y-3">
-              <p className={`${COLOR_CLASSES.textSecondary} flex items-center gap-2`}>
-                <Smartphone className="w-5 h-5" />
-                <strong>Model:</strong> <span className={`${COLOR_CLASSES.textPrimary}`}>{device.brand_name} {device.model_name}</span>
-              </p>
-              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                <Tag className="w-5 h-5" />
-                <strong>Condition:</strong> <Chip status={device.condition} />
-              </p>
-              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                <BadgeDollarSign className="w-5 h-5" />
-                <strong>Offered Price:</strong> {formatCurrency(device.offered_price)}
-              </p>
-            </div>
-
-            {fullView && (
-              <div className="flex-1 space-y-3 pl-6">
-                <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                  <BadgeDollarSign className="w-5 h-5" />
-                  <strong>eBay Avg Price:</strong> {formatCurrency(device.ebay_avg_price)}
-                </p>
-                <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                  <strong>Risk Score:</strong> {<RiskScoreBadge score={device.risk_score} />}
-                </p>
-                <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                  <strong>Brand:</strong> {device.brand_name}
-                </p>
-                <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
-                  <strong>Model ID:</strong> {device.model_id}
-                </p>
-              </div>
-            )}
+      <div className={`space-y-3 ${COLOR_CLASSES.primaryDark}`}>
+        <div className="flex justify-between">
+          <div className="flex-1 space-y-3 pl-6">
+            <p className={`${COLOR_CLASSES.textSecondary} flex items-center gap-2`}>
+              <Smartphone className="w-5 h-5" />
+              <strong>Model:</strong> <span className={COLOR_CLASSES.textPrimary}> {device.model_name?.charAt(0).toUpperCase() + device.model_name?.slice(1)}</span>
+            </p>
+            <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{marginTop:"17px"}}>
+              <Tag className="w-5 h-5" />
+              <strong>Condition:</strong> <Chip status={device.condition} />
+            </p>
+            <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{marginTop:"17px"}}>
+              <BadgeDollarSign className="w-5 h-5" />
+              <strong>Offered Price:</strong> {formatCurrency(device.offered_price)}
+            </p>
+            
           </div>
 
           {fullView && (
-            <div className="mt-4">
-              <div className={`border rounded-lg p-4 bg-gray-50 ${COLOR_CLASSES.borderGray200} shadow-sm`}>
-                <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>
-                  Shipping Label
-                </h4>
-                <div className="flex flex-col items-center gap-3">
-                  <img
-                    src={device.shipping_label_url}
-                    alt="Shipping Label"
-                    className="w-40 max-w-xs rounded-md border"
-                  />
-                  <div className="flex gap-3">
-                    <a
-                      href={device.shipping_label_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-blue-600 underline hover:text-blue-800"
-                    >
-                      View Full Size
-                    </a>
-                    {/* Uncomment if download is desired
-                    <a
-                      href={device.shipping_label_url}
-                      download={`shipping-label-${device.id || 'order'}.png`}
-                      className="text-sm text-green-600 underline hover:text-green-800"
-                    >
-                      Download
-                    </a>
-                    */}
-                  </div>
-                </div>
-              </div>
+            <div className="flex-1 space-y-3 pl-6">
+              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                <BadgeDollarSign className="w-5 h-5" />
+                <strong>eBay Avg Price:</strong> {formatCurrency(device.ebay_avg_price)}
+              </p>
+              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                <ShieldAlert className="w-5 h-5"  />
+                <strong>Risk Score:</strong> <RiskScoreBadge score={device.risk_score} />
+              </p>
+              {order?.payment?.[0]?.status && (
+                <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                  {/* <ChartBar className="w-5 h-5" /> */}
+                  <CircleCheckBig className={`w-5 h-5 `} />
+                  <strong>Status:</strong><p className=''> <Chip status={order.payment[0].status}>{order.payment[0].status.charAt(0).toUpperCase() + order.payment[0].status.slice(1)}</Chip></p>
+                </p>
+              )}
+              {/* <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                <strong>Brand:</strong> {device.brand_name}
+              </p>
+              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                <strong>Model ID:</strong> {device.model_id}
+              </p> */}
             </div>
           )}
         </div>
 
-        <div className="mt-6">{renderButton()}</div>
+        {/* Shipping Label */}
+        {fullView && (
+          <div className="mt-4">
+            <div className={`border rounded-lg p-4 bg-gray-50 ${COLOR_CLASSES.borderGray200} shadow-sm`}>
+              <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>Shipping Label</h4>
+              <div className="flex flex-col items-center gap-3">
+                <img
+                  src={device.shipping_label_url}
+                  alt="Shipping Label"
+                  className="w-40 max-w-xs rounded-md border"
+                />
+                <div className="flex gap-3">
+                  <a
+                    href={device.shipping_label_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 underline hover:text-blue-800"
+                  >
+                    View Full Size
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Shipment or Track Button */}
+      <div className='flex w-full gap-4'>
+        <div className=" mt-4 w-full">{renderButton()}</div>
+        {/* Payment Button */}
+        <div className="flex items-center gap-4 mt-4 w-full">
+          {order?.status === "delivered" && order?.payment.length === 0 && (
+            <button
+              onClick={() => setShowPaymentPopup(true)}
+              className={`flex items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium`}
+            >
+              <BadgeDollarSign className="w-4 h-4" />
+              Pay Now
+            </button>
+          )}
+
+          {order?.payment?.[0]?.status === "success" && (
+              <button
+                disabled
+                className={`flex w-full justify-center items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed`}
+              >
+                <PackageCheck className="w-4 h-4" />
+                Paid
+              </button>
+
+          )}
+        </div>
+      </div>
+      {/* Payment Info */}
+      {order?.payment?.[0] && (
+        <div className={`mt-4 border rounded-lg bg-white shadow-sm p-4 ${COLOR_CLASSES.borderGray200}`}>
+          <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>Payment Information</h4>
+          <div className="space-y-2 text-sm text-gray-700">
+            <div className="flex items-center gap-2">
+              <BadgeDollarSign className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">Method:</span>
+              <span className="capitalize">{order.payment[0].method}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <PackageCheck className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">Transaction ID:</span>
+              <span className="text-gray-900">{order.payment[0].transaction_id}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">Paid On:</span>
+              <span>{formatDate(order.payment[0].created_at)}</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+
+    {/* Payment Confirmation Modal */}
+    <ConfirmationPopup
+      open={showPaymentPopup}
+      onClose={() => setShowPaymentPopup(false)}
+      onSubmit={handlePay}
+      title="Confirm Payment"
+      btnCancel="Cancel"
+      btnSubmit="Confirm"
+      loading={loading}
+      icon={<CircleHelp className={`w-20 h-20 ${COLOR_CLASSES.primary}`} />}
+      description="Are you sure you want to proceed with the payment?"
+    />
+  </div>
+);
+
 }
 
 export default DeviceCard;
