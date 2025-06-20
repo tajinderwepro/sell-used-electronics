@@ -14,17 +14,25 @@ async def paginate_query(
     sort_by: str = "id",
     order_by: str = "asc",
     current_page: int = 1,
-    limit: Optional[int] = 10,  # <-- Make limit Optional
+    limit: Optional[int] = 10,
     options: Optional[List[Any]] = None,
-    user_id: Optional[int] = None
+    user_id: Optional[int] = None,
+    custom_sort_map: Optional[Dict[str, Any]] = None,  # NEW
+    join_models: Optional[List[Any]] = None  # NEW (optional joins)
 ) -> Dict[str, Any]:
     query = select(model)
 
+    # Apply joins if needed
+    if join_models:
+        for join_model in join_models:
+            query = query.join(join_model)
+
+    # Apply selectinload options (for output serialization)
     if options:
         for option in options:
             query = query.options(option)
 
-    # Apply search filter
+    # Apply search
     if search and search_fields:
         term = f"%{search.lower()}%"
         query = query.where(
@@ -35,18 +43,20 @@ async def paginate_query(
     if user_id is not None and hasattr(model, "user_id"):
         query = query.where(getattr(model, "user_id") == user_id)
 
-    # Count total results
+    # Use custom sort if defined
+    if custom_sort_map and sort_by in custom_sort_map:
+        sort_column = custom_sort_map[sort_by]
+    else:
+        sort_column = getattr(model, sort_by, getattr(model, "id"))
+
+    query = query.order_by(desc(sort_column) if order_by == "desc" else asc(sort_column))
+
+    # Count total
     count_query = select(func.count()).select_from(query.subquery())
     total_result = await db.execute(count_query)
     total = total_result.scalar()
 
-    # Sorting
-    sort_column = getattr(model, sort_by, None)
-    if not sort_column:
-        sort_column = getattr(model, "id")
-    query = query.order_by(desc(sort_column) if order_by == "desc" else asc(sort_column))
-
-    # Apply pagination only if limit is not None
+    # Pagination
     if limit is not None:
         query = query.offset((current_page - 1) * limit).limit(limit)
 

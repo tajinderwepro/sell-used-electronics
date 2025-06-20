@@ -17,6 +17,7 @@ export default function Payments() {
   const [errors, setErrors] = useState({});
   const [totalItems, setTotalItems] = useState(0);
   const {filters} = useFilters();
+
   const fetchPayments = async () => {
     try {
       setLoading(true);
@@ -32,7 +33,7 @@ export default function Payments() {
   const columns = [
     { key: "id", label: "ID", sortable: true },
     {
-      key: "user",
+      key: "user_name",
       label: "User",
       sortable: true,
       render: (row) =>  row.user?.name.charAt(0).toUpperCase() + row.user?.name.slice(1) || ""

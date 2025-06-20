@@ -11,6 +11,9 @@ from sqlalchemy.orm import selectinload
 from app.models.quote import Quote
 from datetime import datetime
 from app.schemas.payments import PaymentOut
+from typing import Optional
+from app.utils.db_helpers import paginate_query
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -150,14 +153,29 @@ class PaymentService:
         }
 
     @staticmethod
-    async def get_payments_list(db: AsyncSession):
-        result = await db.execute(select(Payment).options(selectinload(Payment.user)))
-        payments = result.scalars().all()
-        return {
-            "data": [payment.__dict__ for payment in payments],
-            "message": "Payments list fetched successfully",
-            "success": True
-        }
+    async def get_payments_list(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "id",
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: int = 10,
+        get_all: bool = False,
+    ):
+        return await paginate_query(
+            db=db,
+            model=Payment,
+            schema=PaymentOut,
+            search=search,
+            search_fields=[Payment.method, Payment.status, Payment.transaction_id],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=None if get_all else limit,
+            options=[selectinload(Payment.user)],
+            join_models=[User],  # JOIN User for sorting
+            custom_sort_map={"user_name": User.name}  # support frontend key -> actual column
+        )
 
 
     @staticmethod

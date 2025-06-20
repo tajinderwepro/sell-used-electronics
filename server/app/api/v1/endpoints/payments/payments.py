@@ -1,8 +1,9 @@
 # app/api/v1/endpoints/payments.py
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.services.payment_service import PaymentService
+from app.schemas.payments import PaymentListRequest
 from sqlalchemy import update, select
 from app.models.payment import Payment
 from app.core.security import require_roles
@@ -26,12 +27,18 @@ async def update_and_get_status(stripe_account_id: str, db: AsyncSession = Depen
     service = PaymentService(db)
     return await service.get_connected_account_status(stripe_account_id)
 
-@router.get("/list",dependencies=[Depends(require_roles(["admin"]))])
+@router.post("/list",dependencies=[Depends(require_roles(["admin"]))])
 async def get_all_payments(
+    filters: PaymentListRequest = Body(...),
     db: AsyncSession = Depends(get_db)
 ):
     return await PaymentService.get_payments_list(
-        db=db
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
     )
 
 @router.get("/{user_id}")
