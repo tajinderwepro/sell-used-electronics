@@ -13,7 +13,7 @@ import {
   UserCircle,
   ShoppingBag,
   LocationEdit,
-  BanknoteArrowDown,
+  BadgeDollarSign
 } from "lucide-react"
 import { PROJECT_NAME } from '../../constants'
 import { useMode } from '../../context/ModeContext'
@@ -43,7 +43,7 @@ const DROPDOWN_MENU = [
   {
     name: "Payments",
     href: "/payments",
-    icon: BanknoteArrowDown,
+    icon: BadgeDollarSign,
   },
   {
     name: "Settings",
@@ -80,10 +80,14 @@ function Header() {
 
   return (
     <header className={`fixed top-0 left-0 w-full border-b z-[3]  ${COLOR_CLASSES.borderGray200} shadow-sm ${COLOR_CLASSES.bgWhite}`}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center">
-        <div className="block sm:hidden">
-          <SidebarNav />
-        </div>
+      <div className={`max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 xl:px-2 py-4 flex ${user.role !== "admin" ? "justify-between" : "justify-end sm:justify-between"} items-center`}>
+       {
+        user.role !== "admin" && (
+          <div className="block sm:hidden">
+            <SidebarNav />
+          </div>
+        )
+       }
         <a
           href="/"
           className={`${FONT_SIZES["2xl"]} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} hidden sm:block`}
@@ -119,8 +123,12 @@ function Header() {
               </button>
               {dropdownOpen && (
                 <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded shadow z-40`}>
-                  {DROPDOWN_MENU.map((item) => (
-                    <Link
+                  {DROPDOWN_MENU.map((item) => {
+                    if (user.role === 'admin' && ['Products', 'Shipment Address', 'Payments'].includes(item.name)) {
+                      return null;
+                    }
+                   return (
+                     <Link
                       key={item.name}
                       to={user.role === "admin" ? '/admin'+item.href : item.href}
                       className={`flex items-center w-full px-4 py-2 text-sm ${COLOR_CLASSES.secondaryBgHover}`}
@@ -128,7 +136,8 @@ function Header() {
                     >
                       <item.icon className="h-4 w-4 mr-2" /> {item.name}
                     </Link>
-                  ))}
+                    )
+                  })}
                   <button
                     onClick={handleLogout}
                     className={`flex items-center w-full px-4 py-2 text-sm ${COLOR_CLASSES.secondaryBgHover}`}
