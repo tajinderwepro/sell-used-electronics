@@ -88,7 +88,7 @@ export default function UserList() {
 
     try {
       setLoading(true);
-      await api.admin.createUser(form); // Adjust if payload format differs
+      await api.admin.createUser(form); 
       await fetchUsers();
       handleClose();
     } catch (err) {

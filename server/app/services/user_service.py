@@ -18,7 +18,7 @@ from app.services.shipping_service import ShippingService
 from app.services.order_service import OrderService
 from app.models.log import Log
 from app.services.system_info_service import SystemInfoService
-
+from app.services.log_service import LogService
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -147,11 +147,9 @@ class UserService:
 
     @staticmethod
     async def request_shipment(request,db: AsyncSession, quote_id: int,current_user):
-        system_info = SystemInfoService(request)
-        os = system_info.get_os()
-        ip_address = request.client.host
-        browser = system_info.get_browser()
 
+        ip_address = request.client.host
+       
         result = await db.execute(select(Quote).where(Quote.id == quote_id))
         quote = result.scalars().first()
         if not quote:
@@ -214,22 +212,6 @@ class UserService:
 
         provider = 'easypost'
         service = ShippingService()
-
-      #  logs storing
-
-        logs = Log(
-                user_id=current_user.id,
-                action="Shipping Request",
-                description=f"User '{current_user.name.capitalize()}' with role '{current_user.role}' initiated a shipping request for quote ID {quote.id}.",
-                ip_address=ip_address,
-                os=os,
-                browser=browser
-        )
-        db.add(logs)
-        await db.commit()
-        await db.refresh(logs)
-
-
         try:
             shipment = service.create_shipment(
                 from_address=from_address,
@@ -252,6 +234,21 @@ class UserService:
             await db.commit()
             await db.refresh(quote)
             order =  await OrderService.create_order(db, order)
+            
+             # store log
+            await LogService.store(
+                    action="Shipping Request",
+                    description=(
+                        f"User '{current_user.name.capitalize()}' with role '{current_user.role}' "
+                        f"initiated a shipping request for quote ID {quote.id}, "
+                        f"shipment ID {shipment_id}, and order ID {order.id}."
+                    ),
+                    current_user=current_user,
+                    request=request,
+                    db=db,
+                    quote_id=quote.id 
+                )
+
             return {
                 "order": order.to_dict() if hasattr(order, "to_dict") else order,
                 "lowest_rate": lowest_rate,

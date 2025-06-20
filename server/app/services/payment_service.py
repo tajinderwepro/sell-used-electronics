@@ -173,8 +173,8 @@ class PaymentService:
             current_page=current_page,
             limit=None if get_all else limit,
             options=[selectinload(Payment.user)],
-            join_models=[User],  # JOIN User for sorting
-            custom_sort_map={"user_name": User.name}  # support frontend key -> actual column
+            join_models=[User],  
+            custom_sort_map={"user_name": User.name} 
         )
 
 

@@ -4,6 +4,7 @@ from app.api.v1.endpoints.admin import device, order, category, brand, model, qu
 from app.api.v1.endpoints.payments import payments
 from app.api.v1.endpoints.public import common
 from app.api.v1.endpoints.user import users
+from app.api.v1.endpoints import note
 from app.api.v1.endpoints.public import address
 from app.core.security import get_current_user
 from app.core.security import require_roles
@@ -36,6 +37,12 @@ admin_router.include_router(
     tags=["category"],
 )
 
+note_router = APIRouter(prefix="/notes")
+note_router.include_router(
+    note.router, tags=["notes"], dependencies=[Depends(require_roles(["user","admin"]))]
+)
+
+api_router.include_router(note_router)
 api_router.include_router(user_router)
 api_router.include_router(admin_router)
 

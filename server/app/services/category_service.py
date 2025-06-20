@@ -12,6 +12,7 @@ from app.schemas.category import CategoryOut
 from app.schemas.category import ListResponse
 from sqlalchemy import and_
 from app.services.system_info_service import SystemInfoService
+from app.services.log_service import LogService
 
 
 class CategoryService:
@@ -19,11 +20,8 @@ class CategoryService:
     @staticmethod
     async def add_category(request,name: str, path: str, db: AsyncSession,current_user):
         try:
-            # Check if the category already exists
-            system_info = SystemInfoService(request)
-            os = system_info.get_os()
             ip_address = request.client.host
-            browser = system_info.get_browser()
+            # Check if the category already exists
 
             result = await db.execute(select(Category).where(Category.name == name))
             existing = result.scalar_one_or_none()
@@ -50,18 +48,17 @@ class CategoryService:
             new_category.media_id = media.id
             await db.commit()
             await db.refresh(new_category)
-            # logs storing
-            logs = Log(
-                user_id=current_user.id,
-                action="Add Category",
+
+            # store log
+            await LogService.store(
+                action="Category Added",
                 description=f"user : {current_user.name.capitalize()}({current_user.role}) added a category",
+                current_user=current_user,
                 ip_address=ip_address,
-                os=os,
-                browser=browser
+                request=request,
+                db=db,
+                quote_id = None,
             )
-            db.add(logs)
-            await db.commit()
-            await db.refresh(logs)
             
             return {
                 "success": True,
