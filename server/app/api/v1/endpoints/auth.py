@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
-from app.schemas.auth import LoginRequest, TokenResponse
+from app.schemas.auth import LoginRequest, TokenResponse,PasswordResetResponse,PasswordReset
 from app.schemas.user import UserCreate, UserResponse,RegisterUserResponse
 from app.services.auth_service import AuthService
 from app.core.security import get_current_user
@@ -27,7 +27,12 @@ async def register_user(data: UserCreate, db: AsyncSession = Depends(get_db)):
 async def me(user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     return await AuthService.get_me(user, db)
 
-    
+# reset password
+@router.post("/reset-password/{user_id}", response_model=PasswordResetResponse)
+async def reset_password(user_id: int,data:PasswordReset, db: AsyncSession = Depends(get_db)):
+    return await AuthService.reset_password(user_id,data, db)  
+
+
 @router.post("/logout")
 def logout():
     return {"message": "Logout successful. Please discard your token."}

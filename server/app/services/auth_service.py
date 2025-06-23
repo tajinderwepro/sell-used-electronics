@@ -8,7 +8,7 @@ from sqlalchemy import select
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from app.models.user import User
-from app.schemas.auth import LoginRequest, TokenResponse
+from app.schemas.auth import LoginRequest, TokenResponse,PasswordReset, PasswordResetResponse
 from app.schemas.user import UserCreate,RegisterUserResponse,UserResponse,UserOut
 import os
 from app.core.config import settings  
@@ -96,4 +96,29 @@ class AuthService:
             raise HTTPException(status_code=404, detail="User not found")
 
         return {"success": True, "user": UserOut.from_orm(user)}
+    
+    @staticmethod
+    async def reset_password(user_id: int, data: PasswordReset, db: AsyncSession) -> PasswordResetResponse:
+        try:
+            result = await db.execute(select(User).where(User.id == user_id))
+            user = result.scalars().first()
+
+            if not user:
+                raise HTTPException(status_code=404, detail="User not found")
+
+            # Hash the new password
+            user.password_hash = pwd_context.hash(data.confirm_password)
+
+            await db.commit()
+            await db.refresh(user)
+
+            return PasswordResetResponse(
+                message="Password reset successfully",
+                success=True,
+                error=None
+            )
+
+        except SQLAlchemyError as e:
+            await db.rollback()
+            raise HTTPException(status_code=500, detail="Password reset failed: " + str(e))
 
