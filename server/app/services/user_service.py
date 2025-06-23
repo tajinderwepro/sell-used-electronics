@@ -245,6 +245,7 @@ class UserService:
                     ),
                     current_user=current_user,
                     request=request,
+                    ip_address=ip_address,
                     db=db,
                     quote_id=quote.id 
                 )
