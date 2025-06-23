@@ -35,7 +35,7 @@ class UserOut(BaseModel):
     payouts_enabled : Optional[bool] = None
     details_submitted : Optional[bool] = None
     onboarding_completed_at: Optional[datetime] = None
-    # media: Optional[MediaOut] = None
+    media: Optional[List[MediaOut]] = None
 
     class Config:
         from_attributes = True  

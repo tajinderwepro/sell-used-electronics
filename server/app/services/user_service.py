@@ -38,6 +38,7 @@ class UserService:
             db=db,
             model=User,
             schema=UserOut,
+            options=[selectinload(User.media)],
             search=search,
             search_fields=[User.name, User.email],
             sort_by=sort_by,
