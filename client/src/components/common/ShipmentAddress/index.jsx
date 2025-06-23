@@ -201,15 +201,13 @@ function ShipmentAddress() {
               </div>
             </div>
            <div className='flex flex-col h-full w-full'>
-             <div className='w-full mb-4 h-[80px]'>
+             <div className='w-full mb-4'>
                 <InfoField Icon={MapPin} label="Address" value={addr.address} />
               </div>
             <div className={`grid grid-cols-2 gap-x-2 gap-y-4 rounded-md`}>
-              
                 <InfoField Icon={PinIcon} label="Zip" value={addr.zip} />
-              <InfoField Icon={Building} label="City" value={addr.city} />
-             
-              <InfoField Icon={LocateIcon} label="State" value={addr.state} />
+                <InfoField Icon={Building} label="City" value={addr.city} /> 
+                <InfoField Icon={LocateIcon} label="State" value={addr.state} />
             </div>
            </div>
 
