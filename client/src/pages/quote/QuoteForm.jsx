@@ -25,7 +25,7 @@ export default function QuoteForm({ onClose }) {
 
   const { formState, updateForm, resetForm, categories, setCategories } = useQuoteForm();
   const { step, category, model, conditions, price, brand, estimate_price } = formState;
-  const selectedCategoryObj = categories.find(cat => cat.id === Number(category));
+  const selectedCategoryObj = categories.find(cat => cat.id === Number(category?.value));
   const brands = selectedCategoryObj?.brands || [];
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({})
@@ -43,7 +43,7 @@ export default function QuoteForm({ onClose }) {
 
   try {
     const formData = new FormData();
-      formData.append("category", category);
+      formData.append("category", category.value);
       formData.append("brand", brand);
       formData.append("model", model);
       formData.append("base_price", Number(price));
@@ -57,9 +57,6 @@ export default function QuoteForm({ onClose }) {
     setLoading(true);
 
     const response = await api.public.submit(user.id, formData);
-
-    setLoading(false);
-
     if (response) {
       toast.success(response.message);
       resetForm();
@@ -129,6 +126,7 @@ export default function QuoteForm({ onClose }) {
       handleSubmit();
     } else {
       if (step === 4) {
+        setLoading(true);
         try {
        
           const data = { base_price: price,
@@ -155,8 +153,12 @@ export default function QuoteForm({ onClose }) {
             toast.error("Failed to get estimate price");
           }
         } catch (err) {
+          
           toast.error(err?.response?.data?.message || "Error fetching estimate price");
           return;
+        }
+        finally{
+          setLoading(false);
         }
       }
       handleNext();
@@ -165,10 +167,17 @@ export default function QuoteForm({ onClose }) {
 
 
   const isNextDisabled = () => {
-    if (step === 0) return !category;
+    if (step === 0) return !category?.value;
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
-    if (step === 3) return !(conditions.condition && conditions.images.length > 0 && conditions.storage.length > 0  && conditions.imei);
+    if (step === 3) {
+      const isMobile = category.label === "Mobile";
+      const baseCheck = conditions.condition && conditions.images.length > 0;
+      const mobileCheck = isMobile ? conditions.storage.length > 0 && conditions.imei : true;
+
+      return !(baseCheck && mobileCheck);
+    }
+
     return false;
   };
 

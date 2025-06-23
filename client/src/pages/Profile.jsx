@@ -90,27 +90,28 @@ const Profile = () => {
         const formData = new FormData();
         formData.append("name", form.name);
         formData.append("email", form.email);
-        formData.append("phone", form.phone.replace(/\D/g, ''));
+        formData.append("phone", String(form.phone ?? "").replace(/\D/g, ""));
+
 
         if (form.image_path instanceof File) {
-           
             formData.append("image_path", form.image_path);
          }
          setloading(true);
-      try {
-      
-        const res=await api.admin.updateUser(form.id, formData);
+        try {
+        
+          const res=await api.admin.updateUser(form.id, formData);
 
-        if (res.success) {
-          // Optionally show a success toast
-          toast.success("Profile Updated Successfull")
+          if (res.success) {
+            // Optionally show a success toast
+            toast.success("Profile Updated Successfull")
+          }
+        } catch (error) {
+          toast.error(error.message)
+          console.error("Profile update failed:", error);
         }
-      } catch (error) {
-        console.error("Profile update failed:", error);
-      }
-      finally{
-        setloading(false)
-      }
+        finally{
+          setloading(false)
+        }
     }
 
     setIsEditing(!isEditing);
@@ -128,9 +129,8 @@ const Profile = () => {
   const getMe = async () => {
     setloading(true)
     try {
-      const res = await api.auth.me();
+      const res = await api.auth.getMe();
       const { email, name, phone, media,id,stripe_account_id } = res.user;
-      console.log(media[0]?.path,'sdd')
       if (res.success) {
         const newFormState = {
             id: id || "",
@@ -138,7 +138,7 @@ const Profile = () => {
             email: email || "",
             phone: phone || "",
             stripe_account_id: stripe_account_id || "",
-            image_path: media[0]?.path || ""
+            image_path: media ? (media[0]?.path) : ""
         };
 
         setForm((prev) => ({  
@@ -151,13 +151,14 @@ const Profile = () => {
           stripe_account_id: newFormState.stripe_account_id
         }));
 
-      setInitialFormState(newFormState);
+        setInitialFormState(newFormState);
 
         if (media && media[0]?.path) {
           setImagePreview(media[0]?.path);
         }
       }
     } catch (error) {
+      toast.error(error.message)
       console.error("Failed to fetch user data:", error);
     }
     finally{
@@ -201,6 +202,7 @@ const Profile = () => {
         // Optionally show success toast
       }
     } catch (error) {
+      toast.error(error.message)
       console.error("Password update failed:", error);
     }
   };
@@ -213,31 +215,34 @@ const Profile = () => {
     }));
   }
 
-   console.log(form,'formformform')
   return (
     <div className=" p-6">
       {/* Top section */}
       <LoadingIndicator isLoading={loading}/>
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center space-x-4">
-            <div>
-                {imagePreview ? (
-                  <div className="flex flex-row-reverse">
-                   {isEditing && (<span className="cursor-pointer"><SquarePen size={20} onClick={() => isEditing && handleAvatarClick()} /></span>)}
+            <div className="flex">
+              {/* Icon: Always visible if editing */}
+             
+
+              {/* Image or Placeholder */}
+              {imagePreview ? (
                 <img
-                    src={imagePreview}
-                    alt="Profile Preview"
-                    className="w-20 h-20 rounded-full object-cover"
+                  src={imagePreview}
+                  alt="Profile Preview"
+                  className="w-20 h-20 rounded-full object-container"
                 />
-                </div>
-                ) : (
+              ) : (
                 <div className="w-12 h-12 sm:w-15 sm:h-15 md:w-20 md:h-20">
-                    <CircleUser size="100%" strokeWidth={1} color="gray" />
-                  </div>
-                )}
-
+                  <CircleUser size="100%" strokeWidth={1} color="gray" />
+                </div>
+              )}
+               {isEditing && (
+                <span className="cursor-pointer" onClick={handleAvatarClick}>
+                  <SquarePen size={20} />
+                </span>
+              )}
             </div>
-
             {/* Always include input, but hide it */}
             <input
                 type="file"
@@ -293,7 +298,7 @@ const Profile = () => {
             type="text"
             label="Phone Number"
             placeholder="Enter phone number"
-            value={form.phone}
+            value={validatePhone(form.phone)}
             onChange={handleChange}
             error={errors.phone}
           />

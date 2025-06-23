@@ -5,7 +5,10 @@ const QuoteFormContext = createContext();
 export const QuoteFormProvider = ({ children }) => {
   const [formState, setFormState] = useState({
     step: 0,
-    category: "",
+    category: {
+      value: "",
+      label: ""
+    },
     brand: "",
     model: "",
     conditions: {
@@ -28,14 +31,20 @@ export const QuoteFormProvider = ({ children }) => {
   const resetForm = () => {
     setFormState({
       step: 0,
-      category: "",
+      category: {
+        value: "",
+        label: ""
+      },
       brand: "",
       model: "",
       conditions: {
         condition:"",
         images:[],
+        storage: [],
+        imei:'' 
       },
       price: 0,
+      estimate_price:''
     });
     setCategories([]);
   };

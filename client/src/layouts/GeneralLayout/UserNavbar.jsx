@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, LocationEdit, BadgeDollarSign } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, LocationEdit, BadgeDollarSign, FileText } from 'lucide-react';
 import { useColorClasses } from '../../theme/useColorClasses';
 
 const navLinks = [
@@ -9,9 +9,9 @@ const navLinks = [
     icon: LayoutDashboard,
   },
   {
-    name: 'Products',
+    name: 'Quotes',
     to: '/products',
-    icon: ShoppingBag,
+    icon: FileText,
   },
   {
     name: 'Orders',

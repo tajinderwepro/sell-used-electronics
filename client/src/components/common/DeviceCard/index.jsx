@@ -11,6 +11,7 @@ import {
   LoaderCircle,
   ShieldAlert,
   CircleCheckBig,
+  Banknote,
 } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -121,7 +122,6 @@ function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevi
         );
     }
   };
-
 return (
   <div
     className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col ${fullView ? 'w-full max-w-6xl p-8 gap-6 md:flex-row' : 'w-full'}`}
@@ -159,7 +159,7 @@ return (
           <div className="flex-1 space-y-3 pl-6">
             <p className={`${COLOR_CLASSES.textSecondary} flex items-center gap-2`}>
               <Smartphone className="w-5 h-5" />
-              <strong>Model:</strong> <span className={COLOR_CLASSES.textPrimary}> {device.model_name?.charAt(0).toUpperCase() + device.model_name?.slice(1)}</span>
+              <strong>Model:</strong> <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}> {device.model_name}</span>
             </p>
             <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{marginTop:"17px"}}>
               <Tag className="w-5 h-5" />
@@ -167,17 +167,18 @@ return (
             </p>
             <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{marginTop:"17px"}}>
               <BadgeDollarSign className="w-5 h-5" />
-              <strong>Offered Price:</strong> {formatCurrency(device.offered_price)}
+              <strong>Offered Price:</strong>  <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}> {formatCurrency(device.offered_price)}</span>
             </p>
             
           </div>
 
           {fullView && (
-            <div className="flex-1 space-y-3 pl-6">
-              <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+           <div className={`flex-1 space-y-3 pl-6 ${device.ebay_avg_price ? "" : "mt-[-5px]"}`}>
+              {device.ebay_avg_price && <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                 <BadgeDollarSign className="w-5 h-5" />
                 <strong>eBay Avg Price:</strong> {formatCurrency(device.total_amount)}
               </p>
+                }
               <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                 <ShieldAlert className="w-5 h-5"  />
                 <strong>Risk Score:</strong> <RiskScoreBadge score={device.risk_score} />
@@ -186,7 +187,7 @@ return (
                 <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                   {/* <ChartBar className="w-5 h-5" /> */}
                   <CircleCheckBig className={`w-5 h-5 `} />
-                  <strong>Status:</strong><p className=''> <Chip status={order.payment[0].status}>{order.payment[0].status.charAt(0).toUpperCase() + order.payment[0].status.slice(1)}</Chip></p>
+                  <strong>Status:</strong><p className=''> <Chip status={order.payment[0].status}>{order.payment[0].status}</Chip></p>
                 </p>
               )}
               {/* <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
@@ -203,7 +204,7 @@ return (
         {fullView && (
           <div className="mt-4">
             <div className={`border rounded-lg p-4 bg-gray-50 ${COLOR_CLASSES.borderGray200} shadow-sm`}>
-              <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>Shipping Label</h4>
+              <h4 className={`text-sm font-semibold mb-3 text-gray-900`}>Shipping Label</h4>
               <div className="flex flex-col items-center gap-3">
                 <img
                   src={device.shipping_label_url}
@@ -234,44 +235,49 @@ return (
             <div className="flex items-center gap-4 mt-4 w-full">
                 <button
                   onClick={() => setShowPaymentPopup(true)}
-                  className={`flex items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium`}
+                  className={`flex items-center gap-2 justify-center  ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium w-full`}
                 >
                   <BadgeDollarSign className="w-4 h-4" />
                   Pay Now
                 </button>
 
-              {order?.payment?.[0]?.status === "success" && (
+              
+            </div>
+          )}
+
+          {order?.payment?.[0]?.status === "success" && (
+             <div className="flex items-center gap-4 mt-4 w-full">
                   <button
                     disabled
                     className={`flex w-full justify-center items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed`}
                   >
-                    <PackageCheck className="w-4 h-4" />
+                    <CircleCheckBig className="w-4 h-4" />
+
                     Paid
                   </button>
-
+                  
+              </div>
               )}
-            </div>
-          )}
       </div>
       {/* Payment Info */}
       {order?.payment?.[0] && (
-        <div className={`mt-4 border rounded-lg bg-white shadow-sm p-4 ${COLOR_CLASSES.borderGray200}`}>
+        <div className={`mt-4 border rounded-lg ${COLOR_CLASSES.bgWhite} shadow-sm p-4 ${COLOR_CLASSES.borderGray200}`}>
           <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>Payment Information</h4>
           <div className="space-y-2 text-sm text-gray-700">
-            <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
               <BadgeDollarSign className="w-4 h-4 text-gray-500" />
               <span className="font-medium">Method:</span>
-              <span className="capitalize">{order.payment[0].method}</span>
+             <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}>{order.payment[0].method}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
               <PackageCheck className="w-4 h-4 text-gray-500" />
               <span className="font-medium">Transaction ID:</span>
-              <span className="text-gray-900">{order.payment[0].transaction_id}</span>
+              <span className={`${COLOR_CLASSES.textPrimary}`}>{order.payment[0].transaction_id}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
               <Calendar className="w-4 h-4 text-gray-500" />
               <span className="font-medium">Paid On:</span>
-              <span>{formatDate(order.payment[0].created_at)}</span>
+              <span className={`${COLOR_CLASSES.textPrimary}`}>{formatDate(order.payment[0].created_at)}</span>
             </div>
           </div>
         </div>

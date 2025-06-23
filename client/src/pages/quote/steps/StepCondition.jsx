@@ -6,7 +6,7 @@ import Button from "../../../components/ui/Button";
 import InputField from "../../../components/ui/InputField";
 import { CustomStorageSchema, QuoteFormSchema } from "../../../common/Schema";
 
-export default function StepCondition({ condition, setCondition }) {
+export default function StepCondition({ condition, setCondition,category }) {
   const fileInputRef = useRef(null);
   const COLOR_CLASSES = useColorClasses();
   const [errors,setErrors]= useState("")
@@ -102,7 +102,6 @@ export default function StepCondition({ condition, setCondition }) {
 
 
 
-
   const cancelCustomStorage = () => {
     setCustomStorage({ ram: "", rom: "" });
     setCustomInputVisible(false);
@@ -138,7 +137,9 @@ export default function StepCondition({ condition, setCondition }) {
         </div>
       </div>
 
-      {/* --- Storage Selector --- */}
+    {category.label=="Mobile" &&
+    <>
+     {/* --- Storage Selector --- */}
       <div className="mb-6">
         <label className={`block mb-2 font-semibold ${COLOR_CLASSES.primary}`}>
           Storage
@@ -237,6 +238,8 @@ export default function StepCondition({ condition, setCondition }) {
           }
         />
       </div>
+      </>
+      }
 
       {/* --- Image Upload Section --- */}
       <div className="mt-6">

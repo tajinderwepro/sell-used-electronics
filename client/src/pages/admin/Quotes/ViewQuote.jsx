@@ -113,7 +113,7 @@ const ViewQuote = () => {
             ))}
           </div>
           <div className={`rounded-lg w-full h-[300px] md:h-[400px] flex justify-center items-center`}>
-            <img src={selectedImage} alt="Device" className="max-h-full max-w-full object-contain" />
+            <img src={selectedImage} alt="Device" className=" max-w-[500px] object-contain" />
           </div>
         </div>
 

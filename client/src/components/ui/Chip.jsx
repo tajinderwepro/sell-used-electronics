@@ -32,11 +32,11 @@ export const Chip = ({ status,children }) => {
   const config = statusConfig[status];
   
   return config ? (
-    <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${config.className}`}>
+    <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full capitalize ${config.className}`}>
          {children ?? config.label}
     </span>
   ) : (
-    <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-600">
+    <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-600 capitalize">
       {status}
     </span>
   );

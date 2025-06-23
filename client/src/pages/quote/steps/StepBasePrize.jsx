@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import InputField from "../../../components/ui/InputField";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { formatCurrency } from "../../../components/common/formatCurrency";
+import LoadingIndicator from "../../../common/LoadingIndicator";
 
 export default function StepBasePrice({ price, setPrice,errors,setErrors }) {
   const [displayValue, setDisplayValue] = useState('');
