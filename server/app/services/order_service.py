@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from fastapi import HTTPException, status
 from app.models.order import Order
 from app.models.quote import Quote
+from app.models.user import User
 from app.schemas.orders import OrderCreate, OrderUpdate, OrderOut
 from sqlalchemy import desc
 from sqlalchemy.orm import selectinload
@@ -27,7 +28,7 @@ class OrderService:
         limit: Optional[int] = 10,
         get_all: bool = False,
     ):
-        return await paginate_query(
+        return await paginate_query(      
             db=db,
             model=Order,
             schema=OrderOut,
@@ -37,6 +38,8 @@ class OrderService:
             order_by=order_by,
             current_page=current_page,
             limit=None if get_all else limit,
+            join_models=[User],  
+            custom_sort_map={"user_name": User.name},
             options=[
                 selectinload(Order.quote),
                 selectinload(Order.quote).selectinload(Quote.media),

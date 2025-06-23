@@ -3,6 +3,7 @@ from sqlalchemy.future import select
 from app.models.quote import Quote
 from app.models.model import Model
 from app.models.brand import Brand
+from app.models.user import User
 from app.models.media import Media
 from app.models.category import Category
 from app.schemas.quote import QuoteCreate, QuoteUpdate, QuoteOut
@@ -37,6 +38,8 @@ class QuoteService:
             order_by=order_by,
             current_page=current_page,
             limit=None if get_all else limit,  
+            join_models=[User],  
+            custom_sort_map={"user_name": User.name},
             options=[
                 selectinload(Quote.category),
                 selectinload(Quote.brand),

@@ -25,7 +25,8 @@ async def paginate_query(
     # Apply joins if needed
     if join_models:
         for join_model in join_models:
-            query = query.join(join_model)
+            query = query.outerjoin(join_model)
+
 
     # Apply selectinload options (for output serialization)
     if options:

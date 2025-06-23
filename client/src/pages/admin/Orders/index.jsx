@@ -40,7 +40,7 @@ export default function Orders() {
   const columns = [
     { key: "id", label: "ID",sortable: true },
     { key: "quote_id", label: "Quote Id",sortable: true },
-    { key: "user", label: "User Name",sortable: true, render: (order) => order.quote.user ? order.quote.user.name : "" },
+    { key: "user_name", label: "User Name",sortable: true, render: (order) => order.quote.user ? order.quote.user.name : "" },
     { key: "status", label: "Status",sortable: true },
     { key: "tracking_number", label: "Tracking Number",sortable: true },
     // { key: "shipping_label_url", label: "Shipping Label Url",sortable: true },

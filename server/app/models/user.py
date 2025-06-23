@@ -38,6 +38,7 @@ class User(Base):
     )
     logs = relationship("Log", back_populates="user")
     payments = relationship("Payment", back_populates="user", lazy="selectin")
+    orders = relationship("Order", back_populates="user", lazy="selectin")
 
 
 

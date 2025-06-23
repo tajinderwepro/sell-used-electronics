@@ -198,7 +198,7 @@ export default function Quotes() {
   const columns = [
     { key: "id", label: "ID", sortable: true },
     {
-      key: "user",
+      key: "user_name",
       label: "User",
       sortable: true,
       render: (row) =>  row.user?.name.charAt(0).toUpperCase() + row.user?.name.slice(1) || "-"
