@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 from pydantic import BaseModel
 from sqlalchemy import and_
+from sqlalchemy import or_, and_
 
 async def paginate_query(
     db: AsyncSession,
@@ -19,29 +20,26 @@ async def paginate_query(
     user_id: Optional[int] = None,
     custom_sort_map: Optional[Dict[str, Any]] = None,
     join_models: Optional[List[Any]] = None,
-    custom_filters: Optional[List[Any]] = None  # ✅ Add manual filters here
+    custom_filters: Optional[List[Any]] = None,
+    or_filters: Optional[List[Any]] = None  # ✅ New argument
 ) -> Dict[str, Any]:
     query = select(model)
-    print(f"Initial query: {custom_filters}")
     # Apply joins if needed
     if join_models:
         for join_model in join_models:
             query = query.outerjoin(join_model)
 
-
-    # Apply selectinload options (for output serialization)
+    # Loading relationships
     if options:
         for option in options:
             query = query.options(option)
 
-    # Apply search
+    # Search
     if search and search_fields:
         term = f"%{search.lower()}%"
-        query = query.where(
-            or_(*[func.lower(field).like(term) for field in search_fields])
-        )
+        query = query.where(or_(*[func.lower(field).like(term) for field in search_fields]))
 
-    # Filter by user_id if applicable
+    # Filter by user
     if user_id is not None and hasattr(model, "user_id"):
         query = query.where(getattr(model, "user_id") == user_id)
 
@@ -49,7 +47,11 @@ async def paginate_query(
         for f in custom_filters:
             query = query.where(f)
 
-    # Use custom sort if defined
+    # Apply OR filters
+    if or_filters:
+        query = query.where(or_(*or_filters))
+
+    # Sorting
     if custom_sort_map and sort_by in custom_sort_map:
         sort_column = custom_sort_map[sort_by]
     else:
@@ -57,7 +59,7 @@ async def paginate_query(
 
     query = query.order_by(desc(sort_column) if order_by == "desc" else asc(sort_column))
 
-    # Count total
+    # Total count
     count_query = select(func.count()).select_from(query.subquery())
     total_result = await db.execute(count_query)
     total = total_result.scalar()

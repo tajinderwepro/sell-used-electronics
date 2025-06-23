@@ -64,7 +64,8 @@ async def easypost_webhook(request: Request, db: AsyncSession = Depends(get_db))
     stmt = select(Order).where(Order.tracking_number == tracking_number)
     result = await db.execute(stmt)
     order = result.scalar_one_or_none()
-
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
     quote_stmt = select(Quote).where(Quote.id == order.quote_id)
     quote_result = await db.execute(quote_stmt)
     quote = quote_result.scalar_one_or_none()
@@ -74,7 +75,7 @@ async def easypost_webhook(request: Request, db: AsyncSession = Depends(get_db))
         raise HTTPException(status_code=404, detail="Order not found")
 
     order.status = tracking_status
-    order.shipping_label_url = tracker.get("public_url", None)
+    order.tracking_url = tracker.get("public_url", None)
     await db.commit()
 
     return {"success": True, "message": f"Order {order.id} updated to status '{tracking_status}'"}

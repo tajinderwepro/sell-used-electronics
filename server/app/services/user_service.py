@@ -144,7 +144,10 @@ class UserService:
                 selectinload(Quote.media)
             ],
             user_id=user_id,
-            custom_filters=[Quote.status == "pending"]  # ✅ Manual filter
+            or_filters=[
+                Quote.status == "pending",
+                Quote.status == "approved"
+            ],
         )
 
     @staticmethod
@@ -229,7 +232,8 @@ class UserService:
                 user_id=quote.user_id,
                 status="pending",
                 shipping_label_url=bought_shipment["postage_label"]["label_url"],
-                tracking_number=bought_shipment["tracker"]["id"]
+                tracking_number=bought_shipment["tracker"]["id"],
+                tracking_url=bought_shipment["tracker"]["public_url"],
             )
             quote.status = "shipped"
             

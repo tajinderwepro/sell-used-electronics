@@ -65,6 +65,7 @@ class OrderOut(BaseModel):
     status: str
     tracking_number: str | None = None
     shipping_label_url: str | None = None
+    tracking_url: str | None = None
     quote: QuoteBase | None = None  
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

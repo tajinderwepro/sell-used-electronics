@@ -15,7 +15,6 @@ class Order(Base,TimestampMixin):
     shipping_label_url = Column(String, nullable=True)
     tracking_url = Column(String, nullable=True)
 
-
     # Relationships
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)

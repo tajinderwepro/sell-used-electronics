@@ -82,7 +82,7 @@ function Orders() {
           {orders.map((device) => (
             <QuoteCard
               key={device.id}
-              device={device.quote}
+              device={{...device.quote,shipping_label_url: device.shipping_label_url, tracking_url: device.tracking_url}}
               onRequestShipment={(id) => handleOpen(id, 'approved')}
             />
           ))}

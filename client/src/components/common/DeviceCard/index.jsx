@@ -96,10 +96,21 @@ function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevi
             Request Shipment
           </Button>
         );
-      case 'shipped':
+      case 'delivered':
+        return (
+          <Button
+            variant="primary"
+            disabled={true}
+            className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
+          >
+            <PackageCheck className="inline-block mr-2 w-5 h-5" />
+            Shipment Delivered
+          </Button>
+        );
+      default:
         return (
           <a
-            href="https://track.easypost.com/djE6dHJrXzkxMzU4NjI3Mjk3MzRkOTZhZDJmOWVkMGYwNTY1YTI3"
+            href={device.tracking_url || `https://track.easypost.com/${device.tracking_number}`}
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex items-center justify-center w-full py-2 rounded-md text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
@@ -108,8 +119,6 @@ function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevi
             Track
           </a>
         );
-      default:
-        return null;
     }
   };
 
