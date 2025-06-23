@@ -148,7 +148,6 @@ class UserService:
     @staticmethod
     async def request_shipment(request,db: AsyncSession, quote_id: int,current_user):
 
-        ip_address = request.client.host
        
         result = await db.execute(select(Quote).where(Quote.id == quote_id))
         quote = result.scalars().first()
@@ -235,6 +234,8 @@ class UserService:
             await db.refresh(quote)
             order =  await OrderService.create_order(db, order)
             
+            # ip_address
+            ip_address = request.client.host
              # store log
             await LogService.store(
                     action="Shipping Request",
@@ -244,8 +245,8 @@ class UserService:
                         f"shipment ID {shipment_id}, and order ID {order.id}."
                     ),
                     current_user=current_user,
-                    request=request,
                     ip_address=ip_address,
+                    request=request,
                     db=db,
                     quote_id=quote.id 
                 )

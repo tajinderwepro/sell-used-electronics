@@ -7,6 +7,7 @@ class LogService:
 
     @staticmethod
     async def store(
+        *,
         action: str,
         description: str,
         current_user,
@@ -22,7 +23,7 @@ class LogService:
         logs = Log(
             user_id=current_user.id,
             action=action,
-            description=full_descrdescriptioniption,
+            description=description,
             ip_address=ip_address,
             os=os,
             browser=browser
