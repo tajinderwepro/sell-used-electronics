@@ -11,22 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); 
   const [user, setUser] = useState(null); 
 
-useEffect(() => {
-  const storedToken = localStorage.getItem('token');
-  const storedUser = localStorage.getItem('user');
-
-  if (storedToken) {
-    setToken(storedToken);
-    setApiAuthenticationHeader(storedToken);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-    setIsAuthenticated(true);
-    if(storedUser){
-      setUser(JSON.parse(storedUser));
-    }
-  }
-
-  setLoading(false);
-}, []);
   const login = async (email, password, role) => {
     try {
       const response = await api.admin.login({ email, password, role });
@@ -43,6 +27,45 @@ useEffect(() => {
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
+    }
+  };
+
+  const getMe = async () => {
+    try {
+      setLoading(true);
+
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
+        setLoading(false);
+        setIsAuthenticated(false);
+        setUser(null);
+        return;
+      }
+
+      // Set auth header
+      setToken(storedToken);
+      setApiAuthenticationHeader(storedToken);
+      setIsAuthenticated(true);
+
+      // Attempt to get user data from API
+      const response = await api.auth.getMe();
+
+      if (response.success) {
+        setUser(response.user);
+        localStorage.setItem('user', JSON.stringify(response.user));
+      } else {
+        // If response format is wrong or failed
+        setIsAuthenticated(false);
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+      setIsAuthenticated(false);
+      setUser(null);
+      localStorage.removeItem('user');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,7 +86,7 @@ useEffect(() => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, token, loading, user, setUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, token, loading, user, getMe }}>
       {children}
     </AuthContext.Provider>
   );

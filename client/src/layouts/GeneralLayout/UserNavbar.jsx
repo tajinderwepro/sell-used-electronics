@@ -14,6 +14,11 @@ const navLinks = [
     icon: ShoppingBag,
   },
   {
+    name: 'Orders',
+    to: '/orders',
+    icon: ShoppingBag,
+  },
+  {
     name: 'Shipment Address',
     to: '/address',
     icon: LocationEdit,

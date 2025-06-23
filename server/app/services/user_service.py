@@ -123,7 +123,7 @@ class UserService:
         order_by: str = "asc",
         current_page: int = 1,
         limit: int = 10,
-        user_id: int = None
+        user_id: int = None,
     ):
         return await paginate_query(
             db=db,
@@ -142,7 +142,8 @@ class UserService:
                 selectinload(Quote.user),
                 selectinload(Quote.media)
             ],
-            user_id=user_id
+            user_id=user_id,
+            custom_filters=[Quote.status == "pending"]  # ✅ Manual filter
         )
 
     @staticmethod
@@ -224,6 +225,7 @@ class UserService:
                 return bought_shipment
             order = OrderCreate(
                 quote_id=quote.id,
+                user_id=quote.user_id,
                 status="pending",
                 shipping_label_url=bought_shipment["postage_label"]["label_url"],
                 tracking_number=bought_shipment["tracker"]["id"]

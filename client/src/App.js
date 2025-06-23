@@ -7,19 +7,11 @@ import SessionExpiredModal from "./components/common/SessionExpiredModal";
 import { FilterProvider } from "./context/FilterContext";
 
 function App() {
-  const { user, setUser } = useAuth();
+  const { user, getMe } = useAuth();
+
   useEffect(() => {
     getMe();
   }, []);
-
-  const getMe = async () => {
-    try {
-      const res = await api.auth.getMe();
-      setUser(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <ModeProvider>

@@ -54,7 +54,7 @@ const ViewQuote = () => {
       const formData = new FormData();
       formData.append("user_id", user.id);
       formData.append("status", "approved");
-      const res = await api.admin.updateDeviceStatus(device.id, formData);
+      const res = await api.admin.quotes.updateStatus(device.id, formData);
       toast.success(res.message);
       await getDevice();
       setPopupState({ open: false, type: null });

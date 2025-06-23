@@ -56,7 +56,8 @@ class PaymentService:
         if not seller_account_id:
             raise HTTPException(status_code=400, detail="Seller Stripe account not set")
 
-        amount_cents = int(float(1) * 10)
+        # amount_cents = int(order.total_amount * 100) 
+        amount_cents = int(float(100) * 10)
 
         # Run Stripe transfer in a thread
         try:
@@ -68,7 +69,24 @@ class PaymentService:
                 description=f"Payout for order #{order_id}"
             )
         except stripe.error.StripeError as e:
-            raise HTTPException(status_code=400, detail=f"Transfer error: {str(e)}")
+            error_message = str(e)
+            user_friendly_message = "Payout failed due to insufficient funds in your Stripe balance. Please ensure your platform account has enough funds."
+
+            if "insufficient available funds" in error_message.lower():
+                user_friendly_message = (
+                    "Payout failed: Your Stripe balance does not have enough funds to pay the seller. "
+                    "Please collect payment from the buyer first or top up your Stripe account."
+                )
+
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "message": user_friendly_message,
+                    "success": False
+                    # Optionally include for logging/debugging:
+                    # "stripe_error": error_message
+                }
+            )
 
         # Save the payment
         payment = Payment(
@@ -123,6 +141,8 @@ class PaymentService:
     async def get_connected_account_status(self, stripe_account_id: str):
         try:
             account = await asyncio.to_thread(stripe.Account.retrieve, stripe_account_id)
+            if not account.charges_enabled or not account.payouts_enabled:
+                raise HTTPException(status_code=400, detail="Seller account not ready to receive payouts")
         except stripe.error.StripeError as e:
             raise HTTPException(status_code=400, detail=str(e.user_message or str(e)))
 

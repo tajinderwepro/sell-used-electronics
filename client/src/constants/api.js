@@ -180,7 +180,7 @@ const api = {
     })),
   getDevices: () => axiosWrapper(axiosInstance.get('admin/devices/list')),  
   auth: {
-    me: () => axiosWrapper(axiosInstance.get(`/auth/me`)),
+    getMe: () => axiosWrapper(axiosInstance.get(`/auth/me`)),
   },
   address: {
     get: (user_id) => axiosWrapper(axiosInstance.get(`/addresses/${user_id}`)),
@@ -202,6 +202,7 @@ const api = {
   },
   user: {
     getUserQuotes: (id, data) => axiosWrapper(axiosInstance.post(`/users/quotes/${id}`,data)),
+    getUserOrders: (id, data) => axiosWrapper(axiosInstance.post(`/users/orders/${id}`,data)),
     requestShipment: (id) => axiosWrapper(axiosInstance.post(`/users/quotes/request-shipment/${id}`)),
     getUserPayments: (id) => axiosWrapper(axiosInstance.get(`users/payments/stripe/${id}`)),
     // getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),

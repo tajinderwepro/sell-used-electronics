@@ -13,7 +13,7 @@ from app.utils.file_utils import save_upload_file
 from app.core.config import settings
 from app.core.security import get_current_user
 from app.models.user import User
-
+from app.services.order_service import OrderService
 from app.services.payment_service import PaymentService
 router = APIRouter()
 
@@ -100,6 +100,22 @@ async def get_user_quotes(
     db: AsyncSession = Depends(get_db),
 ):
     return await UserService.get_user_quotes(
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
+        user_id=user_id,
+    )
+
+@router.post("/orders/{user_id}")
+async def get_user_orders(
+    user_id: int, 
+    filters: DeviceListRequest = Body(...),
+    db: AsyncSession = Depends(get_db),
+):
+    return await OrderService.get_all_orders(
         db=db,
         search=filters.search,
         sort_by=filters.sort_by,

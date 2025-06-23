@@ -26,6 +26,7 @@ class OrderService:
         current_page: int = 1,
         limit: Optional[int] = 10,
         get_all: bool = False,
+        user_id: Optional[int] = None,
     ):
         return await paginate_query(
             db=db,
@@ -43,6 +44,7 @@ class OrderService:
                 selectinload(Order.quote).selectinload(Quote.user),
                 selectinload(Order.payment)
             ],
+            user_id=user_id,
         )
 
     @staticmethod

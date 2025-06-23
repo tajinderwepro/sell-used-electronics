@@ -17,11 +17,12 @@ async def paginate_query(
     limit: Optional[int] = 10,
     options: Optional[List[Any]] = None,
     user_id: Optional[int] = None,
-    custom_sort_map: Optional[Dict[str, Any]] = None,  # NEW
-    join_models: Optional[List[Any]] = None  # NEW (optional joins)
+    custom_sort_map: Optional[Dict[str, Any]] = None,
+    join_models: Optional[List[Any]] = None,
+    custom_filters: Optional[List[Any]] = None  # ✅ Add manual filters here
 ) -> Dict[str, Any]:
     query = select(model)
-
+    print(f"Initial query: {custom_filters}")
     # Apply joins if needed
     if join_models:
         for join_model in join_models:
@@ -42,6 +43,10 @@ async def paginate_query(
     # Filter by user_id if applicable
     if user_id is not None and hasattr(model, "user_id"):
         query = query.where(getattr(model, "user_id") == user_id)
+
+    if custom_filters:
+        for f in custom_filters:
+            query = query.where(f)
 
     # Use custom sort if defined
     if custom_sort_map and sort_by in custom_sort_map:

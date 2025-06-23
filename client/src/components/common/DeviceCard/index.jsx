@@ -37,25 +37,37 @@ function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevi
 
   
 
-  const handlePay = async (id) => {
+  const handlePay = async () => {
     setLoading(true);
     try {
-      const res = await api.admin.payments.pay(order.id);
-      if (res.success) {
-        toast.success(res.message);
-        getDevice()
+      const res = await api.admin.payments.pay(order.id); 
+
+      const success = res?.detail?.success ?? res?.success ?? false;
+      const message = res?.detail?.message ?? res?.message ?? "Payment processed.";
+
+      if (success) {
+        toast.success(message);
+        getDevice();
         setShowPaymentPopup(false);
       } else {
-        toast.error(res.message || "Payment failed.");
+        toast.error(message || "Payment failed.");
       }
 
     } catch (error) {
       console.error("Payment Error:", error);
-      toast.error(error.message);
+      
+      const errorMessage =
+        error?.response?.data?.detail?.message ||
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Payment failed due to an unexpected error.";
+
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
 
   const imageList =
     Array.isArray(device.media) && device.media.length > 0
@@ -209,28 +221,28 @@ return (
       <div className='flex w-full gap-4'>
         <div className=" mt-4 w-full">{renderButton()}</div>
         {/* Payment Button */}
-        <div className="flex items-center gap-4 mt-4 w-full">
           {order?.status === "delivered" && order?.payment.length === 0 && (
-            <button
-              onClick={() => setShowPaymentPopup(true)}
-              className={`flex items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium`}
-            >
-              <BadgeDollarSign className="w-4 h-4" />
-              Pay Now
-            </button>
-          )}
+            <div className="flex items-center gap-4 mt-4 w-full">
+                <button
+                  onClick={() => setShowPaymentPopup(true)}
+                  className={`flex items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium`}
+                >
+                  <BadgeDollarSign className="w-4 h-4" />
+                  Pay Now
+                </button>
 
-          {order?.payment?.[0]?.status === "success" && (
-              <button
-                disabled
-                className={`flex w-full justify-center items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed`}
-              >
-                <PackageCheck className="w-4 h-4" />
-                Paid
-              </button>
+              {order?.payment?.[0]?.status === "success" && (
+                  <button
+                    disabled
+                    className={`flex w-full justify-center items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed`}
+                  >
+                    <PackageCheck className="w-4 h-4" />
+                    Paid
+                  </button>
 
+              )}
+            </div>
           )}
-        </div>
       </div>
       {/* Payment Info */}
       {order?.payment?.[0] && (
