@@ -18,4 +18,3 @@ class Order(Base,TimestampMixin):
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)
     user = relationship("User", back_populates="orders")
-
