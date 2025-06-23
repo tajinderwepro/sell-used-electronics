@@ -13,6 +13,8 @@ class Order(Base,TimestampMixin):
     status = Column(String, nullable=False)  
     tracking_number = Column(String, nullable=True)
     shipping_label_url = Column(String, nullable=True)
+    tracking_url = Column(String, nullable=True)
+
 
     # Relationships
     quote = relationship("Quote")

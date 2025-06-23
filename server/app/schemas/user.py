@@ -23,7 +23,7 @@ class UserCreate(BaseModel):
     role: str
     phone:Optional[int] = None
 
-class UserOut(BaseModel):
+class UserOuts(BaseModel):
     id: int
     name: str
     email: str
@@ -36,6 +36,20 @@ class UserOut(BaseModel):
     details_submitted : Optional[bool] = None
     onboarding_completed_at: Optional[datetime] = None
     media: Optional[List[MediaOut]] = None
+
+class UserOut(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+    phone: Optional[int] = None
+    stripe_account_id: Optional[str] = None
+    stripe_account_status: Optional[str] = None
+    charges_enabled : Optional[bool] = None
+    payouts_enabled : Optional[bool] = None
+    details_submitted : Optional[bool] = None
+    onboarding_completed_at: Optional[datetime] = None
+    # media: Optional[List[MediaOut]] = None
 
     class Config:
         from_attributes = True  
@@ -61,7 +75,7 @@ class RegisterUserResponse(BaseModel):
 
 
 class UserListResponse(BaseModel):
-    data: List[UserOut]
+    data: List[UserOuts]
     message: str
     success: bool
     total: int
