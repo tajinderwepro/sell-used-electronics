@@ -75,7 +75,7 @@ const ViewOrder = () => {
             </div>
           </div> */}
           <QuoteCard
-            device={{...order.quote,shipping_label_url:order.shipping_label_url,tracking_number:order.tracking_number}}
+            device={{...order.quote,shipping_label_url:order.shipping_label_url,tracking_url:order.tracking_url, total_amount: order.total_amount}}
             fullView={true}
             onRequestShipment={(id) => console.log('Request shipment for ID:', id)}
             order={order}

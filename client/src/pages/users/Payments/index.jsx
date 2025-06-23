@@ -13,13 +13,14 @@ const Payments = () => {
   const {user} = useAuth()
   const { filters } = useFilters();
   const COLOR_CLASSES = useColorClasses();
-
+  const [totalItems, setTotalItems] = useState(0);
   const fetchPayments = async () => {
     try {
       setLoading(true);
-      const response = await api.user.getUserPayments(user.id);
+      const response = await api.user.getUserPayments(user.id,filters);
       if (response.success) {
         setPayments(response.data);
+        setTotalItems(response.total);
       } else {
         toast.error("Failed to fetch payments");
       }
@@ -73,6 +74,7 @@ const Payments = () => {
         columns={columns}
         data={payments}
         loading={loading}
+        totalItems={totalItems}
         pageSize={10}
         title={"Payments List"}
         isCreate={false}

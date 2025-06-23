@@ -110,7 +110,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false,order ,getDevi
       default:
         return (
           <a
-            href={device.tracking_url || `https://track.easypost.com/${device.tracking_number}`}
+            href={device.tracking_url}
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex items-center justify-center w-full py-2 rounded-md text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
@@ -176,7 +176,7 @@ return (
             <div className="flex-1 space-y-3 pl-6">
               <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                 <BadgeDollarSign className="w-5 h-5" />
-                <strong>eBay Avg Price:</strong> {formatCurrency(device.ebay_avg_price)}
+                <strong>eBay Avg Price:</strong> {formatCurrency(device.total_amount)}
               </p>
               <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                 <ShieldAlert className="w-5 h-5"  />

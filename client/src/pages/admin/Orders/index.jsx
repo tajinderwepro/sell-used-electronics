@@ -16,11 +16,13 @@ export default function Orders() {
   const [loading,setLoading]= useState (false)
   const {filters} = useFilters();
   const navigate = useNavigate()
+  const [totalItems, setTotalItems] = useState(0);
   const COLOR_CLASSES = useColorClasses();
   const fetchOrders = async ( ) => {
     try {
       setLoading(true);
       const response=await api.admin.getOrders(filters);
+      setTotalItems(response.total);
       console.log(response,'response')
       setOrders(response.data)
     
@@ -112,7 +114,8 @@ export default function Orders() {
               </div>
             ))}
         </div> */}
-      <CommonTable columns={columns}  data={orders} loading={loading}  pageSize={10} title={"Orders List"} isCreate={false} onFetch={fetchOrders}/>
+       
+      <CommonTable totalItems={totalItems} columns={columns}  data={orders} loading={loading}  pageSize={10} title={"Orders List"} isCreate={false} onFetch={fetchOrders}/>
     </div>
   );
 }

@@ -6,9 +6,12 @@ from app.schemas.quote import MediaBase
 
 class OrderBase(BaseModel):
     quote_id: int
+    user_id: Optional[int] = None
     status: Literal['pending', 'received', 'paid']
     tracking_number: Optional[str] = None
+    tracking_url: Optional[str] = None
     shipping_label_url: Optional[str] = None
+    total_amount: Optional[float] = None
 
 class UserBase(BaseModel):
     id: int
@@ -70,12 +73,14 @@ class OrderOut(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     payment: List[PaymentBase] = [] 
+    total_amount: Optional[float] = None
     model_config = {
         "from_attributes": True  
     }
     
 class OrderListResponse(BaseModel):
     data: List[OrderOut]
+    total: int
     message: str
     success: bool
 

@@ -57,7 +57,7 @@ class PaymentService:
             raise HTTPException(status_code=400, detail="Seller Stripe account not set")
 
         # amount_cents = int(order.total_amount * 100) 
-        amount_cents = int(float(100) * 10)
+        amount_cents = int(float(1) * 10)
 
         # Run Stripe transfer in a thread
         try:
@@ -197,13 +197,29 @@ class PaymentService:
             custom_sort_map={"user_name": User.name} 
         )
 
-
     @staticmethod
-    async def get_user_payment_by_id(user_id: int, db: AsyncSession):
-        result = await db.execute(select(Payment).where(Payment.user_id == user_id))
-        payments = result.scalars().all()
-        return {
-            "data": [PaymentOut.from_orm(p) for p in payments],
-            "message": "Payments fetched successfully",
-            "success": True
-        }
+    async def get_user_payment_by_id(
+        db: AsyncSession,
+        search: Optional[str] = None,
+        sort_by: str = "id",
+        order_by: str = "asc",
+        current_page: int = 1,
+        limit: int = 10,
+        get_all: bool = False,
+        user_id: Optional[int] = None
+    ):
+        return await paginate_query(
+            db=db,
+            model=Payment,
+            schema=PaymentOut,
+            search=search,
+            search_fields=[Payment.method, Payment.status, Payment.transaction_id],
+            sort_by=sort_by,
+            order_by=order_by,
+            current_page=current_page,
+            limit=None if get_all else limit,
+            options=[selectinload(Payment.user)],
+            join_models=[User],  
+            custom_sort_map={"user_name": User.name},
+            user_id=user_id 
+        )

@@ -102,6 +102,7 @@ class QuoteService:
             user_id=user_id,
             risk_score=risk_score,
             imei=quote_in.imei,
+            amount=quote_in.ebay_avg_price,
             specifications=", ".join(quote_in.specifications["value"])
             if isinstance(quote_in.specifications, dict) and isinstance(quote_in.specifications["value"], list)
             else str(quote_in.specifications)

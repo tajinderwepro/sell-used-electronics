@@ -65,6 +65,7 @@ async def create_device(
         model=model,
         condition=condition,
         offered_price=base_price,
+        ebay_avg_price=ebay_avg_price,
         imei=imei,
         specifications=spec_data,
     )
@@ -76,8 +77,6 @@ async def create_device(
         db=db,
         request=request  
     )
-
-
 
 
 @router.post("/category/list", response_model=ListResponse[CategoryOut])

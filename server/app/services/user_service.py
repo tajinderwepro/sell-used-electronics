@@ -151,9 +151,7 @@ class UserService:
         )
 
     @staticmethod
-    async def request_shipment(request,db: AsyncSession, quote_id: int,current_user):
-
-       
+    async def request_shipment(request, db: AsyncSession, quote_id: int, current_user):
         result = await db.execute(select(Quote).where(Quote.id == quote_id))
         quote = result.scalars().first()
         if not quote:
@@ -164,28 +162,20 @@ class UserService:
         if not user:
             return {"message": "User not found", "success": False}
 
-        address_result = await db.execute(
-            select(Address).where(Address.user_id == quote.user_id)
-        )
+        address_result = await db.execute(select(Address).where(Address.user_id == quote.user_id))
         address = address_result.scalars().first()
         if not address:
             return {"message": "Address not found", "success": False}
 
-
-        # admin_result = await db.execute(select(User).where(User.role == 'admin'))
-        # admin = admin_result.scalar_one_or_none()
         admin_result = await db.execute(select(User).where(User.role == 'admin').order_by(asc(User.id)))
         admin = admin_result.scalars().first()
-
         if not admin:
             return {"message": "Admin not found", "success": False}
 
-        admin_address_result = await db.execute(
-            select(Address).where(Address.user_id == admin.id)
-        )
+        admin_address_result = await db.execute(select(Address).where(Address.user_id == admin.id))
         admin_address = admin_address_result.scalars().first()
         if not admin_address:
-            return {"message": "admin Address not found", "success": False}
+            return {"message": "Admin address not found", "success": False}
 
         to_address = {
             "name": admin.name,
@@ -214,55 +204,83 @@ class UserService:
             "weight": 1.5
         }
 
-        provider = 'easypost'
         service = ShippingService()
+        shipment_id = None
+        order = None
+        response_message = ""
+        success = False
+        lowest_rate = None
+
         try:
-            shipment = service.create_shipment(
+            # 🔹 Create shipment (ASYNC)
+            shipment = await service.create_shipment(
                 from_address=from_address,
                 to_address=to_address,
-                parcel=parcel
+                parcel=parcel,
+                db=db,
+                request=request,
+                current_user=current_user,
+                quote_id=quote.id
             )
-            lowest_rate = service.get_lowest_rate(shipment)
             shipment_id = shipment["id"]
-            bought_shipment = service.buy_shipment(shipment_id, insurance=249.99)
-            if bought_shipment.get("success") is False:
-                return bought_shipment
-            order = OrderCreate(
+
+            # 🔹 Get lowest rate
+            lowest_rate = service.get_lowest_rate(shipment)
+
+            # 🔹 Buy shipment (ASYNC)
+            bought_shipment = await service.buy_shipment(
+                shipment_id=shipment_id,
+                db=db,
+                request=request,
+                current_user=current_user,
+                quote_id=quote.id,
+                insurance=249.99
+            )
+
+            # 🔹 Update quote and create order
+            order_data = OrderCreate(
                 quote_id=quote.id,
                 user_id=quote.user_id,
                 status="pending",
+                total_amount=quote.amount,
                 shipping_label_url=bought_shipment["postage_label"]["label_url"],
                 tracking_number=bought_shipment["tracker"]["id"],
                 tracking_url=bought_shipment["tracker"]["public_url"],
             )
             quote.status = "shipped"
-            
             await db.commit()
             await db.refresh(quote)
-            order =  await OrderService.create_order(db, order)
-            
-            # ip_address
-            ip_address = request.client.host
-             # store log
-            await LogService.store(
-                    action="Shipping Request",
-                    description=(
-                        f"User '{current_user.name.capitalize()}' with role '{current_user.role}' "
-                        f"initiated a shipping request for quote ID {quote.id}, "
-                        f"shipment ID {shipment_id}, and order ID {order.id}."
-                    ),
-                    current_user=current_user,
-                    ip_address=ip_address,
-                    request=request,
-                    db=db,
-                    quote_id=quote.id 
-                )
+
+            order = await OrderService.create_order(db, order_data)
+            response_message = "Ordered successfully"
+            success = True
 
             return {
                 "order": order.to_dict() if hasattr(order, "to_dict") else order,
                 "lowest_rate": lowest_rate,
                 "success": True,
-                "message": "Ordered successfully"
+                "message": response_message
             }
+
         except Exception as e:
-            return {"message": str(e), "success": False}
+            response_message = str(e)
+            return {"message": response_message, "success": False}
+
+        finally:
+            # 🔐 Final outcome log
+            ip_address = request.client.host
+            await LogService.store(
+                action="Shipping Request",
+                description=(
+                    f"User '{current_user.name.capitalize()}' with role '{current_user.role}' "
+                    f"initiated a shipping request for quote ID {quote.id}, "
+                    f"{f'shipment ID {shipment_id}, ' if shipment_id else ''}"
+                    f"{f'order ID {order.id}, ' if order else ''}"
+                    f"result: {'success' if success else 'failed'} - {response_message}"
+                ),
+                current_user=current_user,
+                ip_address=ip_address,
+                request=request,
+                db=db,
+                quote_id=quote.id
+            )

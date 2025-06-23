@@ -23,6 +23,7 @@ export default function Payments() {
     try {
       setLoading(true);
       const response = await api.admin.payments.getList(filters);
+      setTotalItems(response.total);
       setPayments(response.data);
     } catch (err) {
       console.error("Failed to fetch quotes:", err);

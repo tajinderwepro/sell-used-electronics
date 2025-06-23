@@ -12,6 +12,7 @@ class QuoteCreate(BaseModel):
     offered_price: float
     imei: Optional[str] | None
     specifications: Optional[dict] | None
+    ebay_avg_price: Optional[float] | None
 
 class CategoryBase(BaseModel):
     id: int

@@ -14,7 +14,7 @@ class Order(Base,TimestampMixin):
     tracking_number = Column(String, nullable=True)
     shipping_label_url = Column(String, nullable=True)
     tracking_url = Column(String, nullable=True)
-
+    total_amount = Column(Integer, nullable=False)  # Assuming total amount is in cents
     # Relationships
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)

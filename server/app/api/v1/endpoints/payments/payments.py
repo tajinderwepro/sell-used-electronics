@@ -41,13 +41,18 @@ async def get_all_payments(
         limit=filters.limit,
     )
 
-@router.get("/{user_id}")
-async def get_user_payments_by_id(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
+@router.post("/{user_id}" ,dependencies=[Depends(require_roles(["user"]))])
+async def get_all_payments(
+    filters: PaymentListRequest = Body(...),
+    db: AsyncSession = Depends(get_db),
+    user_id: int = None
 ):
     return await PaymentService.get_user_payment_by_id(
-        user_id=user_id,
-        db=db
+        db=db,
+        search=filters.search,
+        sort_by=filters.sort_by,
+        order_by=filters.order_by,
+        current_page=filters.current_page,
+        limit=filters.limit,
+        user_id=user_id
     )
-

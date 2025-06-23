@@ -23,7 +23,7 @@ class Quote(Base,TimestampMixin):
     status = Column(String(50), nullable=False, server_default="pending")
     imei = Column(String(50), nullable=True)
     specifications = Column(Text, nullable=True) 
-
+    amount = Column(Float, nullable=True)
 
 
     # Relationships

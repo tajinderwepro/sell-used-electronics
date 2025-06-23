@@ -204,7 +204,7 @@ const api = {
     getUserQuotes: (id, data) => axiosWrapper(axiosInstance.post(`/users/quotes/${id}`,data)),
     getUserOrders: (id, data) => axiosWrapper(axiosInstance.post(`/users/orders/${id}`,data)),
     requestShipment: (id) => axiosWrapper(axiosInstance.post(`/users/quotes/request-shipment/${id}`)),
-    getUserPayments: (id) => axiosWrapper(axiosInstance.get(`users/payments/stripe/${id}`)),
+    getUserPayments: (id, data) => axiosWrapper(axiosInstance.post(`users/payments/stripe/${id}`, data)),
     // getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),
   }
 };
