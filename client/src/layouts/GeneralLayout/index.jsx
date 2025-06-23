@@ -6,12 +6,15 @@ import  Footer  from './Footer';
 import  Header  from './Header';
 import UserNavbar from './UserNavbar';
 import { useAuth } from '../../context/AuthContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation,matchPath  } from 'react-router-dom';
 const GeneralLayout = ({ children }) => {
   const COLOR_CLASSES = useColorClasses();
   const {user, isAuthenticated, logout} = useAuth();
-  const paths = ['/orders', '/products', '/dashboard', '/payments', '/address','/stripe-status' ];
+  const paths = ['/orders','/orders/:orderId', '/products', '/dashboard', '/payments', '/address','/stripe-status' ];
   const location = useLocation();
+  const shouldShowNavbar = user && isAuthenticated && paths.some((path) =>
+    matchPath({ path, end: true }, location.pathname)
+  );
   return (
     <div
       className={`${COLOR_CLASSES.textPrimary} ${FONT_FAMILIES.primary}  ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.bgWhite} min-h-screen flex flex-col`}
@@ -20,7 +23,7 @@ const GeneralLayout = ({ children }) => {
       <div
         className={`max-w-7xl mx-auto w-full pt-[72px]`}
       >
-        {user && isAuthenticated && paths.includes(location.pathname) && (
+        {shouldShowNavbar && (
           <div className="hidden sm:block">
             <UserNavbar />
           </div>

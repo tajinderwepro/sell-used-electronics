@@ -88,6 +88,7 @@ function AllRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/orders" element={<UsersOrders />} />
+          <Route path="/orders/:orderId" element={<UsersOrders />} />
           <Route path="/payments" element={<UserPayments />} />
           <Route path="/address" element={<ShipmentAddress/>} />
           <Route path="/profile" element={<Profile/>} />

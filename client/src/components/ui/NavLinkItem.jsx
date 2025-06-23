@@ -10,7 +10,7 @@ export default function NavLinkItem({ name, icon: Icon, path }) {
   const { pathname } = useLocation();
   const isActive = pathname.startsWith(path);
   const COLOR_CLASSES = useColorClasses();
-  
+  console.log(path,'fd')
   return (
     <Link
       to={path}
