@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import validatePhone from "../components/ui/ValidPhoneFormat";
 import InfoField from "../components/ui/InfoField";
 import { useColorClasses } from "../theme/useColorClasses";
+import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,6 +18,7 @@ const Profile = () => {
   const [loading, setloading] = useState(false);
   const COLOR_CLASSES = useColorClasses();
   const [initialFormState, setInitialFormState] = useState({});
+  const { user } = useAuth();
 
   const [form, setForm] = useState({
     id:"",
@@ -167,7 +169,8 @@ const Profile = () => {
     getMe();
   }, []);
 
-  const handleResetPasswordSave = async () => {
+  const handleResetPasswordSave = async (id) => {
+    console.log(id,'id')
     const newErrors = {};
 
     if (!form.new_password) newErrors.new_password = "New password is required";
@@ -182,8 +185,9 @@ const Profile = () => {
     }
 
     try {
-      const res = await api.auth.updatePassword({
-        password: form.new_password,
+      const res = await api.admin.resetPassword(id,{
+        new_password: form.new_password,
+        confirm_password: form.confirm_password,
       });
 
       if (res.success) {
@@ -350,7 +354,7 @@ const Profile = () => {
                   error={errors.confirm_password}
                 />
                 <div className="flex gap-2">
-                  <Button onClick={handleResetPasswordSave} className="text-sm px-3">
+                  <Button onClick={()=>handleResetPasswordSave(user.id)} className="text-sm px-3">
                     Save
                   </Button>
                   <Button onClick={() => handleResetPasswordClick(false)} className="text-sm px-3" variant="secondary">
