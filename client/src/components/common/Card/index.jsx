@@ -10,7 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Button from '../../../components/ui/Button';
 import { useColorClasses } from '../../../theme/useColorClasses';
-import './style.css';
+
 import { Chip } from '../../ui/Chip';
 import { formatCurrency } from '../../ui/CurrencyFormatter';
 import { formatDate } from '../formatDate';
