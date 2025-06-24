@@ -180,11 +180,14 @@ export default function QuoteForm({ onClose }) {
 
     return false;
   };
-
   return (
     <div className="mx-auto px-4 md:px-10 py-8 md:py-10 rounded-xl w-full max-w-3xl">
       <LoadingIndicator isLoading={loading} />
-
+     {  loading && <p
+      className={`flex items-center text-xl justify-center bg-white bg-opacity-50 absolute inset-0 z-[10000] 
+      `}
+      style={{ display: loading ? 'flex' : 'none' }}
+    >Calculating...</p>}
       {/* Stepper */}
       <div className="mb-6 md:mb-10">
         <div className={`relative flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm md:text-base ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary}`}>
