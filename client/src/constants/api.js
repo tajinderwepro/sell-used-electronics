@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && [403, 401].includes(error.response.status)) {
+    if (error.response && [401].includes(error.response.status)) {
       console.warn('Unauthorized or expired token. Logging out...');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -170,7 +170,14 @@ const api = {
       getStatus: (id) => axiosWrapper(axiosInstance.get(`payments/stripe/status/${id}`)),
       stripeStatus: (id) => axiosWrapper(axiosInstance.get(`users/payments/stripe/connect/status/${id}`)),
       getList: (data) => axiosWrapper(axiosInstance.post('admin/payments/stripe/list',data)),
-    }
+    },
+    riskManagement: {
+      getList: () => axiosWrapper(axiosInstance.get('admin/risk-management/list')),
+      // get: (id) => axiosWrapper(axiosInstance.get(`admin/risk-management/${id}`)),
+      // create: (data) => axiosWrapper(axiosInstance.post('admin/risk-management/submit', data)),
+      // update: (id, data) => axiosWrapper(axiosInstance.put(`admin/risk-management/${id}`, data)),
+      // delete: (id) => axiosWrapper(axiosInstance.delete(`admin/risk-management/${id}`)),
+    },
   },
   getCategories: (limit = 10, offset = 0) => axiosWrapper(
     axiosInstance.post(`/category/list`, {

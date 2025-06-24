@@ -51,7 +51,7 @@ class RiskDetectionService:
         # Load geo location
         self.geo_location = await self.get_geo_location(self.user_ip)
 
-        # ✅ Load risk settings dynamically
+        # Load risk settings dynamically
         result = await self.db.execute(
             select(RiskManagement).where(RiskManagement.key.in_(["risky_domains", "high_risk_countries"]))
         )
