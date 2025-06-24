@@ -36,9 +36,9 @@ export default function Models() {
     ${errors.image ? 'border-red-500 ring-red-300 focus:border-red-500 focus:ring-red-300' : COLOR_CLASSES.borderPrimary + ' focus:ring-' + COLOR_CLASSES.primaryBg + ' focus:border-' + COLOR_CLASSES.primary}
   `;
   const breadcrumbItems = [
-    { label: 'Device', path: '/admin/categories' },
-    { label: 'Brands', path: `/admin/categories/${categoryId}/brand` },
-    { label: 'Models', path: `/admin/categories/${categoryId}/${brand}/${brandId}` },
+    { label: 'Device', path: '/admin/devices/categories' },
+    { label: 'Brands', path: `/admin/devices/categories/${categoryId}/brand` },
+    { label: 'Models', path: `/admin/devices/categories/${categoryId}/${brand}/${brandId}` },
   ];
 
   const fetchModels = async (currentOffset = 0, append = false) => {

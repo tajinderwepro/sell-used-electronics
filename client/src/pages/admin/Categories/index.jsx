@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { categorySchema } from "../../../common/Schema";
 
-const breadcrumbItems = [{ label: "Category", path: "/admin/categories" }];
+const breadcrumbItems = [{ label: "Category", path: "/admin/devices/categories" }];
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -176,7 +176,7 @@ export default function Categories() {
   );
 
   const handleCategoryClick = (cat) => {
-    navigate(`/admin/categories/${cat.id}/brand`);
+    navigate(`/admin/devices/categories/${cat.id}/brand`);
   };
 
   return (

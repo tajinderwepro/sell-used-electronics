@@ -25,7 +25,6 @@ const menuItems = [
   { name: "Orders", icon: Package, path: "/admin/orders" },
   { name: "Quotes", icon: FileText, path: "/admin/quotes" },
   { name: "Payments", icon: BadgeDollarSign, path: "/admin/payments" },
-  // { name: "Categories", icon: FileText, path: "/admin/categories" },
 ];
 
 export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {

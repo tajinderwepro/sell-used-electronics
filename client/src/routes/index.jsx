@@ -73,12 +73,12 @@ function AllRoutes() {
           <Route path="/admin/devices" element={<Categories />} />
           <Route path="/admin/devices/:deviceId" element={<ViewDevice />} />
           <Route path="/admin/orders" element={<Orders />} />
-          <Route path="/admin/order/:orderId" element={<ViewOrder />} />
+          <Route path="/admin/orders/:orderId" element={<ViewOrder />} />
           <Route path="/admin/quotes" element={<Quotes />} />
           <Route path="/admin/quotes/:quoteId" element={<ViewQuote />} />
-          <Route path="/admin/categories" element={<Categories/>} />
-          <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
-          <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />
+          <Route path="/admin/devices/categories" element={<Categories/>} />
+          <Route path="/admin/devices/categories/:categoryId/brand" element={<Brands />} />
+          <Route path="/admin/devices/categories/:categoryId/:brand/:brandId" element={<Models />} />
           <Route path="/admin/profile" element={<Profile/>} />
           <Route path="/admin/payments" element={<Payments/>} />
         </Route>

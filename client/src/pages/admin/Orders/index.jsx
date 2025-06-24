@@ -58,7 +58,7 @@ export default function Orders() {
       label: "Actions",
       render: (order) => (
         <div className="flex gap-2">
-          <button onClick={() => navigate(`/admin/order/${order.id}`)}>
+          <button onClick={() => navigate(`/admin/orders/${order.id}`)}>
             <Eye size={18} color="gray" />
           </button>
         <button

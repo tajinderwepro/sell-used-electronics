@@ -17,7 +17,7 @@ import { formatCurrency } from "../../../components/ui/CurrencyFormatter";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const breadcrumbItems = [
-  { label: 'Categories', path: '/admin/categories' },
+  { label: 'Categories', path: '/admin/devices/categories' },
 ];
 
 export default function Quotes() {

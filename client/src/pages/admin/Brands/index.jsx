@@ -32,8 +32,8 @@ export default function Brands() {
   const [hasMore, setHasMore] = useState(true);
 
   const breadcrumbItems = [
-    { label: 'Category', path: '/admin/categories' },
-    { label: 'Brands', path: `/admin/categories/${categoryId}/brand` },
+    { label: 'Category', path: '/admin/devices/categories' },
+    { label: 'Brands', path: `/admin/devices/categories/${categoryId}/brand` },
   ];
 
   const fetchBrands = async (currentOffset = 0, append = false) => {
@@ -60,7 +60,7 @@ export default function Brands() {
   };
 
   const handleBrandClick = (brand) => {
-    navigate(`/admin/categories/${categoryId}/${brand.name}/${brand.id}`);
+    navigate(`/admin/devices/categories/${categoryId}/${brand.name}/${brand.id}`);
   };
 
   useEffect(() => {

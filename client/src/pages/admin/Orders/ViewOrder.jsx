@@ -18,7 +18,7 @@ const ViewOrder = () => {
   console.log(order,"devicedevice")
   const breadcrumbItems = [
     { label: 'Orders', path: '/admin/orders' },
-    { label: "Order #"+orderId, path: `/admin/order/${orderId}` },
+    { label: "Order #"+orderId, path: `/admin/orders/${orderId}` },
   ];
 
   const getDevice = async () => {
