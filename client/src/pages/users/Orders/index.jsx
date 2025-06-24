@@ -11,6 +11,8 @@ import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
 import CustomBreadcrumbs from '../../../common/CustomBreadCrumbs';
 import Card from '../../../components/common/Card';
+import ViewOrderCard from '../../../components/common/ViewOrderCard';
+import Notes from '../../../components/common/Notes';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -25,7 +27,7 @@ function Orders() {
 
   const breadcrumbItems = [
     { label: 'Orders', path: '/orders' },
-   orderId ? { label: "Order #"+orderId, path: `/order/${orderId}` }:"",
+    orderId ? { label: "Order #" + orderId, path: `/order/${orderId}` } : "",
   ];
 
 
@@ -79,7 +81,7 @@ function Orders() {
   return (
     <div className="py-4">
       {/* <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Orders</h2> */}
-      <CustomBreadcrumbs className items={breadcrumbItems} separator={ orderId ? <ChevronRight style={{ fontSize: "12px" }} />:""} />
+      <CustomBreadcrumbs className items={breadcrumbItems} separator={orderId ? <ChevronRight style={{ fontSize: "12px" }} /> : ""} />
       {loading ? (
         <div className={`flex justify-center items-center h-64 ${COLOR_CLASSES.textSecondary}`}>
           <LoadingIndicator loading={loading} />
@@ -89,19 +91,7 @@ function Orders() {
       ) : (
         <>
           {orderId && selectedDevice ? (
-            <QuoteCard
-              device={{
-                ...selectedDevice.quote,
-                shipping_label_url: selectedDevice.shipping_label_url,
-                tracking_url: selectedDevice.tracking_url,
-                total_amount: selectedDevice.total_amount,
-              }}
-              order={selectedDevice}
-              fullView={true}
-              getDevice={getDevice}
-              onRequestShipment={(id) => handleOpen(id, 'approved')}
-              onClick={() => navigate('/orders')} // 👈 back to list
-            />
+           <ViewOrderCard selectedDevice={selectedDevice}/>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {orders.map((device) => (
@@ -116,6 +106,7 @@ function Orders() {
               ))}
             </div>
           )}
+          <Notes order={selectedDevice}/>
         </>
       )}
 
