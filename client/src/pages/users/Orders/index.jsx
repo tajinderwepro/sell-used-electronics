@@ -13,16 +13,19 @@ import CustomBreadcrumbs from '../../../common/CustomBreadCrumbs';
 import Card from '../../../components/common/Card';
 import ViewOrderCard from '../../../components/common/ViewOrderCard';
 import Notes from '../../../components/common/Notes';
+import Button from '../../../components/ui/Button';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [popupState, setPopupState] = useState({ open: false, deviceId: null, type: '' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   const COLOR_CLASSES = useColorClasses();
   const { filters } = useFilters();
   const { user } = useAuth();
-  const { orderId } = useParams(); // ✅ Get ID from URL
+  const { orderId } = useParams();
   const navigate = useNavigate();
 
   const breadcrumbItems = [
@@ -30,12 +33,26 @@ function Orders() {
     orderId ? { label: "Order #" + orderId, path: `/order/${orderId}` } : "",
   ];
 
+  const handleShowMore = () => {
+    fetchOrders(currentPage + 1, true);
+  };
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (page = 1, append = false) => {
     try {
       setLoading(true);
-      const response = await api.user.getUserOrders(user.id, filters);
-      setOrders(response.data);
+      const response = await api.user.getUserOrders(user.id, {
+        ...filters,
+        current_page: page,
+        order_by: 'desc',
+        sort_by: 'id'
+      });
+
+      const fetched = response?.data || [];
+      const total = response?.total || 0;
+
+      setOrders((prev) => (append ? [...prev, ...fetched] : fetched));
+      setTotalOrders(total);
+      setCurrentPage(page);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
       toast.error('Failed to fetch orders');
@@ -98,7 +115,6 @@ function Orders() {
                 <Card
                   key={device.id}
                   device={device}
-                  // order={device}
                   getDevice={getDevice}
                   onRequestShipment={(id) => handleOpen(id, 'approved')}
                   onClick={() => navigate(`/orders/${device.id}`)} 
@@ -109,7 +125,17 @@ function Orders() {
           <Notes order={selectedDevice}/>
         </>
       )}
-
+      {!selectedDevice && orders.length < totalOrders && (
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleShowMore}
+            disabled={loading}
+            className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            {loading ? 'Loading...' : 'Show More'}
+          </Button>
+        </div>
+      )}
       <Popup
         open={popupState.open}
         onClose={handleClose}

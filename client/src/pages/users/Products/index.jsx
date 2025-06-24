@@ -59,12 +59,34 @@ function Products() {
         toast.error(res.message);
       }
       fetchQuotes();
+      handleClose();
     } catch (err) {
       console.error('Failed to request shipment:', err);
       toast.error('Failed to request shipment');
     } finally {
       setLoading(false);
-      handleClose();
+    }
+  };
+
+    const handleRetryShipment = async () => {
+    setLoading(true);
+    try {
+      const res = await api.user.retryShipment(popupState.deviceId);
+      const success = res?.success ?? res?.success ?? false;
+      if (success) {
+        toast.success(res.message);
+        fetchQuotes();
+      } else {
+        toast.error(res.message || "Shipment retry failed.");
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.message ||
+        error?.message ||
+        "Shipment retry failed due to an unexpected error.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +106,7 @@ function Products() {
           <Card
             key={device.id}
             device={device}
-            onRequestShipment={(id) => handleOpen(id, 'approved')}
+            onRequestShipment={(id, type = 'approved') => handleOpen(id, type)}
             type="quote"
           />
         ))}
@@ -94,7 +116,7 @@ function Products() {
       <Popup
         open={popupState.open}
         onClose={handleClose}
-        onSubmit={popupState.type === 'approved' ? handleRequest : () => {}}
+        onSubmit={popupState.type === 'approved' ? handleRequest : popupState.type == 'retry' ? handleRetryShipment : () => {}}
         title={'Shipment Request'}
         btnCancel="Cancel"
         btnSubmit="Submit"

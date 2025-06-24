@@ -72,6 +72,8 @@ class QuoteOut(BaseModel):
     created_at:Optional[datetime] = None
     updated_at: Optional[datetime] = None
     amount: Optional[float] = None
+    shipment_retry_status: Optional[bool] = None
+    shipment_id: Optional[str] = None
  
 class QuoteUpdate(BaseModel):
     category: Optional[str]

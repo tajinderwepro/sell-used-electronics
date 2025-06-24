@@ -131,15 +131,15 @@ class EbayService:
                 if "price" in item and "value" in item["price"]
             ]
 
-            price = round(mean(prices), 2) if prices else None
-
+            avg_price = round(mean(prices), 2) if prices else None
+            offer_price = round(avg_price * 0.6, 2) if avg_price else None
             await self._log_action(
                 "price_fetched",
-                f"Fetched price for '{query}' ({condition or 'all'}) = {price}",
-                json.dumps(res_json)[:10000]  # truncate to 10k chars if large
+                f"Fetched average price for '{query}' ({condition or 'all'}) = {avg_price}, offer = {offer_price}",
+                json.dumps(res_json)[:10000]
             )
 
-            return price
+            return offer_price
 
         except requests.RequestException as e:
             await self._log_action("price_fetch_failed", f"eBay API error for '{query}': {e}")
