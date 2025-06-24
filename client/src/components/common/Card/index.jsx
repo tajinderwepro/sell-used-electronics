@@ -22,8 +22,9 @@ function Card({ device, onRequestShipment, onClick, type = 'order' }) {
   const imageList =
     Array.isArray(device.media) && device.media.length > 0
       ? device.media.map((m) => m.path)
-      : [device.quote.media].filter(Boolean).length > 0
-        ? device.quote.media.map((m) => m.path)
+      : type === "order" 
+      ? device.quote?.media?.map((m) => m.path) || []: [device.image, device.model_image, device.category_name_image].filter(Boolean).length > 0
+        ? [device.image, device.model_image, device.category_name_image].filter(Boolean)
         : [placeholderImage, placeholderImage, placeholderImage];
 
   const renderButton = () => {
