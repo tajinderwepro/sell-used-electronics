@@ -4,7 +4,7 @@ export const Chip = ({ status,children }) => {
     user: { label: "User", className: "bg-gray-300 text-gray-800" },
 
     // Order lifecycle
-    pending: { label: "Pending", className: "bg-gray-300 text-gray-800" },
+    pending: { label: "Pending", className: "bg-gray-300 text-white" },
     approved: { label: "Approved", className: "bg-green-500 text-white" },
     shipped: { label: "Shipped", className: "bg-[#2196F3] text-white" },
     received: { label: "Received", className: "bg-green-300 text-green-800" },

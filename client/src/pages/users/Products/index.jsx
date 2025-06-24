@@ -69,13 +69,13 @@ function Products() {
 
   return (
     <div className="py-6">
-      <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Products</h2>
+      <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Quotes</h2>
       {loading ? (
         <div className={`flex justify-center items-center h-64 ${COLOR_CLASSES.textSecondary}`}>
           <LoadingIndicator loading={loading} />
         </div>
       ) : quotes.length === 0 ? (
-        <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No products found.</div>
+        <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No Quotes found.</div>
       ) : (
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

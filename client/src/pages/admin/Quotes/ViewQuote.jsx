@@ -36,7 +36,6 @@ const ViewQuote = () => {
       const res = await api.admin.quotes.get(quoteId);
       setDevice(res.data);
       setSelectedImage(res.data.media?.[0]?.path || "");
-      setNotes(res.data.notes || []);
     } catch (err) {
       toast.error("Failed to fetch device");
     } finally {
@@ -44,10 +43,15 @@ const ViewQuote = () => {
     }
   };
 
+  const getNotes = async () => {
+    const res=await api.admin.notes.noteList();
+     setNotes(res);
+    }
+
   useEffect(() => {
     getDevice();
+    getNotes();
   }, []);
-
   const handleApproved = async () => {
     try {
       setLoading(true);
@@ -70,13 +74,15 @@ const ViewQuote = () => {
     try {
       setNoteSubmitting(true);
       const payload = {
-        device_id: device.id,
-        user_id: user.id,
+        user_id: device.user_id,
         content: newNote,
+        notiable_id:device.id,
+        notiable_type: "Quote",
       };
       await api.admin.notes.create(payload);
       toast.success("Note added");
       setNewNote("");
+      getNotes();
       await getDevice();
       setPopupState({ open: false, type: null });
     } catch (err) {
@@ -85,6 +91,8 @@ const ViewQuote = () => {
       setNoteSubmitting(false);
     }
   };
+
+
 
   const handleClosePopup = () => {
     setPopupState({ open: false, type: null });
@@ -165,7 +173,7 @@ const ViewQuote = () => {
             {notes.map((note) => (
               <li key={note.id} className="border p-3 rounded-md bg-gray-50">
                 <div className="text-sm text-gray-600 mb-1">
-                  By <strong>{note.user?.name}</strong> on {new Date(note.created_at).toLocaleString()}
+                  By <strong>{user?.name}</strong> on {new Date(note.created_at).toLocaleString()} 
                 </div>
                 <div className="text-gray-800">{note.content}</div>
               </li>

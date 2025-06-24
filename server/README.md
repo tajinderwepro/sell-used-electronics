@@ -125,11 +125,20 @@ python3 --version
 ```
 for if python 
 ```bash
-python seed_users.py
+python seeder/seed_users.py
 ```
 for python3 
 ```bash
-python3 seed_users.py
+python3 seeder/seed_users.py
 ```
 
+updated 
+for mac 
+```bash
+python3 seeder/risk_management_seeder.py
+```
 
+for window
+```bash
+python seeder/risk_management_seeder.py
+```

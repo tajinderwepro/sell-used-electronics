@@ -37,9 +37,6 @@ async def get_list(
             get_all=True
     )
 
-@router.post("/submit/{id}", response_model=DeviceListResponse)
-async def create_device(id: int, device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
-    return await DeviceService.create_device(id, device_in, db)
 
 @router.delete("/{device_id}", status_code=status.HTTP_200_OK)
 async def delete_device(device_id: int, db: AsyncSession = Depends(get_db)):
@@ -92,5 +89,7 @@ async def update_device_status(
     if not updated_device:
         raise HTTPException(status_code=404, detail="Device not found")
     return updated_device
+
+    
 
     

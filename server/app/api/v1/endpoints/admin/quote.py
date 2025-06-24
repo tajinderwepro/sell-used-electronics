@@ -37,9 +37,6 @@ async def get_list(
             get_all=True
     )
 
-@router.post("/submit/{id}", response_model=QuoteListResponse)
-async def create_quote(id: int, quote_in: QuoteCreate, db: AsyncSession = Depends(get_db)):
-    return await QuoteService.create_quote(id, quote_in, db)
 
 @router.delete("/{quote_id}", status_code=status.HTTP_200_OK)
 async def delete_quote(quote_id: int, db: AsyncSession = Depends(get_db)):

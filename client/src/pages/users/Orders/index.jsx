@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  CircleHelp,
-} from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ChevronRight, CircleHelp } from 'lucide-react';
 import api from '../../../constants/api';
 import { toast } from 'react-toastify';
 import Popup from '../../../common/Popup';
@@ -10,18 +9,24 @@ import { useFilters } from '../../../context/FilterContext';
 import { useAuth } from '../../../context/AuthContext';
 import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
-import Button from '../../../components/ui/Button';
-import { useNavigate } from 'react-router-dom';
-
+import CustomBreadcrumbs from '../../../common/CustomBreadCrumbs';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [popupState, setPopupState] = useState({ open: false, deviceId: null, type: '' });
+
   const COLOR_CLASSES = useColorClasses();
   const { filters } = useFilters();
   const { user } = useAuth();
+  const { orderId } = useParams(); // ✅ Get ID from URL
   const navigate = useNavigate();
+
+  const breadcrumbItems = [
+    { label: 'Orders', path: '/orders' },
+   orderId ? { label: "Order #"+orderId, path: `/order/${orderId}` }:"",
+  ];
+
 
   const fetchOrders = async () => {
     try {
@@ -52,9 +57,9 @@ function Orders() {
     try {
       setLoading(true);
       const res = await api.user.requestShipment(popupState.deviceId);
-      if(res.success){
+      if (res.success) {
         toast.success(res.message);
-      }else{
+      } else {
         toast.error(res.message);
       }
       fetchOrders();
@@ -67,26 +72,55 @@ function Orders() {
     }
   };
 
+  const getDevice = () => fetchOrders();
+
+  const selectedDevice = orders.find((d) => String(d.id) === orderId);
   return (
-    <div className="py-6">
-      <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Orders</h2>
+    <div className="py-4">
+      {/* <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Orders</h2> */}
+      <CustomBreadcrumbs className items={breadcrumbItems} separator={ orderId ? <ChevronRight style={{ fontSize: "12px" }} />:""} />
       {loading ? (
         <div className={`flex justify-center items-center h-64 ${COLOR_CLASSES.textSecondary}`}>
           <LoadingIndicator loading={loading} />
         </div>
       ) : orders.length === 0 ? (
-        <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No products found.</div>
+        <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No Orders found.</div>
       ) : (
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {orders.map((device) => (
+        <>
+          {orderId && selectedDevice ? (
             <QuoteCard
-              key={device.id}
-              device={{...device.quote,shipping_label_url: device.shipping_label_url, tracking_url: device.tracking_url}}
+              device={{
+                ...selectedDevice.quote,
+                shipping_label_url: selectedDevice.shipping_label_url,
+                tracking_url: selectedDevice.tracking_url,
+                total_amount: selectedDevice.total_amount,
+              }}
+              order={selectedDevice}
+              fullView={true}
+              getDevice={getDevice}
               onRequestShipment={(id) => handleOpen(id, 'approved')}
+              onClick={() => navigate('/orders')} // 👈 back to list
             />
-          ))}
-        </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {orders.map((device) => (
+                <QuoteCard
+                  key={device.id}
+                  device={{
+                    ...device.quote,
+                    shipping_label_url: device.shipping_label_url,
+                    tracking_url: device.tracking_url,
+                    total_amount: device.total_amount,
+                  }}
+                  order={device}
+                  getDevice={getDevice}
+                  onRequestShipment={(id) => handleOpen(id, 'approved')}
+                  onClick={() => navigate(`/orders/${device.id}`)} // 👈 open full view via URL
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       <Popup

@@ -4,6 +4,7 @@ from app.db.session import get_db
 from app.schemas.user import UserCreate, UserOut, UserResponse,UserListResponse,UserUpdate, UserListRequest
 from app.schemas.device import DeviceListRequest
 from app.services.user_service import UserService
+from app.services.shipping_service import ShippingService
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from uuid import uuid4
@@ -132,7 +133,7 @@ async def request_shipment(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await UserService.request_shipment(
+    return await ShippingService.request_shipment(
         request=request,
         db=db,
         quote_id=quote_id,
