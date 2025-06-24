@@ -3,7 +3,7 @@ from app.db.session import Base
 from typing import Optional ,List,Union
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
-
+from datetime import datetime
 class QuoteCreate(BaseModel):
     category: str
     brand: str
@@ -69,6 +69,9 @@ class QuoteOut(BaseModel):
     user: Optional[UserBase]
     media: List[MediaBase] = [] 
     model_config = ConfigDict(from_attributes=True)
+    created_at:Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    amount: Optional[float] = None
  
 class QuoteUpdate(BaseModel):
     category: Optional[str]
@@ -118,6 +121,7 @@ class QuoteResponse(BaseModel):
     brand: BrandBase | None = None
     model: ModelBase | None = None
     user: UserBase | None = None
+
     model_config = ConfigDict(from_attributes=True)
 
 class QuoteSubmitResponse(BaseModel):

@@ -20,11 +20,11 @@ class RiskDetectionService:
         self.user_email = ""
         self.quote_history = []
         self.user_ip = self.get_client_ip()
+        # self.user_ip='103.11.3.255'
         self.user_agent = self.get_user_agent()
         self.geo_location = {}
         self.account_age_days = 0
         self.num_previous_orders = 0
-
         self.risky_domains = set()
         self.high_risk_countries = set()
 

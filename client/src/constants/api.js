@@ -164,6 +164,11 @@ const api = {
     },
     orders:{
       get: (id) => axiosWrapper(axiosInstance.get(`admin/orders/${id}`)),
+      
+    },
+    notes:{
+      create: (data) => axiosWrapper(axiosInstance.post('notes/add',data)),
+      noteList: () => axiosWrapper(axiosInstance.get('notes/list')),
     },
     payments:{
       pay: (id) => axiosWrapper(axiosInstance.get(`admin/payments/stripe/pay/${id}`)),
