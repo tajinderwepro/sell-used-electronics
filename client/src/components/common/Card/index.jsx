@@ -19,16 +19,15 @@ const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-493
 
 function Card({ device, onRequestShipment, onClick, type = 'order' }) {
   const COLOR_CLASSES = useColorClasses();
-
   const imageList =
     Array.isArray(device.media) && device.media.length > 0
       ? device.media.map((m) => m.path)
-      : [device.image, device.model_image, device.category_name_image].filter(Boolean).length > 0
-        ? [device.image, device.model_image, device.category_name_image].filter(Boolean)
+      : [device.quote.media].filter(Boolean).length > 0
+        ? device.quote.media.map((m) => m.path)
         : [placeholderImage, placeholderImage, placeholderImage];
 
   const renderButton = () => {
-    switch (device?.status) {
+    switch (type === 'order' ? device.quote.status : device?.status) {
       case 'pending':
         return (
           <Button variant="primary" disabled className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}>
@@ -40,11 +39,11 @@ function Card({ device, onRequestShipment, onClick, type = 'order' }) {
         return (
           <Button
             variant="primary"
-            onClick={() => onRequestShipment(device.id)}
+            onClick={() => device.shipment_retry_status && device.shipment_id ? onRequestShipment(device.id, 'retry') : onRequestShipment(device.id)}
             className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
           >
             <PackageCheck className="inline-block mr-2 w-5 h-5" />
-            Request Shipment
+              {device.shipment_retry_status && device.shipment_id ? 'Retry Shipment' : 'Request Shipment'}
           </Button>
         );
       case 'delivered':

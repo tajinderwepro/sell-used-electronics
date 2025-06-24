@@ -59,8 +59,6 @@ const api = {
           }
         )
       ),
-
-
     createCategory: (data) =>
       axiosWrapper(
         axiosInstance.post(
@@ -216,6 +214,7 @@ const api = {
     getUserQuotes: (id, data) => axiosWrapper(axiosInstance.post(`/users/quotes/${id}`,data)),
     getUserOrders: (id, data) => axiosWrapper(axiosInstance.post(`/users/orders/${id}`,data)),
     requestShipment: (id) => axiosWrapper(axiosInstance.post(`/users/quotes/request-shipment/${id}`)),
+    retryShipment: (id) => axiosWrapper(axiosInstance.post(`/users/quotes/retry-shipment/${id}`)),
     getUserPayments: (id, data) => axiosWrapper(axiosInstance.post(`users/payments/stripe/${id}`, data)),
     // getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),
   }

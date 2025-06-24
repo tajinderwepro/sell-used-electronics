@@ -1,5 +1,5 @@
 # app/models/quote.py
-from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime, String,Text
+from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime, String, Text, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.session import Base
@@ -24,7 +24,8 @@ class Quote(Base,TimestampMixin):
     imei = Column(String(50), nullable=True)
     specifications = Column(Text, nullable=True) 
     amount = Column(Float, nullable=True)
-
+    shipment_id = Column(String, nullable=True)
+    shipment_retry_status = Column(Boolean, default=False)
 
     # Relationships
     user = relationship("User", back_populates="quotes")

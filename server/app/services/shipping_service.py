@@ -272,7 +272,22 @@ class ShippingService:
             }
 
         except Exception as e:
-            return {"message": str(e), "success": False}
+            error_message = str(e)
+
+            if shipment_id and "InsufficientCarrierAccountBalanceError" in error_message:
+                quote.shipment_id = shipment_id
+                quote.shipment_retry_status = True
+                quote.status = "approved"
+                await db.commit()
+
+                return {
+                    "message": "Shipment created but could not be purchased due to low EasyPost balance.",
+                    "retry_possible": True,
+                    "shipment_id": shipment_id,
+                    "success": False
+                }
+
+            return {"message": error_message, "success": False}
 
         finally:
             await LogService.store(
@@ -290,3 +305,46 @@ class ShippingService:
                 db=db,
                 quote_id=quote.id
             )
+    async def retry_shipment_purchase(
+        self,
+        quote: Quote,
+        db: AsyncSession,
+        request,
+        current_user,
+        insurance: float = 0.0,
+    ):
+        if not quote.shipment_id:
+            raise HTTPException(status_code=400, detail="No shipment to retry.")
+
+        try:
+            bought_shipment = await self.buy_shipment(
+                shipment_id=quote.shipment_id,
+                db=db,
+                request=request,
+                current_user=current_user,
+                quote_id=quote.id,
+                insurance=insurance,
+            )
+
+            order_data = OrderCreate(
+                quote_id=quote.id,
+                user_id=quote.user_id,
+                status="pending",
+                total_amount=quote.amount,
+                shipping_label_url=bought_shipment["postage_label"]["label_url"],
+                tracking_number=bought_shipment["tracker"]["id"],
+                tracking_url=bought_shipment["tracker"]["public_url"],
+                ebay_avg_price=quote.amount,
+                shipment_fees=bought_shipment.get("fees", []),
+            )
+
+            quote.status = "shipped"
+            quote.shipment_retry_status = False  # reset flag
+            await db.commit()
+            await db.refresh(quote)
+
+            order = await OrderService.create_order(db, order_data)
+            return order
+
+        except Exception as e:
+            raise e

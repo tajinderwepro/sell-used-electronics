@@ -17,8 +17,8 @@ class Order(Base,TimestampMixin):
     shipping_label_url = Column(String, nullable=True)
     tracking_url = Column(String, nullable=True)
     total_amount = Column(Integer, nullable=False)  # Assuming total amount is in cents
-    ebay_avg_price = Column(String, nullable=True)
-    shipment_fees = Column(JSONB, nullable=True)  # ✅ Handles list of dicts
+    ebay_avg_price = Column(Float, nullable=True)
+    shipment_fees = Column(JSONB, nullable=True) 
     # Relationships
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)

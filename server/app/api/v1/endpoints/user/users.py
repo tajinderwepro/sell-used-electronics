@@ -16,6 +16,9 @@ from app.core.security import get_current_user
 from app.models.user import User
 from app.services.order_service import OrderService
 from app.services.payment_service import PaymentService
+from sqlalchemy import select
+from app.models.quote import Quote
+
 router = APIRouter()
 
 UPLOAD_FOLDER = "uploads"
@@ -139,6 +142,38 @@ async def request_shipment(
         quote_id=quote_id,
         current_user=current_user
     )
+
+@router.post("/quotes/retry-shipment/{quote_id}")
+async def retry_shipment_purchase(
+    request: Request,
+    quote_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    result = await db.execute(select(Quote).where(Quote.id == quote_id))
+    quote = result.scalars().first()
+
+    if not quote:
+        raise HTTPException(status_code=404, detail="Quote not found")
+
+    service = ShippingService()
+
+    try:
+        order = await service.retry_shipment_purchase(
+            quote=quote,
+            db=db,
+            request=request,
+            current_user=current_user,
+            insurance=249.99,
+        )
+        return {
+            "order": order.to_dict() if hasattr(order, "to_dict") else order,
+            "message": "Retry shipment succeeded and order placed",
+            "success": True,
+        }
+    except Exception as e:
+        return {"message": str(e), "success": False}
+
 
 
 @router.get("/connect/onboarding-link/{user_id}")

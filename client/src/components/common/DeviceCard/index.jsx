@@ -73,15 +73,28 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
         );
       case 'approved':
         return (
-          <Button
-            variant="primary"
-            onClick={() => onRequestShipment(device.id)}
-            className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
-          >
-            <PackageCheck className="inline-block mr-2 w-5 h-5" />
-            Request Shipment
-          </Button>
-        );
+          <>
+            {(device.shipment_retry_status && device.shipment_id)? 
+                <Button
+                  variant="primary"
+                      onClick={() => onRequestShipment(device.id, 'retry')}
+                      className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
+                    >
+                      <PackageCheck className="inline-block mr-2 w-5 h-5" />
+                    Retry Shipment
+                </Button>
+              : 
+                <Button
+                  variant="primary"
+                  onClick={() => onRequestShipment(device.id)}
+                  className={`w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`}
+                >
+                  <PackageCheck className="inline-block mr-2 w-5 h-5" />
+                  Request Shipment
+                </Button>
+            }
+            </>
+        )
       case 'delivered':
         return (
           <Button
