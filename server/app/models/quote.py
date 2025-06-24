@@ -4,7 +4,9 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.session import Base
 from app.models.base import TimestampMixin
-
+from app.models.note import Note 
+from sqlalchemy.orm import foreign
+from sqlalchemy import and_
 class Quote(Base,TimestampMixin):
     __tablename__ = 'quotes'
 
@@ -36,6 +38,13 @@ class Quote(Base,TimestampMixin):
     media = relationship(
             "Media",
             primaryjoin="and_(foreign(Media.mediable_id)==Quote.id, Media.mediable_type=='quote')",
+            viewonly=True,
+            uselist=True
+        )
+
+    notes = relationship(
+            "Note",
+            primaryjoin="and_(foreign(Note.notiable_id)==Quote.id, Note.notiable_type=='quote')",
             viewonly=True,
             uselist=True
         )

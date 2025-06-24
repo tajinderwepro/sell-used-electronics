@@ -160,6 +160,7 @@ const api = {
       create: (data) => axiosWrapper(axiosInstance.post('admin/quotes/submit', data)),
       submit: (id,data) => axiosWrapper(axiosInstance.post(`admin/quotes/submit/${id}`, data)),
     },
+
     orders:{
       get: (id) => axiosWrapper(axiosInstance.get(`admin/orders/${id}`)),
       
@@ -217,6 +218,9 @@ const api = {
     retryShipment: (id) => axiosWrapper(axiosInstance.post(`/users/quotes/retry-shipment/${id}`)),
     getUserPayments: (id, data) => axiosWrapper(axiosInstance.post(`users/payments/stripe/${id}`, data)),
     // getUserDevices: (id, data) => axiosWrapper(axiosInstance.post(`/users/devices/${id}`,data)),
+    getAllQuotes: (data) => axiosWrapper(axiosInstance.post('users/quote/all-list',data)),
+    getAllDevices: (data) => axiosWrapper(axiosInstance.post('users/devices/all-list',data)),
+    getUserNotes: (note_id) => axiosWrapper(axiosInstance.get(`users/quote/notes/${note_id}`)),
   }
 };
 

@@ -1,12 +1,9 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, func, and_
+from sqlalchemy.orm import relationship, foreign
 from app.db.session import Base 
 from app.models.base import TimestampMixin
 
-
-
-class Note(Base,TimestampMixin):
+class Note(Base, TimestampMixin):
     __tablename__ = "notes"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -22,8 +19,25 @@ class Note(Base,TimestampMixin):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # Optional relationships if you want to reference users
-    # user = relationship("User", foreign_keys=[user_id], backref="notes_for_user")
-    # added_by_user = relationship("User", foreign_keys=[added_by], backref="notes_added_by")
+    user = relationship("User", back_populates="notes", foreign_keys=[added_by])
+    # added_by_user = relationship("User", foreign_keys=[added_by], back_populates="notes_created")
 
+    # ✅ Use string-based class name and lazy primaryjoin evaluation
+    # quote = relationship(
+    #     "Quote",
+    #     primaryjoin=lambda: and_(
+    #         foreign(Note.notiable_id) == foreign("Quote.id"),
+    #         Note.notiable_type == "quote"
+    #     ),
+    #     back_populates="notes",
+    #     lazy="selectin"
+    # )
+    quote = relationship(
+        "Quote",
+        primaryjoin="and_(foreign(Note.notiable_id)==Quote.id, Note.notiable_type=='quote')",
+        viewonly=True,
+        uselist=True
+    )
+    
 
+    

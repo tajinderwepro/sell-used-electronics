@@ -15,6 +15,7 @@ from app.utils.db_helpers import paginate_query
 from app.services.risk_detection_service import RiskDetectionService
 from fastapi import Request
 from app.services.quote_history_service import QuoteHistoryService
+from app.models.note import Note
 
 class QuoteService:
 
@@ -45,7 +46,8 @@ class QuoteService:
                 selectinload(Quote.brand),
                 selectinload(Quote.model),
                 selectinload(Quote.user),
-                selectinload(Quote.media)
+                selectinload(Quote.media),
+                selectinload(Quote.notes).selectinload(Note.user)
             ]
         )
 
@@ -152,11 +154,11 @@ class QuoteService:
                 selectinload(Quote.brand),
                 selectinload(Quote.model),
                 selectinload(Quote.media),
-                selectinload(Quote.user),
+                selectinload(Quote.notes),
             )
             .where(Quote.id == quote_id)
         )
-        quote = result.scalar_one_or_none()  # ✅ fetch a single object
+        quote = result.scalar_one_or_none()
 
         if not quote:
             return None
@@ -164,7 +166,7 @@ class QuoteService:
         return {
             "success": True,
             "message": "Quote fetched successfully",
-            "data": QuoteOut.model_validate(quote, from_attributes=True),  # ✅ correct usage
+            "data": QuoteOut.model_validate(quote, from_attributes=True),
         }
 
     @staticmethod

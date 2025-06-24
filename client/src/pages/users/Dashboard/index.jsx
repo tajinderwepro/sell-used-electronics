@@ -51,16 +51,16 @@ useEffect(() => {
       // const usersRes = await api.admin.getAllUsers(filters);
       // setUsers(usersRes.data);
 
-      const quotePending = await api.admin.quotes.getAllQuotes(filters);
+      const quotePending = await api.user.getAllQuotes(filters);
       setQuotes(quotePending.data.filter(quote => quote.status === 'pending'));
 
       // const brandsRes = await api.admin.getAllBrand(user.id, 0, 0);
       // setBrand(brandsRes.data);
       
-      const conditionRes = await api.admin.getAllDevices(filters);
+      const conditionRes = await api.user.getAllDevices(filters);
       setDevices(conditionRes.data);
 
-      const quoteApproved = await api.admin.quotes.getAllQuotes(filters);
+      const quoteApproved = await api.user.getAllQuotes(filters);
       setApprovedQuotes(quoteApproved.data.filter(quote => quote.status === 'approved'));
 
       // const orders = await api.admin.getLatestDevice(user.id);

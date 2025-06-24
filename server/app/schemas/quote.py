@@ -4,6 +4,8 @@ from typing import Optional ,List,Union
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from datetime import datetime
+from app.schemas.note import NoteOut
+
 class QuoteCreate(BaseModel):
     category: str
     brand: str
@@ -66,8 +68,9 @@ class QuoteOut(BaseModel):
     category: Optional[CategoryBase]
     brand: Optional[BrandBase]
     model: Optional[ModelBase]
-    user: Optional[UserBase]
+    # user: Optional[UserBase]
     media: List[MediaBase] = [] 
+    notes: Optional[List[NoteOut]] = []
     model_config = ConfigDict(from_attributes=True)
     created_at:Optional[datetime] = None
     updated_at: Optional[datetime] = None

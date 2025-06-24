@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship,backref, foreign
 import enum
 from app.models.base import TimestampMixin
 from app.models.media import Media
+from app.models.note import Note
 class RoleEnum(str, enum.Enum):
     admin = 'admin'
     user = 'user'
@@ -37,10 +38,8 @@ class User(Base):
         ),
         backref="user"
     )
+    notes = relationship("Note", back_populates="user", foreign_keys=[Note.added_by])
     logs = relationship("Log", back_populates="user")
     payments = relationship("Payment", back_populates="user", lazy="selectin")
     orders = relationship("Order", back_populates="user", lazy="selectin")
-
-
-
-    
+  

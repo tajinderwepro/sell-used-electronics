@@ -22,7 +22,6 @@ class NoteOut(BaseModel):
     updated_at: datetime
 
     user: Optional[UserInfo] = None
-    added_by_user: Optional[UserInfo] = None
 
     model_config = ConfigDict(from_attributes=True)
 

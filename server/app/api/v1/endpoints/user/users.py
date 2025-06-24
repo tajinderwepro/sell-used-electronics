@@ -19,6 +19,10 @@ from app.services.payment_service import PaymentService
 from sqlalchemy import select
 from app.models.quote import Quote
 
+from app.services.quote_service import QuoteService
+from app.schemas.quote import QuoteListResponse, QuoteListRequest
+from app.services.device_service import DeviceService
+from app.schemas.device import DeviceListRequest,DeviceListResponse
 router = APIRouter()
 
 UPLOAD_FOLDER = "uploads"
@@ -192,4 +196,34 @@ async def get_user_quotes(
         user_id=user_id,
     )
 
-    
+# /// below all api for user dashboard
+
+@router.post("/quote/all-list", response_model=QuoteListResponse)
+async def get_list(
+    filters: QuoteListRequest = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+        return await QuoteService.get_all_quotes(
+            db=db,
+            search=filters.search,
+            sort_by=filters.sort_by,
+            order_by=filters.order_by,
+            current_page=filters.current_page,
+            limit=filters.limit,
+            get_all=True
+    )
+
+@router.post("/devices/all-list", response_model=DeviceListResponse)
+async def get_list(
+    filters: DeviceListRequest = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+        return await DeviceService.get_all_devices(
+            db=db,
+            search=filters.search,
+            sort_by=filters.sort_by,
+            order_by=filters.order_by,
+            current_page=filters.current_page,
+            limit=filters.limit,
+            get_all=True
+    )
