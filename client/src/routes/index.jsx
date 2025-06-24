@@ -16,6 +16,7 @@ import Quotes from "../pages/admin/Quotes";
 import Dashboard from "../pages/users/Dashboard";
 import GeneralLayout from "../layouts/GeneralLayout";
 import Categories from "../pages/admin/Categories";
+import RiskManagement from "../pages/admin/RiskManagement";
 import Brands from "../pages/admin/Brands";
 import Products from "../pages/users/Products";
 import Models from "../pages/admin/Models";
@@ -79,6 +80,10 @@ function AllRoutes() {
           <Route path="/admin/devices/categories" element={<Categories/>} />
           <Route path="/admin/devices/categories/:categoryId/brand" element={<Brands />} />
           <Route path="/admin/devices/categories/:categoryId/:brand/:brandId" element={<Models />} />
+          <Route path="/admin/categories" element={<Categories/>} />
+          <Route path="/admin/risk-management" element={<RiskManagement/>} />
+          <Route path="/admin/categories/:categoryId/brand" element={<Brands />} />
+          <Route path="/admin/categories/:categoryId/:brand/:brandId" element={<Models />} />
           <Route path="/admin/profile" element={<Profile/>} />
           <Route path="/admin/payments" element={<Payments/>} />
         </Route>

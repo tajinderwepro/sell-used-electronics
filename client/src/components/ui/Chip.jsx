@@ -27,6 +27,9 @@ export const Chip = ({ status,children }) => {
 
     // Stripe Status
     verified: { label: "Verified", className: "bg-green-500 text-white" },
+
+    // Risk Status
+    highRisk : { label: "High Risk", className: "bg-red-500/20 border border-red-500 text-red-500" },
   };
 
   const config = statusConfig[status];
