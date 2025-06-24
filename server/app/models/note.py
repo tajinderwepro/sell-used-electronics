@@ -38,6 +38,18 @@ class Note(Base, TimestampMixin):
         viewonly=True,
         uselist=True
     )
-    
+    order = relationship(
+        "Order",
+        primaryjoin="and_(foreign(Note.notiable_id)==Order.id, Note.notiable_type=='order')",
+        viewonly=True,
+        uselist=True
+    )
 
     
+
+
+    
+
+
+
+

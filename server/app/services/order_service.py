@@ -55,6 +55,7 @@ class OrderService:
         result = await db.execute(
             select(Order)
             .options(
+                selectinload(Order.notes),
                 selectinload(Order.quote)
                     .selectinload(Quote.media),
                 selectinload(Order.quote)

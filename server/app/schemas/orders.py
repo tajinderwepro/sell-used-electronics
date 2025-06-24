@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from typing import Optional, Literal,List
 from pydantic.config import ConfigDict
 from datetime import datetime
 from app.schemas.quote import MediaBase
 from typing_extensions import Literal  # or just use Literal from typing if you're on Python 3.8+
-
+from app.schemas.note import NoteOut
 
 class ShipmentFee(BaseModel):
     amount: float
@@ -20,6 +20,9 @@ class OrderBase(BaseModel):
     total_amount: Optional[float] = None
     shipment_fees: Optional[List[ShipmentFee]] = None  # ✅ corrected
     ebay_avg_price: Optional[float] = None
+
+
+
 
 class UserBase(BaseModel):
     id: int
@@ -84,6 +87,8 @@ class OrderOut(BaseModel):
     total_amount: Optional[float] = None
     shipment_fees: Optional[List[ShipmentFee]] = None  # ✅ corrected
     ebay_avg_price: Optional[float] = None
+    notes: Optional[List[NoteOut]] = []
+
     model_config = {
         "from_attributes": True  
     }

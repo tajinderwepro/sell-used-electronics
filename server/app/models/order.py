@@ -3,7 +3,11 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Enum,Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 from app.db.session import Base
+from app.models.note import Note 
 from app.models.base import TimestampMixin
+from sqlalchemy.orm import foreign
+
+from sqlalchemy import and_
 from sqlalchemy.dialects.postgresql import JSONB
 
 class Order(Base,TimestampMixin):
@@ -23,3 +27,12 @@ class Order(Base,TimestampMixin):
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)
     user = relationship("User", back_populates="orders")
+
+
+    notes = relationship(
+                "Note",
+                primaryjoin="and_(foreign(Note.notiable_id)==Order.id, Note.notiable_type=='order')",
+                viewonly=True,
+                uselist=True
+            )
+   
