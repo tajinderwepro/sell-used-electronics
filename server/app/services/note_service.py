@@ -38,7 +38,7 @@ class NoteService:
         new_note = Note(
             notiable_id=note_data.notiable_id,
             notiable_type=note_data.notiable_type,
-            user_id=current_user.user_id,
+            user_id=current_user.id,
             added_by=current_user.id,
             content=note_data.content
         )

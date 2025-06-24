@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import InputField from "../../../components/ui/InputField";
-import Notes from "../../../components/common/Notes";
 
 const ViewQuoteCard = ({}) => {
     const [loading, setLoading] = useState(false);

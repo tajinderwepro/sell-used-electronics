@@ -8,42 +8,25 @@ import api from "../../../constants/api";
 import { useColorClasses } from "../../../theme/useColorClasses";
 import { useAuth } from "../../../context/AuthContext";
 
-const Notes = ({  order }) => {
+const Notes = ({  data }) => {
     const [popupState, setPopupState] = useState({ open: false, type: null });
     const [noteSubmitting, setNoteSubmitting] = useState(false);
     const [newNote, setNewNote] = useState("");
-    const [notes, setNotes] = useState([]);
     const COLOR_CLASSES= useColorClasses();
     const {user} = useAuth()
-
-    const getNotes = async () => {
-        try {
-            const res = await api.admin.notes.noteList();
-            setNotes(res);
-        } catch {
-            toast.error("Failed to load notes");
-        }
-    };
-
-    useEffect(() => {
-        getNotes();
-    }, []);
-
 
     const handleAddNote = async () => {
         if (!newNote.trim()) return;
         setNoteSubmitting(true);
         try {
             const payload = {
-                user_id: order?.quote?.user_id,
                 content: newNote,
-                notiable_id: order?.quote?.id,
-                notiable_type: "Quote",
+                notiable_id: data.id,
+                notiable_type: "quote",
             };
             await api.admin.notes.create(payload);
             toast.success("Note added");
             setNewNote("");
-            getNotes();
             setPopupState({ open: false, type: null });
         } catch {
             toast.error("Failed to add note");
@@ -60,11 +43,11 @@ const Notes = ({  order }) => {
                         Add Note
                     </Button>
                 </div>
-                {notes.length === 0 ? (
+                {data.notes.length === 0 ? (
                     <p className="text-gray-500">No notes available.</p>
                 ) : (
                     <ul className="space-y-3 max-h-[300px] overflow-auto pr-1">
-                        {notes.map(note => (
+                        {data.notes.map(note => (
                             <li key={note.id} className={`border p-3 rounded-md ${COLOR_CLASSES.bgGradient} ${COLOR_CLASSES.borderGray200}`}>
                                 <div className={`text-sm ${COLOR_CLASSES.textPrimary} mb-1`}>
                                     By <strong>{user?.name}</strong> on {new Date(note.created_at).toLocaleString()}

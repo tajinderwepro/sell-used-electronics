@@ -122,7 +122,8 @@ function Orders() {
               ))}
             </div>
           )}
-          <Notes order={selectedDevice}/>
+          {selectedDevice && 
+          <Notes data={selectedDevice}/>}
         </>
       )}
       {!selectedDevice && orders.length < totalOrders && (

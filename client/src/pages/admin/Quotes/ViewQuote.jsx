@@ -80,7 +80,7 @@ const ViewQuote = () => {
         user_id: device.user_id,
         content: newNote,
         notiable_id: device.id,
-        notiable_type: "Quote",
+        notiable_type: "quote",
       };
       await api.admin.notes.create(payload);
       toast.success("Note added");
@@ -110,7 +110,7 @@ const ViewQuote = () => {
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight />} />
       <div className="h-4"></div>
        <ViewQuoteCard />
-        <Notes/>
+        <Notes data={device}/>
       <ConfirmationPopup
         open={popupState.open}
         onClose={handleClosePopup}

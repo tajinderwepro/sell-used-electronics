@@ -22,7 +22,6 @@ import { toast } from 'react-toastify';
 import { formatDate } from "../../../components/common/formatDate";
 import { formatCurrency } from "../../../components/ui/CurrencyFormatter";
 import InputField from "../../../components/ui/InputField";
-import Notes from "../Notes";
 
 const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-4930-a203-f7bf1788414a.jpg';
 

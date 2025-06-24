@@ -142,7 +142,8 @@ class UserService:
                 selectinload(Quote.brand),
                 selectinload(Quote.model),
                 selectinload(Quote.user),
-                selectinload(Quote.media)
+                selectinload(Quote.media),
+                selectinload(Quote.notes).selectinload(Note.user)
             ],
             user_id=user_id,
             or_filters=[
