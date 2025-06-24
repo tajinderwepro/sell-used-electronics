@@ -4,6 +4,7 @@ from typing import Optional
 class RiskManagementBase(BaseModel):
     key: Optional[str] = None
     value: Optional[str] = None
+    score: Optional[int] = None
 
 class RiskManagementCreate(RiskManagementBase):
     pass

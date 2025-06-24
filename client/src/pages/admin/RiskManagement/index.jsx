@@ -3,6 +3,7 @@ import CommonTable from "../../../common/CommonTable";
 import api from "../../../constants/api";
 import { useFilters } from "../../../context/FilterContext";
 import { Chip } from "../../../components/ui/Chip";
+import RiskScoreBadge from "../../../common/RiskScoreBadge";
 
 export default function RiskManagement() {
     const [riskItems, setRiskItems] = useState([]);
@@ -48,6 +49,22 @@ export default function RiskManagement() {
                                     {v}
                                 </Chip>
                             ))}
+                        </div>
+                    );
+                } catch {
+                    return row.value;
+                }
+            }
+
+        },
+        {
+            key: "score",
+            label: "Score",
+            render: (row) => {
+                try {
+                    return (
+                        <div className="flex flex-wrap gap-2">
+                            <RiskScoreBadge score={row.score} />
                         </div>
                     );
                 } catch {

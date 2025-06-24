@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   CircleHelp,
+  SearchCheck,
 } from 'lucide-react';
 import api from '../../../constants/api';
 import { toast } from 'react-toastify';
@@ -98,7 +99,10 @@ function Products() {
           <LoadingIndicator loading={loading} />
         </div>
       ) : quotes.length === 0 ? (
-        <div className={`text-center ${COLOR_CLASSES.textSecondary}`}>No Quotes found.</div>
+          <div className={`p-4 h-[300px] flex items-center justify-center flex-col`}>
+            <SearchCheck className="h-12 w-12 text-gray-400"/>
+            <h2>No quotes found</h2>
+          </div>
       ) : (
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
