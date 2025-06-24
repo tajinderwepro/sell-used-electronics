@@ -134,7 +134,7 @@ function Orders() {
           )}
         </>
       )}
-      {orders.length < totalOrders && (
+      {!selectedDevice && orders.length < totalOrders && (
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleShowMore}
