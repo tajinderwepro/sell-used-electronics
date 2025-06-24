@@ -110,7 +110,7 @@ function Orders() {
           {orderId && selectedDevice ? (
             <>
            <ViewOrderCard selectedDevice={selectedDevice}/>
-           <Notes order={selectedDevice}/>
+           <Notes data={selectedDevice} type = "order"/>
            </>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -126,9 +126,6 @@ function Orders() {
               ))}
             </div>
           )}
-          {selectedDevice && 
-          <Notes data={selectedDevice}/>}
-          
         </>
       )}
       {!selectedDevice && orders.length < totalOrders && (

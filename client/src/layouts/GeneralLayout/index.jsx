@@ -10,7 +10,7 @@ import { useLocation,matchPath  } from 'react-router-dom';
 const GeneralLayout = ({ children }) => {
   const COLOR_CLASSES = useColorClasses();
   const {user, isAuthenticated, logout} = useAuth();
-  const paths = ['/orders','/orders/:orderId', '/products', '/dashboard', '/payments', '/address','/stripe-status' ];
+  const paths = ['/orders','/orders/:orderId', '/products', '/products/:productId', '/dashboard', '/payments', '/address','/stripe-status' ];
   const location = useLocation();
   const shouldShowNavbar = user && isAuthenticated && paths.some((path) =>
     matchPath({ path, end: true }, location.pathname)

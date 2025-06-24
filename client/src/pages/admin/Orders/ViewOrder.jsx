@@ -127,7 +127,7 @@ const ViewOrder = () => {
       <CustomBreadcrumbs items={breadcrumbItems} separator={<ChevronRight size={12} />} />
       <ViewOrderCard />
       {/* Notes Section */}
-      <Notes order={order} />
+      <Notes data={order} type="order"/>
 
       {/* Payment Modal */}
       <ConfirmationPopup

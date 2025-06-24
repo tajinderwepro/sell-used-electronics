@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import InputField from "../../../components/ui/InputField";
-import Notes from "../../../components/common/Notes";
 import RiskScoreBadge from "../../../common/RiskScoreBadge";
 
 const ViewQuoteCard = ({selectedDevice = null}) => {
@@ -36,6 +35,7 @@ const ViewQuoteCard = ({selectedDevice = null}) => {
 
         if (selectedDevice) {
             setDevice(selectedDevice);
+            setSelectedImage(selectedDevice.media?.[0]?.path || "");
         }
         else{
             try {

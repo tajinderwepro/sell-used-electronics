@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from app.models.order import Order
 from app.models.quote import Quote
 from app.models.user import User
+from app.models.note import Note
 from app.schemas.orders import OrderCreate, OrderUpdate, OrderOut
 from sqlalchemy import desc
 from sqlalchemy.orm import selectinload
@@ -45,7 +46,8 @@ class OrderService:
                 selectinload(Order.quote),
                 selectinload(Order.quote).selectinload(Quote.media),
                 selectinload(Order.quote).selectinload(Quote.user),
-                selectinload(Order.payment)
+                selectinload(Order.payment),
+                selectinload(Order.notes).selectinload(Note.user),
             ],
             user_id=user_id,
         )

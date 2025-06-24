@@ -68,7 +68,7 @@ class QuoteOut(BaseModel):
     category: Optional[CategoryBase]
     brand: Optional[BrandBase]
     model: Optional[ModelBase]
-    # user: Optional[UserBase]
+    user: Optional[UserBase]
     media: List[MediaBase] = [] 
     notes: Optional[List[NoteOut]] = []
     model_config = ConfigDict(from_attributes=True)
