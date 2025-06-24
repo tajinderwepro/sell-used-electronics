@@ -12,6 +12,7 @@ import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
 import Button from '../../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import Card from '../../../components/common/Card';
 
 
 function Products() {
@@ -79,14 +80,14 @@ function Products() {
       ) : (
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {quotes.map((device) => (
-            <QuoteCard
-              key={device.id}
-              device={device}
-              onRequestShipment={(id) => handleOpen(id, 'approved')}
-              type='quote'
-            />
-          ))}
+        {quotes.map((device) => (
+          <Card
+            key={device.id}
+            device={device}
+            onRequestShipment={(id) => handleOpen(id, 'approved')}
+            type="quote"
+          />
+        ))}
         </div>
       )}
 

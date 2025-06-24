@@ -113,7 +113,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
       onClick={() => !fullView && onClick?.(device.id)}
       className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col ${fullView ? 'w-full max-w-6xl p-8 gap-6 md:flex-row' : 'w-full cursor-pointer'}`}
     >
-      {!fullView && <div className="text-right"><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate(order?.created_at,false)}</span></div>}
+      {!fullView && <div className="text-right"><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate(type === "quote" ? device?.created_at : order?.created_at, false)}</span></div>}
       {/* Swiper */}
       <Swiper
         modules={[Navigation, Pagination]}
@@ -187,7 +187,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
               </p>
               <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{ marginTop: "17px" }}>
                 <BadgeDollarSign className="w-5 h-5" />
-                <strong>Total Price:</strong>  <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}> {formatCurrency(device?.total_amount)}</span>
+                <strong>Total Price:</strong>  <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}> {formatCurrency(type === "quote" ? device?.amount : device?.total_amount)}</span>
               </p>
             </div>
 

@@ -10,6 +10,7 @@ import { useAuth } from '../../../context/AuthContext';
 import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
 import CustomBreadcrumbs from '../../../common/CustomBreadCrumbs';
+import Card from '../../../components/common/Card';
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -104,18 +105,13 @@ function Orders() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {orders.map((device) => (
-                <QuoteCard
+                <Card
                   key={device.id}
-                  device={{
-                    ...device.quote,
-                    shipping_label_url: device.shipping_label_url,
-                    tracking_url: device.tracking_url,
-                    total_amount: device.total_amount,
-                  }}
-                  order={device}
+                  device={device}
+                  // order={device}
                   getDevice={getDevice}
                   onRequestShipment={(id) => handleOpen(id, 'approved')}
-                  onClick={() => navigate(`/orders/${device.id}`)} // 👈 open full view via URL
+                  onClick={() => navigate(`/orders/${device.id}`)} 
                 />
               ))}
             </div>
