@@ -39,11 +39,12 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
         } md:relative md:block`}
       >
         <div className={`h-16 flex items-center justify-center border-b ${COLOR_CLASSES.borderGray200} px-4`}>
-          <Heading
+          <img src="/logo/logo.png" alt="Logo" className="max-w-[180px]"/>
+          {/* <Heading
             className={`${FONT_SIZES.xl} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary}`}
           >
             {PROJECT_NAME}
-          </Heading>
+          </Heading> */}
         </div>
         <nav className="p-4 space-y-2">
           {menuItems.map((item) => (

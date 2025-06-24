@@ -92,7 +92,11 @@ function Header() {
           href="/"
           className={`${FONT_SIZES['xl']} sm:${FONT_SIZES['2xl']} ${FONT_WEIGHTS.bold} ${COLOR_CLASSES.primary} ${user?.role == "admin" ? "" : "hidden"} sm:block`}
         >
-          {PROJECT_NAME}
+            <img
+              src="/logo/logo.png"
+              alt="Logo"
+              className="max-w-[150px]"
+            />
         </a>
         <div className="flex justify-end items-center gap-2">
           {!user || !isAuthenticated ? (

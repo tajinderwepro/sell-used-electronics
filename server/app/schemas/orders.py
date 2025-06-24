@@ -3,6 +3,12 @@ from typing import Optional, Literal,List
 from pydantic.config import ConfigDict
 from datetime import datetime
 from app.schemas.quote import MediaBase
+from typing_extensions import Literal  # or just use Literal from typing if you're on Python 3.8+
+
+
+class ShipmentFee(BaseModel):
+    amount: float
+    type: Optional[str] = None  # or make it required if always present
 
 class OrderBase(BaseModel):
     quote_id: int
@@ -12,6 +18,8 @@ class OrderBase(BaseModel):
     tracking_url: Optional[str] = None
     shipping_label_url: Optional[str] = None
     total_amount: Optional[float] = None
+    shipment_fees: Optional[List[ShipmentFee]] = None  # ✅ corrected
+    ebay_avg_price: Optional[float] = None
 
 class UserBase(BaseModel):
     id: int
@@ -74,6 +82,8 @@ class OrderOut(BaseModel):
     updated_at: Optional[datetime] = None
     payment: List[PaymentBase] = [] 
     total_amount: Optional[float] = None
+    shipment_fees: Optional[List[ShipmentFee]] = None  # ✅ corrected
+    ebay_avg_price: Optional[float] = None
     model_config = {
         "from_attributes": True  
     }

@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 from app.db.session import Base
 from app.models.base import TimestampMixin
+from sqlalchemy.dialects.postgresql import JSONB
 
 class Order(Base,TimestampMixin):
     __tablename__ = 'orders'
@@ -17,7 +18,7 @@ class Order(Base,TimestampMixin):
     tracking_url = Column(String, nullable=True)
     total_amount = Column(Integer, nullable=False)  # Assuming total amount is in cents
     ebay_avg_price = Column(String, nullable=True)
-    shipment_fees = Column(ARRAY(Float), nullable=True)
+    shipment_fees = Column(JSONB, nullable=True)  # ✅ Handles list of dicts
     # Relationships
     quote = relationship("Quote")
     payment = relationship("Payment", back_populates="order", uselist=True)

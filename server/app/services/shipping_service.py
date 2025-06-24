@@ -253,6 +253,8 @@ class ShippingService:
                 shipping_label_url=bought_shipment["postage_label"]["label_url"],
                 tracking_number=bought_shipment["tracker"]["id"],
                 tracking_url=bought_shipment["tracker"]["public_url"],
+                ebay_avg_price = quote.amount,
+                shipment_fees = bought_shipment.get("fees", [])
             )
             quote.status = "shipped"
             await db.commit()
