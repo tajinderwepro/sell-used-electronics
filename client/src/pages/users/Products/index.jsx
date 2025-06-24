@@ -84,6 +84,7 @@ function Products() {
               key={device.id}
               device={device}
               onRequestShipment={(id) => handleOpen(id, 'approved')}
+              type='quote'
             />
           ))}
         </div>

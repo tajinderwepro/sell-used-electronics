@@ -23,7 +23,7 @@ import { useAuth } from '../../../context/AuthContext';
 
 const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-4930-a203-f7bf1788414a.jpg';
 
-function DeviceCard({ device, onRequestShipment, fullView = false, order, getDevice, onClick }) {
+function DeviceCard({ device, onRequestShipment, fullView = false, order, getDevice, onClick ,type='order'}) {
   const COLOR_CLASSES = useColorClasses();
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -113,6 +113,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
       onClick={() => !fullView && onClick?.(device.id)}
       className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col ${fullView ? 'w-full max-w-6xl p-8 gap-6 md:flex-row' : 'w-full cursor-pointer'}`}
     >
+      {!fullView && <div className="text-right"><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate(order?.created_at,false)}</span></div>}
       {/* Swiper */}
       <Swiper
         modules={[Navigation, Pagination]}
@@ -127,7 +128,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
                 src={img}
                 alt={`Device image ${idx + 1}`}
                 className="max-h-full max-w-full object-contain transition-transform duration-300 ease-in-out hover:scale-105"
-                onError={(e) => (e.target.src = placeholderImage)}
+              
               />
             </div>
           </SwiperSlide>
@@ -148,6 +149,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
         </div>
 
         {/* Info Section */}
+      
         <div className={`space-y-3 ${COLOR_CLASSES.primaryDark}`}>
           <div className="flex justify-between">
             <div className="flex-1 space-y-3 pl-6">
@@ -159,6 +161,26 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
                 <Tag className="w-5 h-5" />
                 <strong>Condition:</strong> <Chip status={device.condition} />
               </p>
+               {type=="order" && (
+                  <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
+                    <CircleCheckBig className="w-5 h-5" />
+                    <strong>Payment Status:</strong> 
+                    <Chip
+                        status={
+                          order?.payment?.[0]?.status === undefined || order?.payment?.[0]?.status === null
+                            ? "good"
+                            : order.payment[0].status
+                        }
+                      >
+                        {
+                          order?.payment?.[0]?.status === undefined || order?.payment?.[0]?.status === null
+                            ? "Pending"
+                            : order.payment[0].status
+                        }
+                    </Chip>
+
+                  </p>
+                )}
               <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`} style={{ marginTop: "17px" }}>
                 <BadgeDollarSign className="w-5 h-5" />
                 <strong>Offered Price:</strong>  <span className={`capitalize ${COLOR_CLASSES.textPrimary}`}> {formatCurrency(device.offered_price)}</span>
@@ -184,7 +206,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
                 { (
                   <p className={`flex items-center gap-2 ${COLOR_CLASSES.textSecondary}`}>
                     <CircleCheckBig className="w-5 h-5" />
-                    <strong>Status:</strong> 
+                    <strong>Payment Status:</strong> 
                     <Chip
                         status={
                           order?.payment?.[0]?.status === undefined || order?.payment?.[0]?.status === null
@@ -225,7 +247,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
         {/* Actions */}
         <div className='flex w-full gap-4 mt-4'>
           <div className="w-full">{renderButton()}</div>
-          {order?.status === "delivered" && order?.payment.length === 0  && user.role=="admin" && (
+          {order?.status === "delivered" && order?.payment.length === 0  && user.role=="admin" && fullView && (
             <button
               onClick={() => setShowPaymentPopup(true)}
               className={`flex items-center gap-2 justify-center ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium w-full`}
@@ -234,7 +256,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
               Pay Now
             </button>
           )}
-          {order?.payment?.[0]?.status === "success" && (
+          {order?.payment?.[0]?.status === "success" && fullView  && (
             <button
               disabled
               className={`flex w-full justify-center items-center gap-2 ${COLOR_CLASSES.gradientBtn} px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed`}
@@ -246,7 +268,7 @@ function DeviceCard({ device, onRequestShipment, fullView = false, order, getDev
         </div>
 
         {/* Payment Info */}
-        {order?.payment?.[0] && (
+        {order?.payment?.[0] && fullView && (
           <div className={`mt-4 border rounded-lg ${COLOR_CLASSES.bgWhite} shadow-sm p-4 ${COLOR_CLASSES.borderGray200}`}>
             <h4 className={`text-sm font-semibold mb-3 ${COLOR_CLASSES.textPrimary}`}>Payment Information</h4>
             <div className="space-y-2 text-sm text-gray-700">

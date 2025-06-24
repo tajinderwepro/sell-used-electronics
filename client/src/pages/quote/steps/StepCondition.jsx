@@ -137,7 +137,7 @@ export default function StepCondition({ condition, setCondition,category }) {
         </div>
       </div>
 
-    {category.label=="Mobile" || category.label=="mobile"  &&
+    {(category.label=="Mobile" || category.label=="mobile" ) &&
     <>
      {/* --- Storage Selector --- */}
       <div className="mb-6">

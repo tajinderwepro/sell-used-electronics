@@ -1,9 +1,16 @@
-export const formatDate = (dateStr) =>
-  new Date(dateStr).toLocaleDateString('en-GB', {
+export const formatDate = (dateStr, min = true) => {
+  const options = {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-});
+    
+  };
+
+  if (min) {
+    options.minute = '2-digit';
+    options.hour = '2-digit';
+    options.hour12 = true;
+  }
+
+  return new Date(dateStr).toLocaleDateString('en-GB', options);
+};

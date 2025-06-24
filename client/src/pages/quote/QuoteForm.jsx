@@ -171,7 +171,7 @@ export default function QuoteForm({ onClose }) {
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
     if (step === 3) {
-      const isMobile = category.label === "Mobile";
+      const isMobile = category.label === "Mobile" || category.label === "mobile";
       const baseCheck = conditions.condition && conditions.images.length > 0;
       const mobileCheck = isMobile ? conditions.storage.length > 0 && conditions.imei : true;
 
