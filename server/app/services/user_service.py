@@ -19,6 +19,7 @@ from app.services.order_service import OrderService
 from app.models.log import Log
 from app.services.system_info_service import SystemInfoService
 from app.services.log_service import LogService
+from app.models.note import Note
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -149,4 +150,13 @@ class UserService:
                 Quote.status == "approved"
             ],
         )
+
+    @staticmethod
+    async def get_quotes_note(
+        db: AsyncSession,
+        user_id: int = None,
+    ):
+        result = await db.execute(select(Note).where(Note.user_id == user_id))
+        notes = result.scalars().all()
+        return notes
 

@@ -145,3 +145,16 @@ async def request_shipment(
 async def get_onboarding_link(user_id: int, db: AsyncSession = Depends(get_db)):
     service = PaymentService(db)
     return await service.generate_onboarding_link(user_id)
+
+
+@router.get("/quote/notes/{user_id}")
+async def get_user_quotes(
+    user_id: int, 
+    db: AsyncSession = Depends(get_db),
+):
+    return await UserService.get_quotes_note(
+        db=db,
+        user_id=user_id,
+    )
+
+    
