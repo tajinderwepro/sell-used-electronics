@@ -108,22 +108,27 @@ function Orders() {
       ) : (
         <>
           {orderId && selectedDevice ? (
+            <>
            <ViewOrderCard selectedDevice={selectedDevice}/>
+           <Notes order={selectedDevice}/>
+           </>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {orders.map((device) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {orders.map((device,index) => (
                 <Card
                   key={device.id}
                   device={device}
                   getDevice={getDevice}
                   onRequestShipment={(id) => handleOpen(id, 'approved')}
                   onClick={() => navigate(`/orders/${device.id}`)} 
+                  index={index}
                 />
               ))}
             </div>
           )}
           {selectedDevice && 
           <Notes data={selectedDevice}/>}
+          
         </>
       )}
       {!selectedDevice && orders.length < totalOrders && (

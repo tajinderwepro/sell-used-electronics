@@ -92,6 +92,8 @@ function AllRoutes() {
         <Route element={<UserRoute user={user} isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/products/:productId" element={<Products />} />
+          <Route path="/orders/:orderId" element={<UsersOrders />} />
           <Route path="/orders" element={<UsersOrders />} />
           <Route path="/orders/:orderId" element={<UsersOrders />} />
           <Route path="/payments" element={<UserPayments />} />

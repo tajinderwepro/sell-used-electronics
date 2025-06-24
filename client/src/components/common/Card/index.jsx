@@ -17,7 +17,7 @@ import { formatDate } from '../formatDate';
 
 const placeholderImage = 'http://localhost:8000/static/uploads/8383af11-e0dc-4930-a203-f7bf1788414a.jpg';
 
-function Card({ device, onRequestShipment, onClick, type = 'order' }) {
+function Card({ device, onRequestShipment, onClick, type = 'order', index  }) {
   const COLOR_CLASSES = useColorClasses();
   const imageList =
     Array.isArray(device.media) && device.media.length > 0
@@ -72,13 +72,13 @@ function Card({ device, onRequestShipment, onClick, type = 'order' }) {
         );
     }
   };
-  console.log(device,'fffff')
+
   return (
     <div
       onClick={() => onClick?.(device.id)}
       className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col w-full cursor-pointer`}
     >
-      <div className="text-right"><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate( device?.created_at, false)}</span></div>
+      <div className="flex justify-between items-center"><span className={`text-[#a855f7] p-2`}># {index + 1}</span><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate( device?.created_at, false)}</span></div>
       
       {/* Swiper */}
       <Swiper

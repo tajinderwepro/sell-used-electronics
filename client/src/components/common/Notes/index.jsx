@@ -36,7 +36,7 @@ const Notes = ({  data }) => {
     };
     return (
         <>
-            <div className={`mb-6 mt-6 p-6 ${COLOR_CLASSES.borderGray200} border rounded-2xl ${COLOR_CLASSES.bgWhite} shadow-sm`}>
+            <div className={`mb-6 mt-6 p-6 ${COLOR_CLASSES.borderGray200} border rounded-2xl  ${COLOR_CLASSES.bgWhite} shadow-sm`}>
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-semibold">Notes</h3>
                     <Button className="p-2 text-sm" icon={<StickyNote />} onClick={() => setPopupState({ open: true, type: "note" })}>

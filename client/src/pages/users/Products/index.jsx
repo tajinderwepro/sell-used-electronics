@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ChevronRight,
   CircleHelp,
   SearchCheck,
 } from 'lucide-react';
@@ -12,9 +13,11 @@ import { useAuth } from '../../../context/AuthContext';
 import QuoteCard from '../../../components/common/DeviceCard';
 import LoadingIndicator from '../../../common/LoadingIndicator';
 import Button from '../../../components/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Card from '../../../components/common/Card';
-
+import CustomBreadcrumbs from '../../../common/CustomBreadCrumbs';
+import ViewQuoteCard from '../../../components/common/ViewQuoteCard';
+import Notes from '../../../components/common/Notes';
 
 function Products() {
   const [quotes, setQuotes] = useState([]);
@@ -24,6 +27,7 @@ function Products() {
   const { filters } = useFilters();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { productId } = useParams();
 
   const fetchQuotes = async () => {
     try {
@@ -41,6 +45,11 @@ function Products() {
   useEffect(() => {
     fetchQuotes();
   }, []);
+
+  const breadcrumbItems = [
+    { label: 'Quotes', path: '/products' },
+    productId ? { label: "Quote #" + productId, path: `/products/${productId}` } : "",
+  ];
 
   const handleOpen = (deviceId, type = 'approved') => {
     setPopupState({ open: true, deviceId, type });
@@ -69,7 +78,7 @@ function Products() {
     }
   };
 
-    const handleRetryShipment = async () => {
+  const handleRetryShipment = async () => {
     setLoading(true);
     try {
       const res = await api.user.retryShipment(popupState.deviceId);
@@ -91,9 +100,11 @@ function Products() {
     }
   };
 
+  const selectedDevice = quotes.find((d) => String(d.id) === productId);
+
   return (
     <div className="py-6">
-      <h2 className={`text-2xl font-bold mb-6 ${COLOR_CLASSES.textPrimary}`}>Quotes</h2>
+      <CustomBreadcrumbs items={breadcrumbItems} separator={productId ? <ChevronRight style={{ fontSize: "12px" }} /> : ""} />
       {loading ? (
         <div className={`flex justify-center items-center h-64 ${COLOR_CLASSES.textSecondary}`}>
           <LoadingIndicator loading={loading} />
@@ -104,17 +115,25 @@ function Products() {
             <h2>No quotes found</h2>
           </div>
       ) : (
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {quotes.map((device) => (
-          <Card
-            key={device.id}
-            device={device}
-            onRequestShipment={(id, type = 'approved') => handleOpen(id, type)}
-            type="quote"
-          />
-        ))}
-        </div>
+        productId && selectedDevice ? (
+          <>
+          <ViewQuoteCard selectedDevice={selectedDevice} />
+           <Notes order={selectedDevice}/>
+           </>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {quotes.map((device, index) => (
+              <Card
+                key={device.id}
+                device={device}
+                onRequestShipment={(id, type = 'approved') => handleOpen(id, type)}
+                type="quote"
+                onClick={() => navigate(`/products/${device.id}`)}
+                index={index}
+              />
+            ))}
+          </div>
+        )
       )}
 
       <Popup

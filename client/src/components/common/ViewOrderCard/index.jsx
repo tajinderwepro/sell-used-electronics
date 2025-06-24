@@ -99,15 +99,15 @@ const ViewOrderCard = ({ selectedDevice = null }) => {
 
     const renderButton = () => {
         const commonProps = {
-            className: `w-full py-2 rounded-full text-sm font-medium ${COLOR_CLASSES.gradientBtn}`,
+            className: `w-full py-2 rounded-md text-sm  ${COLOR_CLASSES.gradientBtn}`,
         };
         switch (device?.status) {
             case 'pending':
-                return <Button {...commonProps} disabled icon={<PackageCheck />} >Waiting for approval</Button>;
+                return <Button {...commonProps} disabled icon={<PackageCheck size={18}/>} >Waiting for approval</Button>;
             case 'approved':
-                return <Button {...commonProps} icon={<PackageCheck />} >Request Shipment</Button>;
+                return <Button {...commonProps} icon={<PackageCheck size={18}/>} >Request Shipment</Button>;
             case 'delivered':
-                return <Button {...commonProps} disabled icon={<PackageCheck />} >Shipment Delivered</Button>;
+                return user.role=="admin"? <Button {...commonProps} disabled icon={<PackageCheck size={18}/>} >Shipment Delivered</Button>:"";
             default:
                 return (
                     <a
@@ -157,7 +157,7 @@ const ViewOrderCard = ({ selectedDevice = null }) => {
 
                             <div className="flex-1 space-y-3 pl-6">
                                 {device.ebay_avg_price && <p className="flex items-center gap-2"><BadgeDollarSign /> <strong>eBay Avg Price:</strong> {formatCurrency(device.ebay_avg_price)}</p>}
-                                <p className="flex items-center gap-2"><ShieldAlert /> <strong>Risk Score:</strong> <RiskScoreBadge score={device.risk_score} /></p>
+                                {/* <p className="flex items-center gap-2"><ShieldAlert /> <strong>Risk Score:</strong> <RiskScoreBadge score={device.risk_score} /></p> */}
                                 <p className="flex items-center gap-2"><CircleCheckBig /> <strong>Status:</strong> <Chip status={order?.payment?.[0]?.status ?? "Pending"} /></p>
                             </div>
                         </div>
@@ -178,10 +178,10 @@ const ViewOrderCard = ({ selectedDevice = null }) => {
                         <div className="flex gap-4 mt-4">
                             <div className="w-full">{renderButton()}</div>
                             {order?.status === "delivered" && !order?.payment?.length && user.role === "admin" && (
-                                <Button className={`w-full ${COLOR_CLASSES.gradientBtn}`} icon={<BadgeDollarSign />} onClick={() => setPopupState({ open: true, type: "payment" })}>Pay Now</Button>
+                                <Button className={`w-full text-sm ${COLOR_CLASSES.gradientBtn}`} icon={<BadgeDollarSign size={18}/>} onClick={() => setPopupState({ open: true, type: "payment" })}>Pay Now</Button>
                             )}
-                            {order?.payment?.[0]?.status === "success" && (
-                                <Button disabled className={`w-full cursor-not-allowed ${COLOR_CLASSES.gradientBtn}`} icon={<CircleCheckBig />}>Paid</Button>
+                            {order?.payment?.[0]?.status === "success" &&  user.role === "admin" && (
+                                <Button disabled className={`w-full cursor-not-allowed  text-sm ${COLOR_CLASSES.gradientBtn}`} icon={<CircleCheckBig size={18}/>}>Paid</Button>
                             )}
                         </div>
 

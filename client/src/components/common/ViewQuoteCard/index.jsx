@@ -11,8 +11,10 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import CustomBreadcrumbs from "../../../common/CustomBreadCrumbs";
 import InputField from "../../../components/ui/InputField";
+import Notes from "../../../components/common/Notes";
+import RiskScoreBadge from "../../../common/RiskScoreBadge";
 
-const ViewQuoteCard = ({}) => {
+const ViewQuoteCard = ({selectedDevice = null}) => {
     const [loading, setLoading] = useState(false);
     const [device, setDevice] = useState(null);
     const [selectedImage, setSelectedImage] = useState("");
@@ -31,16 +33,24 @@ const ViewQuoteCard = ({}) => {
     ];
 
     const getDevice = async () => {
-        try {
-            setLoading(true);
-            const res = await api.admin.quotes.get(quoteId);
-            setDevice(res.data);
-            setSelectedImage(res.data.media?.[0]?.path || "");
-        } catch (err) {
-            toast.error("Failed to fetch device");
-        } finally {
-            setLoading(false);
+
+        if (selectedDevice) {
+            setDevice(selectedDevice);
         }
+        else{
+            try {
+                setLoading(true);
+                const res = await api.admin.quotes.get(quoteId);
+                setDevice(res.data);
+                setSelectedImage(res.data.media?.[0]?.path || "");
+            } catch (err) {
+                toast.error("Failed to fetch device");
+            } finally {
+                setLoading(false);
+            }
+
+        }
+        
     };
 
     useEffect(() => {
@@ -135,9 +145,14 @@ const ViewQuoteCard = ({}) => {
                                 <div className="text-gray-500">Specs</div>
                                 {device.specifications || 'N/A'}
                             </div>
-                            <div>
-                                <div className="text-gray-500">Submitted By</div>
-                                {device.user?.name} ({device.user?.email})
+                            <div className="flex flex-row items-center gap-2">
+                                {/* <div className="text-gray-500">Submitted By</div>
+                                {device.user?.name} ({device.user?.email}) */}
+                                 <div className="text-gray-500">Risk :</div>
+                                 
+                                 <RiskScoreBadge score={device.risk_score} />
+
+
                             </div>
                             <div>
                                 <div className="text-gray-500">Created At</div>
@@ -145,7 +160,7 @@ const ViewQuoteCard = ({}) => {
                             </div>
                         </div>
 
-                        <div className="mt-4 flex gap-2">
+                        {user.role=="admin"&&<div className="mt-4 flex gap-2">
                             <Button
                                 icon={<CircleCheckBig className="w-4 h-4" color={device.status === 'approved' ? 'green' : 'white'} />}
                                 className="p-2 text-sm"
@@ -154,7 +169,7 @@ const ViewQuoteCard = ({}) => {
                             >
                                 {device.status === 'approved' ? 'Approved' : 'Approve'}
                             </Button>
-                        </div>
+                        </div>}
                     </div>
                 </div>
 
