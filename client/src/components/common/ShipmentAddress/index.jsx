@@ -8,6 +8,7 @@ import InputField from '../../ui/InputField';
 import { useAuth } from '../../../context/AuthContext';
 import InfoField from '../../ui/InfoField';
 import Popup from '../../../common/Popup';
+import LoadingIndicator from '../../../common/LoadingIndicator';
 
 function ShipmentAddress() {
   const { user } = useAuth();
@@ -18,6 +19,7 @@ function ShipmentAddress() {
   const [showAddAddressModal, setshowAddAddressModal] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (editingIndex === addresses.length) {
@@ -63,24 +65,37 @@ function ShipmentAddress() {
     console.log('data to edit', payload);
     if (!isNew) payload.id = addresses[editingIndex].id;
 
-    const res = await api.address.add(user.id, payload);
-    const updated = [...addresses];
+    setLoading(true);
 
-    if (isNew) updated.push(res.address);
-    else updated[editingIndex] = res.address;
+    try {
+      const res = await api.address.add(user.id, payload);
+      const updated = [...addresses];
 
-    setAddresses(updated);
-    setEditingIndex(null);
-    toast.success(res.message);
+      if (isNew) {
+        updated.push(res.address);
+      } else {
+        updated[editingIndex] = res.address;
+      }
+
+      setAddresses(updated);
+      setEditingIndex(null);
+      toast.success(res.message);
+    } catch (error) {
+      console.error("Error saving address:", error);
+      toast.error("Something went wrong while saving the address.");
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
   };
 
   const confirmDelete = async () => {
-    if (!deleteIndex) return;
-
+    if (!deleteIndex) return null;
+    setLoading(true);
     try {
       const res = await api.address.deleteAddress(deleteIndex);
       toast.success(res.message || 'Address deleted successfully.');
@@ -89,6 +104,7 @@ function ShipmentAddress() {
       toast.error('Failed to delete address.');
     } finally {
       setDeleteIndex(null);
+      setLoading(false);
     }
   };
 
@@ -139,6 +155,7 @@ function ShipmentAddress() {
 
   return (
     <div className="space-y-6 mt-8">
+      <LoadingIndicator isLoading={loading} />
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className={`text-2xl font-semibold ${COLOR_CLASSES.textPrimary}`}>
           Shipment Address

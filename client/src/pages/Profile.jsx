@@ -9,6 +9,7 @@ import validatePhone from "../components/ui/ValidPhoneFormat";
 import InfoField from "../components/ui/InfoField";
 import { useColorClasses } from "../theme/useColorClasses";
 import { useAuth } from "../context/AuthContext";
+import { FONT_SIZES, FONT_WEIGHTS } from "../constants/theme";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -103,7 +104,7 @@ const Profile = () => {
 
           if (res.success) {
             // Optionally show a success toast
-            toast.success("Profile Updated Successfull")
+            toast.success("Profile Updated Successfully")
           }
         } catch (error) {
           toast.error(error.message)
@@ -220,43 +221,41 @@ const Profile = () => {
       {/* Top section */}
       <LoadingIndicator isLoading={loading}/>
       <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center space-x-4">
-            <div className="flex">
-              {/* Icon: Always visible if editing */}
-             
-
-              {/* Image or Placeholder */}
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Profile Preview"
-                  className="w-20 h-20 rounded-full object-container"
-                />
-              ) : (
-                <div className="w-12 h-12 sm:w-15 sm:h-15 md:w-20 md:h-20">
-                  <CircleUser size="100%" strokeWidth={1} color="gray" />
-                </div>
-              )}
-               {isEditing && (
-                <span className="cursor-pointer" onClick={handleAvatarClick}>
-                  <SquarePen size={20} />
-                </span>
-              )}
-            </div>
-            {/* Always include input, but hide it */}
-            <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleImageChange}
+        <div className={`flex ${isEditing ? "flex-col w-full items-center justify-center text-center" : "items-center space-x-4"}`}>
+        <div className="relative cursor-pointer" onClick={handleAvatarClick}>
+          {imagePreview ? (
+            <img
+              src={imagePreview}
+              alt="Profile Preview"
+              className="w-20 h-20 rounded-full object-cover"
             />
-
-            <div>
-                <h2 className="text-xl font-semibold">{form.name}</h2>
-                <p className="text-gray-500 text-sm">{form.email}</p>
+          ) : (
+            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-100">
+              <CircleUser size="100%" strokeWidth={1} color="gray" />
             </div>
+          )}
+          {isEditing && (
+            <span className={`absolute bottom-0 right-0 ${COLOR_CLASSES.bgWhite} rounded-full p-1 shadow`}>
+              <SquarePen size={16} />
+            </span>
+          )}
         </div>
+
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleImageChange}
+        />
+        
+        {!isEditing && (
+          <div className="ml-4">
+            <h2 className="text-xl font-semibold">{form.name}</h2>
+            <p className="text-gray-500 text-sm">{form.email}</p>
+          </div>
+        )}
+      </div>
 
         {!isEditing && <Button onClick={handleToggleEdit} className="text-sm px-3">
               <div className="hidden md:block">
@@ -335,7 +334,7 @@ const Profile = () => {
           <InfoField label="Stripe Account Id" value={form.stripe_account_id}/>
 
           <div>
-            <p className="font-[700] leading-none">Password</p>
+            <p className={`font-[700] leading-none ${COLOR_CLASSES.textPrimary}`}>Password</p>
             {showPasswordFields ? (
               <div className="py-3 rounded space-y-4">
                 <InputField
@@ -369,7 +368,7 @@ const Profile = () => {
               </div>
             ) : (
               <p className="py-3 rounded flex gap-5 items-center">
-                <span>********</span>
+                <span className={`${COLOR_CLASSES.textPrimary}`}>********</span>
                 <span
                   onClick={() => handleResetPasswordClick(true)}
                   className="text-blue-600 cursor-pointer hover:underline text-sm"
