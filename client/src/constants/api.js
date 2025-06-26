@@ -179,7 +179,7 @@ const api = {
       getList: () => axiosWrapper(axiosInstance.get('admin/risk-management/list')),
       // get: (id) => axiosWrapper(axiosInstance.get(`admin/risk-management/${id}`)),
       // create: (data) => axiosWrapper(axiosInstance.post('admin/risk-management/submit', data)),
-      // update: (id, data) => axiosWrapper(axiosInstance.put(`admin/risk-management/${id}`, data)),
+      updateRiskScore: (id, data) => axiosWrapper(axiosInstance.put(`admin/risk-management/${id}`, data)),
       // delete: (id) => axiosWrapper(axiosInstance.delete(`admin/risk-management/${id}`)),
     },
   },

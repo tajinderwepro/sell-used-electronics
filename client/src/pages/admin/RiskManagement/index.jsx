@@ -34,7 +34,7 @@ export default function RiskManagement() {
 
     const updateScore = async (id, newScore) => {
         try {
-            await api.admin.riskManagement.updateScore(id, newScore);
+            await api.admin.riskManagement.updateRiskScore(id, {score:newScore});
             await fetchList();
         } catch (err) {
             console.error("Failed to update score:", err);
