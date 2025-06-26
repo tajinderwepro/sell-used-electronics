@@ -9,7 +9,7 @@ class RiskManagementService:
 
     @staticmethod
     async def get_list(db: AsyncSession):
-        result = await db.execute(select(RiskManagement))
+        result = await db.execute(select(RiskManagement).order_by(RiskManagement.id.asc()))
         items = result.scalars().all()
         return {
             "success": True,
