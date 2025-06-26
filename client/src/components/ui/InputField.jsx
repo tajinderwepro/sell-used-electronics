@@ -12,16 +12,13 @@ export default function InputField({
   className = '',
   name = '',
   marginBottom = "mb-4",
-  overRideStyle = false,
   error = '',
   rows = 4,
 }) {
   const COLOR_CLASSES = useColorClasses();
 
-  const baseClasses = overRideStyle
-  ? className
-  : `
-    w-full border rounded-lg p-3 placeholder-${COLOR_CLASSES.primaryBgHover}
+  const baseClasses =
+   `w-full border rounded-lg p-3 placeholder-${COLOR_CLASSES.primaryBgHover}
     focus:outline-none focus:ring-2 transition-all duration-300 resize-none
     ${className}
     ${COLOR_CLASSES.bgWhite}
@@ -34,14 +31,14 @@ export default function InputField({
 
 
   return (
-    <div className={`${overRideStyle ? "transition-all duration-300 mb-[-4px]" : `${marginBottom} transition-all duration-300`}`}>
+    <div className={`${marginBottom} transition-all duration-300`}>
       {label && (
         <label htmlFor={id} className={`block mb-2 ${COLOR_CLASSES.primary} font-semibold text-left`}>
           {label}
         </label>
       )}
 
-      <div className={`${overRideStyle ? "" : "relative"}`}>
+      <div className="relative">
         {multiline ? (
           <textarea
             id={id}

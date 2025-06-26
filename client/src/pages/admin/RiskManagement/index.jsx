@@ -76,21 +76,19 @@ export default function RiskManagement() {
                             type="number"
                             value={newScore}
                             onChange={(e) => setNewScore(e.target.value === '' ? '' : Number(e.target.value))}
-                            className={`w-16 border rounded-xl py-[2px] px-2 text-center ${COLOR_CLASSES.bgWhite}`}
-                            overRideStyle={true}
+                            className={`w-[70px] mt-5 border rounded-xl py-[5px] px-2 text-center ${COLOR_CLASSES.bgWhite}`}
                         />
                         <Button
                             onClick={handleSave}
                             disabled={submitting}
-                            className={`text-green-600 bg-green-500/20 border border-green-600 rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
-                            variant="custom"
+                            className={`rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
                         >
                             Save
                         </Button>
                         <Button
                             onClick={handleCancel}
                             disabled={submitting}
-                            className={`text-red-600 border bg-red-500/20 border-red-500 rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
+                            className={`rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
                             variant="custom"
                         >
                             Cancel
