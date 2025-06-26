@@ -10,8 +10,8 @@ class RiskManagementCreate(RiskManagementBase):
     pass
 
 class RiskManagementUpdate(RiskManagementBase):
-    pass
-
+    score: Optional[int] = None
+    
 class RiskManagementOut(RiskManagementBase):
     id: int
 

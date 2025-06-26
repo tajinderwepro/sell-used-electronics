@@ -42,17 +42,20 @@ class RiskManagementService:
 
     @staticmethod
     async def update(id: int, data: RiskManagementUpdate, db: AsyncSession):
-        item = await db.get(RiskManagement, id)
-        if not item:
-            raise HTTPException(status_code=404, detail="Item not found")
-        for key, value in data.dict(exclude_unset=True).items():
-            setattr(item, key, value)
+        result = await db.execute(select(RiskManagement).where(RiskManagement.id == id))
+        risk_score = result.scalars().first()
+
+        if not risk_score:
+            raise HTTPException(status_code=404, detail="Data not found")
+
+        risk_score.score = data.score
+
         await db.commit()
-        await db.refresh(item)
+        await db.refresh(risk_score)
         return {
             "success": True,
-            "message": "Item updated successfully",
-            "data": item
+            "message": "score updated successfully",
+            "data": risk_score
         }
 
     @staticmethod

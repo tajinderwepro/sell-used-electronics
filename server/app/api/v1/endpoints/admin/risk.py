@@ -22,7 +22,9 @@ async def create(data: RiskManagementCreate, db: AsyncSession = Depends(get_db))
 
 @router.put("/{id}")
 async def update(id: int, data: RiskManagementUpdate, db: AsyncSession = Depends(get_db)):
-    return await RiskManagementService.update(id, data, db)
+    return await RiskManagementService.update(id, data, db) 
+
+
 
 @router.delete("/{id}")
 async def delete(id: int, db: AsyncSession = Depends(get_db)):
