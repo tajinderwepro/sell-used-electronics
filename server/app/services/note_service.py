@@ -17,7 +17,7 @@ class NoteService:
     @staticmethod
     async def get_notes_list(db: AsyncSession):
         result = await db.execute(
-            select(Note).order_by(Note.created_at.desc())
+            select(Note).options(selectinload(Note.user)).order_by(Note.created_at.desc())
         )
         notes = result.scalars().all()
         return notes

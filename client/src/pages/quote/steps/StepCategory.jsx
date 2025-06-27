@@ -1,30 +1,29 @@
-import SelectField from "../../../components/ui/SelectField";
+import React from "react";
+import { useColorClasses } from "../../../theme/useColorClasses";
 
 export default function StepCategory({ category, setCategory, categories }) {
-  const handleChange = (e) => {
-    const selectedValue = e.target.value;
-    const selectedOption = categories.find(cat => cat.id.toString() === selectedValue);
-    setCategory({
-      value: selectedValue,
-      label: selectedOption?.name || ""
-    });
-  };
-
-
-  const categoryOptions = categories.map((cat) => ({
-    value: cat.id.toString(),
-    label: cat.name,
-  }));
- 
+  const COLOR_CLASSES = useColorClasses();
   return (
-    <div>
-      <SelectField
-        label="Select Category"
-        id="category"
-        value={category.value }
-        onChange={handleChange}
-        options={categoryOptions}
-      />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {categories.map((cat) => {
+        const isSelected = category?.value === cat.id.toString();
+        return (
+          <div
+            key={cat.id}
+            onClick={() => setCategory({ value: cat.id.toString(), label: cat.name })}
+            className={`cursor-pointer p-4 rounded-xl border ${COLOR_CLASSES.borderHoverPrimary} ${
+                  isSelected ? COLOR_CLASSES.borderPrimary : 'border-gray-200'
+                } hover:shadow-lg`}
+            >
+            <img
+              src={cat.media?.[0]?.path}
+              alt={cat.name}
+              className="w-full h-32 object-contain mb-2"
+            />
+            <p className="text-center font-medium">{cat.name}</p>
+          </div>
+        );
+      })}
     </div>
   );
 }

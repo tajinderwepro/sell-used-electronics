@@ -2,39 +2,39 @@
 
 // 🎨 LIGHT THEME
 export const COLOR_CLASSES_LIGHT = {
-  // Primary Colors (updated to gradient-inspired blues/purples)
-  primary: "text-indigo-600",
-  primaryDark: "text-purple-700",
-  primaryLightBg: "bg-indigo-50",
-  primaryBg: "bg-gradient-to-r from-indigo-500 to-purple-500",
-  primaryBgHover: "hover:from-purple-600 hover:to-indigo-600",
-  primaryRing: "ring-indigo-300",
+  // Primary Colors (Blue-Green Inspired)
+  primary: "text-teal-600",
+  primaryDark: "text-emerald-700",
+  primaryLightBg: "bg-teal-50",
+  primaryBg: "bg-gradient-to-r from-teal-500 to-emerald-500",
+  primaryBgHover: "hover:from-emerald-600 hover:to-teal-600",
+  primaryRing: "ring-teal-300",
 
-  // Secondary (toned to complement gradient)
-  secondary: "text-gray-600",
-  secondaryDark: "text-gray-800",
-  secondaryBg: "bg-gray-300",
-  secondaryBgHover: "hover:bg-gray-400",
+  // Secondary
+  secondary: "text-gray-700",
+  secondaryDark: "text-gray-900",
+  secondaryBg: "bg-gray-200",
+  secondaryBgHover: "hover:bg-gray-300",
 
-  // Text Colors
+  // Text
   textPrimary: "text-gray-900",
   textSecondary: "text-gray-600",
   textLight: "text-gray-400",
-  textHoverPrimary: "hover:text-indigo-600",
+  textHoverPrimary: "hover:text-teal-600",
 
   // Borders
-  borderPrimary: "border-indigo-500",
+  borderPrimary: "border-teal-500",
   borderGray100: "border-gray-100",
   borderGray200: "border-gray-200",
-  borderHoverPrimary: "hover:border-purple-500",
+  borderHoverPrimary: "hover:border-emerald-500",
 
   // Backgrounds
   bgWhite: "bg-white",
-  bgGradient: "bg-gradient-to-br from-white via-indigo-50 to-purple-100",
+  bgGradient: "bg-gradient-to-br from-white via-teal-50 to-emerald-100",
 
-  // Gradient button (used everywhere for primary actions)
+  // Gradient button
   gradientBtn:
-    "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-600 hover:to-indigo-600 text-white",
+    "bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-emerald-600 hover:to-teal-600 text-white",
 
   // Shadows
   shadowMd: "shadow-md",
@@ -44,12 +44,12 @@ export const COLOR_CLASSES_LIGHT = {
 // 🌙 DARK THEME
 export const COLOR_CLASSES_DARK = {
   // Primary Colors
-  primary: "text-indigo-300",
-  primaryDark: "text-purple-300",
-  primaryLightBg: "bg-[#1f2733]",
-  primaryBg: "bg-gradient-to-r from-indigo-700 to-purple-700",
-  primaryBgHover: "hover:from-purple-600 hover:to-indigo-600",
-  primaryRing: "ring-indigo-400",
+  primary: "text-teal-300",
+  primaryDark: "text-emerald-300",
+  primaryLightBg: "bg-[#1b2c2b]",
+  primaryBg: "bg-gradient-to-r from-teal-700 to-emerald-700",
+  primaryBgHover: "hover:from-emerald-600 hover:to-teal-600",
+  primaryRing: "ring-teal-400",
 
   // Secondary
   secondary: "text-gray-400",
@@ -61,21 +61,21 @@ export const COLOR_CLASSES_DARK = {
   textPrimary: "text-gray-100",
   textSecondary: "text-gray-400",
   textLight: "text-gray-500",
-  textHoverPrimary: "hover:text-indigo-300",
+  textHoverPrimary: "hover:text-teal-300",
 
   // Borders
-  borderPrimary: "border-indigo-400",
+  borderPrimary: "border-teal-400",
   borderGray100: "border-gray-600",
   borderGray200: "border-gray-600",
-  borderHoverPrimary: "hover:border-purple-400",
+  borderHoverPrimary: "hover:border-teal-400",
 
   // Backgrounds
-  bgWhite: "bg-[#151d27]",
-  bgGradient: "bg-gradient-to-br from-[#151d27] via-[#1f2733] to-[#232b38]",
+  bgWhite: "bg-[#121e1d]",
+  bgGradient: "bg-gradient-to-br from-[#121e1d] via-[#1b2c2b] to-[#203532]",
 
   // Gradient button
   gradientBtn:
-    "bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-purple-600 hover:to-indigo-600 text-white",
+    "bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-emerald-600 hover:to-teal-600 text-white",
 
   // Shadows
   shadowMd: "shadow shadow-slate-900/30",

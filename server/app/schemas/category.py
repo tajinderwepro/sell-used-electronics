@@ -26,6 +26,7 @@ class BrandOut(BaseModel):
     name: str
     media_id: Optional[int]
     category_id: int
+    media: List[MediaOut] = []  # ✅ Include media here
 
     model_config = {
     "from_attributes": True
@@ -37,6 +38,7 @@ class ModelOut(BaseModel):
     media_id: Optional[int]
     brand_id: int
     category_id: int
+    media: List[MediaOut] = []  # ✅ Include media here
 
     model_config = {
     "from_attributes": True

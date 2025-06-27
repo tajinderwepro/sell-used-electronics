@@ -89,8 +89,8 @@ class CategoryService:
                 select(Category)
                 .options(
                     selectinload(Category.media),
-                    selectinload(Category.brands),
-                    selectinload(Category.models)
+                    selectinload(Category.brands).selectinload(Brand.media),
+                    selectinload(Category.models).selectinload(Model.media)
                 )
             )
 

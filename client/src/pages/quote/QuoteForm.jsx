@@ -1,10 +1,14 @@
+// Full enhanced QuoteForm UI with animated transitions, styled cards, image previews, and step progress
+
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import StepCategory from './steps/StepCategory';
+import StepBrand from './steps/StepBrand';
 import StepModel from './steps/StepModel';
 import StepCondition from './steps/StepCondition';
+import StepBasePrice from './steps/StepBasePrize';
 import StepPrice from './steps/StepPrice';
 import Button from '../../components/ui/Button';
-import { FONT_WEIGHTS } from '../../constants/theme';
 import { useColorClasses } from '../../theme/useColorClasses';
 import Stepper from '../../components/common/Stepper';
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +16,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useQuoteForm } from '../../context/QuoteFormContext';
 import api from '../../constants/api';
 import { toast } from 'react-toastify';
-import StepBrand from './steps/StepBrand';
-import StepBasePrice from './steps/StepBasePrize';
-import LoadingIndicator from "../../common/LoadingIndicator/index"
+import LoadingIndicator from '../../common/LoadingIndicator/index';
 import { QuoteFormSchema } from '../../common/Schema';
 import { validateFormData } from '../../utils/validateUtils';
 
@@ -22,142 +24,123 @@ export default function QuoteForm({ onClose }) {
   const COLOR_CLASSES = useColorClasses();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-
   const { formState, updateForm, resetForm, categories, setCategories } = useQuoteForm();
   const { step, category, model, conditions, price, brand, estimate_price } = formState;
   const selectedCategoryObj = categories.find(cat => cat.id === Number(category?.value));
   const brands = selectedCategoryObj?.brands || [];
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
+
+  const stepConstant = ['Category', 'Brand', 'Model', 'Details', 'Base Price', 'Price'];
 
   const handleNext = () => updateForm({ step: step + 1 });
   const handleBack = () => updateForm({ step: step - 1 });
 
-  const stepConstant = ['Category', 'Brand', 'Model', 'Details', 'Base Prize', 'Price'];
-
   const handleSubmit = async () => {
-  if (!isAuthenticated) {
-    navigate("/login");
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-      formData.append("category", category.value);
-      formData.append("brand", brand);
-      formData.append("model", model);
-      formData.append("base_price", Number(price));
-      formData.append("ebay_avg_price", estimate_price);
-      formData.append("condition", conditions.condition); 
-      formData.append("specifications", JSON.stringify({ value:conditions.storage}));
-      formData.append("imei", conditions.imei);
-      conditions.images.forEach((img) => {
-        formData.append("files", img); 
-      });
-    setLoading(true);
-
-    const response = await api.public.submit(user.id, formData);
-    if (response) {
-      toast.success(response.message);
-      resetForm();
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
     }
-  } catch (err) {
-    setLoading(false);
-    toast.error(err?.response?.data?.message || "Something went wrong.");
-  }
+    try {
+      const formData = new FormData();
+      formData.append('category', category.value);
+      formData.append('brand', brand);
+      formData.append('model', model);
+      formData.append('base_price', Number(price));
+      formData.append('ebay_avg_price', estimate_price);
+      formData.append('condition', conditions.condition);
+      formData.append('specifications', JSON.stringify({ value: conditions.storage }));
+      formData.append('imei', conditions.imei);
+      conditions.images.forEach(img => formData.append('files', img));
+      setLoading(true);
+      const response = await api.public.submit(user.id, formData);
+      if (response) {
+        toast.success(response.message);
+        resetForm();
+      }
+    } catch (err) {
+      setLoading(false);
+      toast.error(err?.response?.data?.message || 'Something went wrong.');
+    }
+    if (onClose) onClose();
+  };
 
-  if (onClose) onClose();
-};
-
-
-  const fetchCategories = async (currentOffset = 0, append = false) => {
+  const fetchCategories = async () => {
     try {
       const res = await api.getCategories(10, 0);
       if (res.success) {
-        setCategories((prev) => append ? [...prev, ...res.data] : res.data);
+        setCategories(res.data);
       }
     } catch (err) {
-      console.error("Failed to fetch categories:", err);
       toast.error(err.message);
-    } finally {
-      // setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCategories()
-  }, [])
+    fetchCategories();
+  }, []);
 
   const steps = [
     <StepCategory
       category={category}
-      setCategory={(val) => {
-        updateForm({ category: val, brand: "", model: "" });
-      }}
+      setCategory={val => updateForm({ category: val, brand: '', model: '' })}
       categories={categories}
     />,
     <StepBrand
       brand={brand}
-      setBrand={(val) => updateForm({ brand: val })}
+      setBrand={val => updateForm({ brand: val })}
       brands={brands}
     />,
     <StepModel
       model={model}
-      setModel={(val) => updateForm({ model: val })}
+      setModel={val => updateForm({ model: val })}
       category={category}
       brand={brand}
       categories={categories}
     />,
     <StepCondition
       condition={conditions}
-      setCondition={(val) => updateForm({ conditions: val })}
-      setPrice={(val) => updateForm({ price: val })}
+      setCondition={val => updateForm({ conditions: val })}
       category={category}
-      model={model}
-      brand={formState.brand}
     />,
-    <StepBasePrice errors={errors} setErrors={setErrors} price={price} setPrice={(val) => updateForm({ price: val })} />,
+    <StepBasePrice
+      errors={errors}
+      setErrors={setErrors}
+      loading={loading}
+      price={price}
+      setPrice={val => updateForm({ price: val })}
+    />,
     <StepPrice price={estimate_price} />,
   ];
 
   const handlePrimaryAction = async () => {
-
     if (step === steps.length - 1) {
       handleSubmit();
     } else {
       if (step === 4) {
         setLoading(true);
         try {
-       
-          const data = { base_price: price,
-           }
+          const data = { base_price: price };
           const validationErrors = await validateFormData(data, QuoteFormSchema);
-          console.log(validationErrors,'validationErrors')
           if (validationErrors) {
             setErrors(validationErrors);
-            toast.error("Please fix the errors.");
+            toast.error('Please fix the errors.');
             return;
           }
-
           const payload = {
-            // category_id: category,
-            // brand_id: brand,
             model_id: model,
-            // condition: condition,
             base_price: Number(price),
           };
           const response = await api.public.getEstimatePrice(payload);
           if (response?.estimated_price) {
             updateForm({ estimate_price: response.estimated_price });
           } else {
-            toast.error("Failed to get estimate price");
+            toast.error('Failed to get estimate price');
           }
         } catch (err) {
-          
-          toast.error(err?.response?.data?.message || "Error fetching estimate price");
+          toast.error(err?.response?.data?.message || 'Error fetching estimate price');
           return;
-        }
-        finally{
+        } finally {
           setLoading(false);
         }
       }
@@ -165,48 +148,51 @@ export default function QuoteForm({ onClose }) {
     }
   };
 
-
   const isNextDisabled = () => {
     if (step === 0) return !category?.value;
     if (step === 1) return !formState.brand;
     if (step === 2) return !model;
     if (step === 3) {
-      const isMobile = category.label === "Mobile" || category.label === "mobile";
+      const isMobile = category.label.toLowerCase() === 'mobile';
       const baseCheck = conditions.condition && conditions.images.length > 0;
       const mobileCheck = isMobile ? conditions.storage.length > 0 && conditions.imei : true;
-
       return !(baseCheck && mobileCheck);
     }
-
     return false;
   };
+
   return (
-    <div className="mx-auto px-4 md:px-10 py-8 md:py-10 rounded-xl w-full max-w-3xl">
-      <LoadingIndicator isLoading={loading} />
-     {  loading && <p
-      className={`flex items-center text-xl justify-center bg-white bg-opacity-50 absolute inset-0 z-[10000] 
-      `}
-      style={{ display: loading ? 'flex' : 'none' }}
-    >Calculating...</p>}
+    <div className="mx-auto px-4 md:px-10 py-8 md:py-10 rounded-xl w-full max-w-3xl relative">
+      <LoadingIndicator isLoading={loading && step === steps.length - 1} />
+
       {/* Stepper */}
       <div className="mb-6 md:mb-10">
-        <div className={`relative flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm md:text-base ${FONT_WEIGHTS.semibold} ${COLOR_CLASSES.textSecondary}`}>
+        <div className={`relative flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm md:text-base font-semibold text-gray-500`}>
           <Stepper steps={stepConstant} currentStep={step} />
-          <div className="absolute top-4 md:top-4 left-[5.5%] w-[88%] h-1 bg-gray-200 rounded">
+          <div className="absolute top-4 left-[5.5%] w-[88%] h-1 bg-gray-200 rounded">
             <div
-              className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
+              className={`bg-blue-500 h-1 rounded transition-all duration-500`}
               style={{ width: `${(step / 5) * 100}%` }}
             />
           </div>
         </div>
       </div>
 
-      {/* Step Content */}
-      <div className="md:min-h-[140px] text-sm md:text-base">
-        {steps[step]}
-      </div>
+      {/* Step Content with animation */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ duration: 0.4 }}
+          className="md:min-h-[140px] text-sm md:text-base"
+        >
+          {steps[step]}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Action Buttons */}
+      {/* Buttons */}
       <div className="pt-8 md:pt-10 flex flex-wrap justify-center items-center gap-4">
         {step === 0 ? (
           <Button
@@ -233,12 +219,11 @@ export default function QuoteForm({ onClose }) {
           onClick={handlePrimaryAction}
           disabled={isNextDisabled()}
           variant="primary"
-          className="px-5 py-2 md:px-6 md:py-2 shadow disabled:opacity-50 text-sm md:text-base"
+          className="px-5 py-2 md:px-6 md:py-2 shadow disabled:opacity-50 text-sm md:text-base bg-blue-600 hover:bg-blue-700 text-white"
         >
           {step === steps.length - 1 ? (!isAuthenticated ? 'Login' : 'Submit') : 'Next'}
         </Button>
       </div>
     </div>
-
   );
 }

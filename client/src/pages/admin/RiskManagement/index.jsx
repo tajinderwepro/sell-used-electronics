@@ -79,19 +79,19 @@ export default function RiskManagement() {
                             className={`w-[70px] mt-5 border rounded-xl py-[5px] px-2 text-center ${COLOR_CLASSES.bgWhite}`}
                         />
                         <Button
+                            onClick={handleCancel}
+                            disabled={submitting}
+                            className={`rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
+                            variant="secondary"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
                             onClick={handleSave}
                             disabled={submitting}
                             className={`rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
                         >
                             Save
-                        </Button>
-                        <Button
-                            onClick={handleCancel}
-                            disabled={submitting}
-                            className={`rounded-xl py-1 px-2 cursor-pointer ${FONT_SIZES['xs']} ${FONT_WEIGHTS['semibold']}`}
-                            variant="custom"
-                        >
-                            Cancel
                         </Button>
                     </div>
                 )}

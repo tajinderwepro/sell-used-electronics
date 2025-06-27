@@ -154,7 +154,8 @@ class QuoteService:
                 selectinload(Quote.brand),
                 selectinload(Quote.model),
                 selectinload(Quote.media),
-                selectinload(Quote.notes),
+                selectinload(Quote.user),
+                selectinload(Quote.notes).selectinload(Note.user)
             )
             .where(Quote.id == quote_id)
         )

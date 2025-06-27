@@ -56,5 +56,5 @@ admin_router.include_router(order.router, prefix="/orders", tags=["orders"])
 admin_router.include_router(brand.router, prefix="/brand", tags=["brand"])
 admin_router.include_router(model.router, prefix="/model", tags=["model"])
 admin_router.include_router(admin_payments.router, prefix="/payments/stripe", tags=["stripe"])
-# admin_router.include_router(category.router, prefix="/category", tags=["category"])  # Uncomment if needed
+admin_router.include_router(category.router, prefix="/category", tags=["category"])  # Uncomment if needed
 api_router.include_router(admin_router)

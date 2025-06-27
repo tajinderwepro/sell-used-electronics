@@ -24,7 +24,8 @@ class Model(Base,TimestampMixin):
         "Media",
         primaryjoin="and_(foreign(Media.mediable_id)==Model.id, Media.mediable_type=='model')",
         viewonly=True,
-        uselist=True
+        uselist=True,
+        lazy="selectin",
     )
     
 

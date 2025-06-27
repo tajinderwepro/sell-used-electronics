@@ -22,7 +22,8 @@ class Brand(Base,TimestampMixin):
     "Media",
     primaryjoin="and_(foreign(Media.mediable_id)==Brand.id, Media.mediable_type=='brand')",
     viewonly=True,
-    uselist=True
+    uselist=True,
+    lazy="selectin",
 )
 
 

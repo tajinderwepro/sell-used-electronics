@@ -46,7 +46,7 @@ class AuthService:
         user = result.scalars().first()
 
         if not user or not AuthService.verify_password(data.password, user.password_hash):
-            raise HTTPException(status_code=401, detail="Invalid email or password")
+            raise HTTPException(status_code=422, detail="Invalid email or password")
 
         access_token = AuthService.create_access_token(data={"sub": str(user.id)})
 

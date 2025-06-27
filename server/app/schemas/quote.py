@@ -71,13 +71,14 @@ class QuoteOut(BaseModel):
     user: Optional[UserBase]
     media: List[MediaBase] = [] 
     notes: Optional[List[NoteOut]] = []
-    model_config = ConfigDict(from_attributes=True)
     created_at:Optional[datetime] = None
     updated_at: Optional[datetime] = None
     amount: Optional[float] = None
     shipment_retry_status: Optional[bool] = None
     shipment_id: Optional[str] = None
- 
+
+    model_config = ConfigDict(from_attributes=True)
+
 class QuoteUpdate(BaseModel):
     category: Optional[str]
     brand: Optional[str]
