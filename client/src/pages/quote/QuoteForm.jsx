@@ -171,7 +171,7 @@ export default function QuoteForm({ onClose }) {
           <Stepper steps={stepConstant} currentStep={step} />
           <div className="absolute top-4 left-[5.5%] w-[88%] h-1 bg-gray-200 rounded">
             <div
-              className={`bg-blue-500 h-1 rounded transition-all duration-500`}
+              className={`${COLOR_CLASSES.primaryBg} h-1 rounded transition-all duration-500`}
               style={{ width: `${(step / 5) * 100}%` }}
             />
           </div>

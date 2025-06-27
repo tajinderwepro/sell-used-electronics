@@ -18,6 +18,7 @@ import {
 import { PROJECT_NAME } from '../../constants'
 import { useMode } from '../../context/ModeContext'
 import SidebarNav from './SidebarNav'
+import ThemePicker from '../../components/ThemePicker'
 
 const DROPDOWN_MENU = [
   {
@@ -64,22 +65,20 @@ function Header() {
     navigate("/login")
   }
 
-
- function ModeToggle() {
-  return (
-      <button
-        onClick={toggleMode}
-        className={`p-2 rounded-full transition hover:bg-gray-200 dark:hover:bg-gray-200`}
-        aria-label="Toggle Theme"
-      >
-        {mode === 'dark' ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-700" />}
-      </button>
-    );
+  function ModeToggle() {
+    return (
+        <button
+          onClick={toggleMode}
+          className={`p-2 rounded-full transition hover:bg-gray-200 dark:hover:bg-gray-200`}
+          aria-label="Toggle Theme"
+        >
+          {mode === 'dark' ? <Sun className="h-5 w-5 text-yellow-500" /> : <Moon className="h-5 w-5 text-gray-700" />}
+        </button>
+      );
   }
 
-
   return (
-    <header className={`fixed top-0 left-0 w-full border-b z-[3]  ${COLOR_CLASSES.borderGray200} shadow-sm ${COLOR_CLASSES.bgWhite}`}>
+    <header className={`fixed top-0 left-0 w-full border-b z-[3] transition-colors duration-300 ${COLOR_CLASSES.borderGray200} ${COLOR_CLASSES.shadowMd} ${COLOR_CLASSES.bgWhite}`}>
       <div className={`max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 xl:px-2 py-4 flex justify-between items-center`}>
        {
         user?.role !== "admin" && (
@@ -126,7 +125,7 @@ function Header() {
                 <UserCircle className="h-6 w-6" />
               </button>
               {dropdownOpen && (
-                <div className={`absolute right-0 mt-2 w-48 ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded shadow z-40`}>
+                <div className={`absolute right-0 mt-2 w-60 ${COLOR_CLASSES.bgWhite} border ${COLOR_CLASSES.borderGray200} rounded shadow z-40`}>
                   {DROPDOWN_MENU.map((item) => {
                     if (user.role === 'admin' && ['Products', 'Shipment Address', 'Payments'].includes(item.name)) {
                       return null;
@@ -149,7 +148,11 @@ function Header() {
                     <LogOut className="h-4 w-4 mr-2" /> Logout
                   </button>
                   <div className={`border-t ${COLOR_CLASSES.borderGray200}`}>
-                    <ModeToggleButton onClick={() => setDropdownOpen(false)}/>
+                    <ModeToggleButton onClick={() => setDropdownOpen(false)} />
+                    <div className="px-4 py-2">
+                      <p className="text-sm font-medium text-gray-500 mb-2">Theme</p>
+                      <ThemePicker />
+                    </div>
                   </div>
                 </div>
               )}

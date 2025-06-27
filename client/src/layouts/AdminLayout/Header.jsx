@@ -16,6 +16,7 @@ import {
 } from "../../constants/theme";
 import { useColorClasses } from "../../theme/useColorClasses";
 import ModeToggleButton from "../../components/common/ModeToggleButton";
+import ThemePicker from "../../components/ThemePicker";
 
 const DROPDOWN_MENU = [
   {
@@ -94,6 +95,10 @@ export default function Header({ setMobileMenuOpen }) {
               </button>
               <div className={`border-t ${COLOR_CLASSES.borderGray200}`}>
                 <ModeToggleButton onClick={() => setDropdownOpen(false)}/>
+                <div className="px-4 py-2">
+                  <p className="text-sm font-medium text-gray-500 mb-2">Theme</p>
+                  <ThemePicker />
+                </div>
               </div>
             </div>
           )}

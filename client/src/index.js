@@ -7,10 +7,12 @@ import { ToastContainer } from "react-toastify";
 import { AuthProvider } from './context/AuthContext';
 import { SessionProvider } from './context/SessionContext';
 import { QuoteFormProvider } from './context/QuoteFormContext';
+import { ModeProvider } from './context/ModeContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <ModeProvider>
     <SessionProvider>
       <AuthProvider>
          <QuoteFormProvider>
@@ -19,6 +21,7 @@ root.render(
          </QuoteFormProvider>
       </AuthProvider>
     </SessionProvider>
+  </ModeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
