@@ -78,7 +78,7 @@ function Card({ device, onRequestShipment, onClick, type = 'order', index  }) {
       onClick={() => onClick?.(device.id)}
       className={`${COLOR_CLASSES.bgGradient} backdrop-blur-md border ${COLOR_CLASSES.borderGray200} rounded-2xl overflow-hidden ${COLOR_CLASSES.shadowLg} flex flex-col w-full cursor-pointer`}
     >
-      <div className="flex justify-between items-center"><span className={`text-[#a855f7] p-2`}># {index + 1}</span><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate( device?.created_at, false)}</span></div>
+      <div className="flex justify-between items-center"><span className={`text-[#a855f7] p-1 pl-2`}># {index + 1}</span><span className={`${COLOR_CLASSES.gradientBtn} text-right p-2 rounded-bl-2xl text-xs`}>{formatDate( device?.created_at, false)}</span></div>
       
       {/* Swiper */}
       <Swiper
@@ -98,11 +98,10 @@ function Card({ device, onRequestShipment, onClick, type = 'order', index  }) {
           </SwiperSlide>
         ))}
       </Swiper>
-
       {/* Device Details */}
       <div className="p-6 flex flex-col justify-between flex-1 text-sm">
         <div className="flex justify-between items-start mb-4">
-          <p className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{device.category_name}</p>
+          <p className={`text-lg font-semibold ${COLOR_CLASSES.textPrimary}`}>{type=="order"?device?.quote.category_name:device.category_name}</p>
           <Chip status={device.status} />
         </div>
 
